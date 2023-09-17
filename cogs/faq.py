@@ -10,13 +10,18 @@ class Faq(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.faq_aliases = {}
-        with open('faq_aliases.json', 'r') as f:
-            self.faq_aliases = json.load(f)
         database_folder = 'Database'
         self.json_file = os.path.join(database_folder, 'faq.json')
-    
+        self.aliases_file = os.path.join(database_folder, 'faq_aliases.json')  # Define the path to faq_aliases.json
+
+        # Load faq_aliases from the file
+        if os.path.exists(self.aliases_file):
+            with open(self.aliases_file, 'r') as f:
+                self.faq_aliases = json.load(f)
+
     def save_aliases(self):
-        with open('faq_aliases.json', 'w') as f:
+        # Save faq_aliases to the file
+        with open(self.aliases_file, 'w') as f:
             json.dump(self.faq_aliases, f, indent=4)
 
     async def update_faq(self, ctx):

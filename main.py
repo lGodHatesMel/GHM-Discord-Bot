@@ -22,6 +22,7 @@ def load_or_create_config(bot):
             "welcome_channel_id": None,
             "rules_channel_id": None,
             "faq_channel_id": None,
+            "message_logger_channel_id": None,
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -42,9 +43,6 @@ def load_or_create_config(bot):
             with open('config.json', 'w') as config_file:
                 json.dump(config, config_file, indent=4)
             print("⚠ WARNING: 'faq_channel_id' is not set in config.json.")
-            # You can set a default channel ID or handle it according to your requirements.
-            # Example: config['faq_channel_id'] = YOUR_DEFAULT_CHANNEL_ID
-            # Save the updated config.json with the default value.
 
         return config
 
@@ -53,6 +51,7 @@ config = load_or_create_config(bot)
 initial_extensions = [
     'cogs.ping', 'cogs.countdown', 'cogs.pkmstuff',
     'cogs.welcome_info', 'cogs.rules', 'cogs.faq',
+    'cogs.messagelogger', 'cogs.games',
 ]
 
 if __name__ == '__main__':
