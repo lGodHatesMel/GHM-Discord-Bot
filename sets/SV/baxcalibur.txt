@@ -1,0 +1,49 @@
+
+===
+```Baxcalibur @ Leftovers 
+Ability: Ice Body 
+EVs: 252 Atk / 4 SpD / 252 Spe 
+Tera Type: Fairy 
+Jolly Nature 
+- Substitute 
+- Dragon Dance 
+- Icicle Crash 
+- Earthquake ```
+===
+```Baxcalibur @ Heavy-Duty Boots 
+Ability: Thermal Exchange 
+EVs: 252 Atk / 4 Def / 252 Spe 
+Tera Type: Fairy 
+Jolly Nature 
+- Dragon Dance 
+- Glaive Rush 
+- Icicle Crash 
+- Earthquake ```
+===
+```Baxcalibur @ Loaded Dice 
+Ability: Thermal Exchange 
+EVs: 252 Atk / 4 SpD / 252 Spe 
+Tera Type: Dragon 
+Jolly Nature 
+- Swords Dance 
+- Glaive Rush 
+- Icicle Spear 
+- Ice Shard ```
+===
+```Baxcalibur @ Choice Band 
+Ability: Thermal Exchange 
+EVs: 252 Atk / 4 SpD / 252 Spe 
+Tera Type: Dragon 
+Jolly NatureBaxcalibur @ Choice Band 
+Ability: Thermal Exchange 
+EVs: 252 Atk / 4 SpD / 252 Spe 
+Tera Type: Dragon 
+Jolly Nature 
+- Glaive Rush 
+- Icicle Crash 
+- Earthquake 
+- Ice Shard 
+- Glaive Rush 
+- Icicle Crash 
+- Earthquake 
+- Ice Shard ```

@@ -1,0 +1,16 @@
+1. !info UID
+   - Description: Retrieve user information, including joined/left timestamps, last seen timestamp, username, roles, total messages, notes, and avatar URL.
+   - Usage: !info UID (Replace UID with the user's ID you want to get information about.)
+
+2. !update_info UID key value
+   - Description: Update user information (for testing purposes).
+   - Usage: !update_info UID key value (Replace UID with the user's ID you want to update, key with the information you want to update, and value with the new value.)
+Example: !update_info 123456789012345678 username NewUsername
+
+3. !simulate_join UID
+   - Description: Simulate a user join (for testing purposes).
+   - Usage: !simulate_join UID (Replace UID with the user's ID you want to simulate a join for.)
+
+4. !simulate_leave UID
+   - Description: Simulate a user leave (for testing purposes).
+   - Usage: !simulate_leave UID (Replace UID with the user's ID you want to simulate a leave for.)
