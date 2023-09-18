@@ -51,7 +51,8 @@ config = load_or_create_config(bot)
 initial_extensions = [
     'cogs.ping', 'cogs.countdown', 'cogs.pkmstuff',
     'cogs.welcome_info', 'cogs.rules', 'cogs.faq',
-    'cogs.messagelogger', 'cogs.games',
+    'cogs.messagelogger', 'cogs.games', 'cogs.custom_commands',
+    'cogs.editimage', 'cogs.translator',
 ]
 
 if __name__ == '__main__':
