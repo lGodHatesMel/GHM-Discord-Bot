@@ -7,7 +7,7 @@ class Games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="roll", aliases=["dice"], help="Roll a six-sided dice and get a random number between 1 and 6.")
+    @commands.command(name="roll", aliases=["dice", "rolldice"], help="Roll a six-sided dice and get a random number between 1 and 6.")
     async def roll_dice(self, ctx, sides: int = 6, num_rolls: int = 1):
         """
         Roll a dice.

@@ -25,9 +25,22 @@ class Welcome(commands.Cog):
     def save_user_info(self):
         with open(self.database_file, 'w') as f:
             json.dump(self.user_info, f, indent=4)
+            print("User info saved successfully.")  # Add this line to print a success message
+
+    async def get_welcome_channel_id(self):
+        # Load your configuration file (config.json)
+        with open('config.json', 'r') as config_file:
+            config_data = json.load(config_file)
+        return config_data.get('welcome_channel_id')
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        # Add a debug message to check if the event is triggered
+        print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
+
+        # Retrieve the welcome_channel_id
+        self.welcome_channel_id = await self.get_welcome_channel_id()
+
         if self.welcome_channel_id:
             channel = self.bot.get_channel(self.welcome_channel_id)
             if channel:
@@ -64,6 +77,7 @@ class Welcome(commands.Cog):
                         "avatar_url": str(member.avatar_url),
                     }
                 }
+                self.save_user_info()
     
     @commands.command()
     async def test_welcome(self, ctx):
@@ -190,7 +204,6 @@ class Welcome(commands.Cog):
         else:
             await ctx.send(f"User with ID {user_id} already exists in the database.")
 
-
     @commands.command()
     async def add_note(self, ctx, user_id: int, *, note_content: str):
         # Check if the user ID exists in the database
@@ -240,7 +253,5 @@ class Welcome(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-
-        
 def setup(bot):
     bot.add_cog(Welcome(bot))
