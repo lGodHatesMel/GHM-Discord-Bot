@@ -3,10 +3,15 @@ from discord.ext import commands
 import json
 import os
 
+#script_directory = os.path.dirname('GHM-Discord-Bot')
+#custom_commands_file = os.path.join(script_directory, 'Database', 'custom_commands.json')
+
 class CustomCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.commands_file = os.path.join(os.path.dirname(__file__), 'Database', 'custom_commands.json')
+        self.database_folder = 'Database'
+        self.commands_file = os.path.join(self.database_folder, 'custom_commands.json')
+        #self.commands_file = custom_commands_file
 
         # Check if the custom_commands.json file exists, and create it if not
         if not os.path.exists(self.commands_file):
@@ -36,7 +41,7 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    commands.command(name='editcommand')
+    @commands.command(name='editcommand')
     async def edit_custom_command(self, ctx, command_name, *, new_response):
         try:
             # Load existing custom commands from JSON
