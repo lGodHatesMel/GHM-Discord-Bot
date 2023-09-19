@@ -9,7 +9,7 @@ class Welcome(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.database_folder = 'Database'
-        self.database_file = os.path.join(self.database_folder, 'BDInfo.json')
+        self.database_file = os.path.join(self.database_folder, 'DBInfo.json')
         self.load_user_info()
 
     def load_user_info(self):
@@ -32,6 +32,48 @@ class Welcome(commands.Cog):
         with open('config.json', 'r') as config_file:
             config_data = json.load(config_file)
         return config_data.get('welcome_channel_id')
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if before.roles != after.roles:
+            # If the roles of a member have changed
+            user_id = str(after.id)
+
+            # Check if the user exists in the database
+            if user_id in self.user_info:
+                # Update the user's roles in the database
+                self.user_info[user_id]["info"]["roles"] = [role.name for role in after.roles]
+                self.save_user_info()
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if not message.author.bot:
+            user_id = str(message.author.id)
+            if user_id in self.user_info:
+                self.user_info[user_id]["info"]["total_messages"] += 1
+                self.save_user_info()
+
+    @commands.command()
+    async def update_username(self, ctx, new_username: str):
+        user_id = str(ctx.author.id)
+        if user_id in self.user_info:
+            self.user_info[user_id]["info"]["username"] = new_username
+            self.save_user_info()
+            await ctx.send(f"Updated username to {new_username}.")
+        else:
+            await ctx.send("User not found in the database.")
+
+    @commands.Cog.listener()
+    async def on_user_update(self, before, after):
+        if before.avatar_url != after.avatar_url:
+            # If the user's avatar URL has changed
+            user_id = str(after.id)
+
+            # Check if the user exists in the database
+            if user_id in self.user_info:
+                # Update the user's avatar URL in the database
+                self.user_info[user_id]["info"]["avatar_url"] = str(after.avatar_url)
+                self.save_user_info()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
