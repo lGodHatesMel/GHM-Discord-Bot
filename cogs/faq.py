@@ -12,7 +12,7 @@ class Faq(commands.Cog):
         self.faq_aliases = {}
         database_folder = 'Database'
         self.json_file = os.path.join(database_folder, 'faq.json')
-        self.aliases_file = os.path.join(database_folder, 'faq_aliases.json')  # Define the path to faq_aliases.json
+        self.aliases_file = os.path.join(database_folder, 'faq_aliases.json')
 
         # Load faq_aliases from the file
         if os.path.exists(self.aliases_file):

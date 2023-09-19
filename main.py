@@ -4,7 +4,10 @@ from discord.ext import commands
 import json
 from datetime import timezone, datetime
 
-bot = commands.Bot(command_prefix="!", case_insensitive=True)
+intents = discord.Intents.default()
+intents.members = True
+
+bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
 
 def load_or_create_config(bot):
     if hasattr(bot, 'config'):
@@ -69,6 +72,13 @@ async def on_ready():
     print(f'Bot Name: {bot.user.name}')
     print(f'Discord Server Joined: {bot.guilds[0].name}')
     print(f'Bot UID: {bot.user.id}')
+    print(f'===========================================================')
+
+    # Print enabled intents
+    print(f'Enabled Intents:')
+    for intent, enabled in bot.intents:
+        print(f'{intent}: {"Enabled" if enabled else "Disabled"}')
+
     print(f'===========================================================')
 
     # Check if the bot is a member of any servers
