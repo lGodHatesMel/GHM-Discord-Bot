@@ -10,28 +10,25 @@ def get_local_time(timezone='US/Eastern'):
     local_time = utc_time.astimezone(local_timezone)
     return local_time.strftime('%Y-%m-%d %H:%M:%S %Z')
 
-# Function to check for required role or higher
-def has_role_or_higher(role_name):
+# Function to customize command visibility based on roles
+def is_visible(allowed_roles):
     def predicate(ctx):
         async def check(ctx):
             if ctx.author.id == ctx.guild.owner_id:
                 return True
 
-            required_role = discord.utils.get(ctx.guild.roles, name=role_name)
-            if required_role:
-                # Check if the user has the required role or any role higher in the hierarchy
-                user_roles = ctx.author.roles
-                for role in user_roles:
-                    if role >= required_role:
-                        return True
+            user_roles = ctx.author.roles
+            for role_name in allowed_roles:
+                required_role = discord.utils.get(ctx.guild.roles, name=role_name)
+                if required_role and required_role in user_roles:
+                    return True
 
-            await ctx.send(f"You don't have the required {role_name} role or higher to use this command.")
+            await ctx.send(f"You don't have the required roles ({', '.join(allowed_roles)}) or higher to use this command.")
             return False
 
         return commands.check(check)
 
     return predicate
-
 
 # Function to format set details with line breaks
 def format_set_details(set_details):

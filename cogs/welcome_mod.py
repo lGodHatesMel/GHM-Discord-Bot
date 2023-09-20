@@ -5,8 +5,9 @@ import random
 import json
 import datetime
 import asyncio
+import utils
 
-class Welcome(commands.Cog):
+class WelcomeMod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.sticky_messages = {}
@@ -26,8 +27,10 @@ class Welcome(commands.Cog):
                 self.user_info = json.load(f)
 
     def save_user_info(self):
+        # Filter out users with empty data before saving to the database
+        filtered_user_info = {user_id: data for user_id, data in self.user_info.items() if data["info"]}
         with open(self.database_file, 'w') as f:
-            json.dump(self.user_info, f, indent=4)
+            json.dump(filtered_user_info, f, indent=4)
             print("User info saved successfully.")
 
     async def get_welcome_channel_id(self):
@@ -131,19 +134,29 @@ class Welcome(commands.Cog):
                 await channel.send(embed=embed)
                 print(f"{member.name} joined the server as the {member_number}.")
 
-                # Log user's join date and additional info in the database
-                self.user_info[str(member.id)] = {
-                    "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                        "Left": None,
-                        "username": member.name,
-                        "roles": [role.name for role in member.roles],
-                        "total_messages": 0,
-                        "warns": [],
-                        "notes": [],
-                        "avatar_url": str(member.avatar_url),
+                user_id = str(member.id)
+                
+                # Check if the user already exists in the database
+                if user_id in self.user_info:
+                    # Update the "Left" field to None when a user rejoins
+                    self.user_info[user_id]["info"]["Left"] = None
+                else:
+                    # If the user doesn't exist, create a new entry in the database
+                    self.user_info[user_id] = {
+                        "info": {
+                            "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+                            "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                            "Left": None,
+                            "username": member.name,
+                            "roles": [role.name for role in member.roles],
+                            "total_messages": 0,
+                            "warns": [],
+                            "notes": [],
+                            "kick_reason": [],
+                            "kicks_amount": 0,
+                            "avatar_url": str(member.avatar_url),
+                        }
                     }
-                }
                 self.save_user_info()
 
     @commands.command()
@@ -159,7 +172,7 @@ class Welcome(commands.Cog):
             welcome = {
                 "title": "Welcome!",
                 "description": f"Welcome to GodHatesMe Pokemon Centre {ctx.author.mention}, you are our {member_number}!\n\n"
-                               f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
+                            f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
                 "color": random_color,
             }
 
@@ -182,19 +195,38 @@ class Welcome(commands.Cog):
             user_data = self.user_info[str(user_id)]
             join_date = user_data["info"]["Joined"]
             leave_date = user_data["info"]["Left"] if "Left" in user_data["info"] else "N/A"
-            
+
             embed = discord.Embed(
-                title="User Info",
-                color=0x00ff00,
-                description=f"**Join Date:** {join_date}\n**Leave Date:** {leave_date}"
+                title=f"User Info for {user_data['info']['username']}",
+                color=0x00ff00
             )
 
-            # Add additional info to the embed
-            embed.add_field(name="Username", value=user_data["info"]["username"])
-            embed.add_field(name="Roles", value=", ".join(user_data["info"]["roles"]))
-            embed.add_field(name="Total Messages", value=user_data["info"]["total_messages"])
-            embed.add_field(name="Avatar URL", value=user_data["info"]["avatar_url"])
-            
+            embed.set_thumbnail(url=user_data["info"]["avatar_url"])
+
+            embed.add_field(name="Join Date", value=join_date, inline=True)
+            embed.add_field(name="Leave Date", value=leave_date, inline=True)
+
+            roles = ", ".join(user_data["info"]["roles"])
+            embed.add_field(name="Roles", value=roles, inline=False)
+
+            total_messages = user_data["info"]["total_messages"]
+            embed.add_field(name="Total Messages", value=total_messages, inline=True)
+
+            # Check if the user has warnings
+            if "warns" in user_data["info"] and user_data["info"]["warns"]:
+                total_warnings = len(user_data["info"]["warns"])
+                embed.add_field(name="Warnings", value=total_warnings, inline=True)
+
+            # Check if the user has kicks_amount
+            if "kicks_amount" in user_data["info"]:
+                total_kicks = user_data["info"]["kicks_amount"]
+                embed.add_field(name="Kicks", value=total_kicks, inline=True)
+
+            # Check if the user has notes
+            if "notes" in user_data["info"] and user_data["info"]["notes"]:
+                total_notes = len(user_data["info"]["notes"])
+                embed.add_field(name="Notes", value=total_notes, inline=True)
+
             await ctx.send(embed=embed)
         else:
             await ctx.send("User not found in the database.")
@@ -224,6 +256,8 @@ class Welcome(commands.Cog):
                         "total_messages": 0,
                         "warns": [],
                         "notes": [],
+                        "kick_reason": [],
+                        "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
                     }
                 }
@@ -244,9 +278,10 @@ class Welcome(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
     
-    @commands.command()
-    async def adduserdb(self, ctx, user_id: int):
-        # Check if the user ID exists in the database
+    @commands.command(aliases=['audb', 'addtodb'])
+    @commands.has_any_role("Moderator", "Admin")
+    async def addusertodb(self, ctx, user_id: int):
+        # Check if the user ID exists in the database; if not, add them to the database
         if str(user_id) not in self.user_info:
             # Attempt to fetch the member from the server
             member = ctx.guild.get_member(user_id)
@@ -255,17 +290,20 @@ class Welcome(commands.Cog):
                 self.user_info[str(user_id)] = {
                     "info": {
                         "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                         "Left": None,
                         "username": member.name,
                         "roles": [role.name for role in member.roles],
                         "total_messages": 0,
                         "warns": [],
                         "notes": [],
+                        "kick_reason": [],
+                        "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
                     }
                 }
                 self.save_user_info()
-                await ctx.send(f"User with ID {user_id} (username: {member.name}) added to the database.")
+                await ctx.send(f"User with ID `{user_id}` (username: `{member.name}`) added to the database.")
             else:
                 await ctx.send("User not found in the server.")
         else:
@@ -283,12 +321,15 @@ class Welcome(commands.Cog):
                 self.user_info[user_id] = {
                     "info": {
                         "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                         "Left": None,
                         "username": member.name,
                         "roles": [role.name for role in member.roles],
                         "total_messages": 0,
                         "warns": [],
                         "notes": [],
+                        "kick_reason": [],
+                        "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
                     }
                 }
@@ -300,9 +341,7 @@ class Welcome(commands.Cog):
         # Continue with adding the note
         user_data = self.user_info[user_id]
         notes = user_data["info"]["notes"]
-
-        # Get the current timestamp
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = utils.get_local_time()
 
         # Check if there are existing notes
         note_number = 1
@@ -380,7 +419,7 @@ class Welcome(commands.Cog):
 
     ## Start - Announcement | Sticky Notes
     @commands.command(name='botdown', aliases=['bd', 'down'], help='[#Channel] [Message]')
-    @commands.has_any_role("Admin")
+    @commands.has_any_role("Moderator", "Admin")
     async def botdown_command(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Bot Down:**\n{message}")
@@ -392,14 +431,14 @@ class Welcome(commands.Cog):
         print(f"{current_time} - {author.name} used the *{command}* command.")
 
     @commands.command(name='announcement', aliases=['announce', 'am'], help='[#Channel] [Message]')
-    @commands.has_any_role("Admin")
+    @commands.has_any_role("Moderator", "Admin")
     async def announcement(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Announcement:**\n{message}")
         await ctx.send(f"Announcement sent to {channel.mention}.")
 
     @commands.command(name='addsticky', aliases=['as'], help='[#Channel] [Message]')
-    @commands.has_any_role("Admin")
+    @commands.has_any_role("Moderator", "Admin")
     async def sticky_note(self, ctx, channel: discord.TextChannel, *, message):
         # Format the message content inside code blocks (```)
         formatted_message = f'```{message}```'
@@ -416,7 +455,7 @@ class Welcome(commands.Cog):
         await ctx.send(f"Sticky note added to {channel.mention}.")
 
     @commands.command(name='removesticky', aliases=['rs', 'delsticky'], help='[#Channel]')
-    @commands.has_any_role("Admin")
+    @commands.has_any_role("Moderator", "Admin")
     async def remove_sticky(self, ctx, channel: discord.TextChannel):
 
         if channel in self.sticky_messages:
@@ -427,5 +466,165 @@ class Welcome(commands.Cog):
             await ctx.send(f"No sticky note found in {channel.mention}.")
     ## End - Announcements | Sticky Notes
 
+    @commands.command()
+    @commands.has_any_role("Moderator", "Admin")
+    async def addwarning(self, ctx, member: discord.Member, *, warning: str):
+        # Check if the user exists in the database
+        user_id = str(member.id)
+
+        if user_id in self.user_info:
+            user_data = self.user_info[user_id]
+            warnings = user_data["info"].get("warns", [])
+
+            # Add the warning to the user's data
+            warning_number = len(warnings) + 1
+            timestamp = utils.get_local_time()
+            author = ctx.author.name
+
+            new_warning = {
+                "number": warning_number,
+                "timestamp": timestamp,
+                "author": author,
+                "warning": warning
+            }
+
+            warnings.append(new_warning)
+
+            # Check if this is the 3rd warning
+            if warning_number == 3:
+                # Send a DM to the user
+                await member.send("You were kicked because of this warning. You can join again right away. Reaching 5 warnings will result in an automatic ban. Permanent invite link: https://discord.gg/SrREp2BbkS.")
+                # Automatically kick the user
+                await member.kick(reason="3rd Warning")
+                await ctx.send(f"{member.mention} has been kicked due to their 3rd warning.")
+                
+                # Increment the kicks_amount count
+                user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
+
+            # Check if this is the 5th warning
+            if warning_number == 5:
+                # Send a DM to the user
+                await member.send("You have received your 5th warning and have been banned from the server.")
+                # Automatically ban the user
+                await ctx.guild.ban(member, reason="5th Warning")
+                await ctx.send(f"{member.mention} has been banned due to their 5th warning.")
+
+            # Update the warnings field in the user's data
+            user_data["info"]["warns"] = warnings
+
+            self.save_user_info()
+            await ctx.send(f"Warning #{warning_number} added for {member.mention}.")
+        else:
+            await ctx.send("User not found in the database.")
+
+    @commands.command()
+    @commands.has_any_role("Moderator", "Admin")
+    async def checkwarning(self, ctx, user: discord.User, warning_number: int):
+        user_id = str(user.id)
+
+        # Check if the user ID exists in the database
+        if user_id in self.user_info:
+            user_data = self.user_info[user_id]
+            warnings = user_data["info"]["warns"]
+
+            # Find the warning with the specified number
+            found_warning = None
+            for warning in warnings:
+                if warning.get("number") == warning_number:
+                    found_warning = warning
+                    break
+
+            if found_warning:
+                timestamp = found_warning["timestamp"]
+                moderator = found_warning["moderator"]
+                warning_text = found_warning["warning"]
+
+                await ctx.send(f"**Warning #{warning_number} for {user.mention}:**\n"
+                            f"Timestamp: {timestamp}\n"
+                            f"Moderator: {moderator}\n"
+                            f"Warning: {warning_text}")
+            else:
+                await ctx.send(f"Warning #{warning_number} not found for this user.")
+        else:
+            await ctx.send("User not found in the database.")
+
+    @commands.command()
+    @commands.has_any_role("Moderator", "Admin")
+    async def delwarning(self, ctx, user: discord.User, warning_number: int):
+        user_id = str(user.id)
+
+        # Check if the user ID exists in the database
+        if user_id in self.user_info:
+            user_data = self.user_info[user_id]
+            warnings = user_data["info"]["warns"]
+
+            # Find the warning with the specified number
+            found_warning = None
+            for warning in warnings:
+                if warning.get("number") == warning_number:
+                    found_warning = warning
+                    break
+
+            if found_warning:
+                warnings.remove(found_warning)
+                self.save_user_info()
+                await ctx.send(f"Deleted warning #{warning_number} for {user.mention}.")
+            else:
+                await ctx.send(f"Warning #{warning_number} not found for this user.")
+        else:
+            await ctx.send("User not found in the database.")
+            
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def kick(self, ctx, member: discord.Member, *, reason: str):
+        # Check if the user exists in the database
+        user_id = str(member.id)
+        
+        if user_id in self.user_info:
+            # Get the user's data from the database
+            user_data = self.user_info[user_id]
+
+            # Increment the kicks_amount count
+            user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
+
+            # Add kick reason to the user's data with a "number" field
+            kick_info = {
+                "number": 1,  # Initially set to 1
+                "timestamp": utils.get_local_time(),
+                "moderator": ctx.author.name,
+                "reason": reason
+            }
+
+            kicks = user_data["info"].get("kick_reason", [])
+
+            # Find the highest "number" value in existing kick reasons and increment it
+            existing_numbers = [kick.get("number", 0) for kick in kicks]
+            if existing_numbers:
+                kick_info["number"] = max(existing_numbers) + 1
+
+            kicks.append(kick_info)
+            user_data["info"]["kick_reason"] = kicks
+
+            # Save the updated user data
+            self.save_user_info()
+
+            await member.kick(reason=reason)
+
+            # Send a DM to the kicked user
+            try:
+                kick_message = f"You have been kicked from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
+                await member.send(kick_message)
+            except discord.Forbidden:
+                # The user has DMs disabled, or the bot doesn't have permission to send DMs
+                print(f"Failed to send kick message to {member.name} ({member.id}) due to permission or privacy settings.")
+            except Exception as e:
+                # Handle other exceptions if necessary
+                print(f"An error occurred while sending a kick message to {member.name} ({member.id}): {e}")
+
+                await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
+
+        else:
+            await ctx.send("User not found in the database.")
+
 def setup(bot):
-    bot.add_cog(Welcome(bot))
+    bot.add_cog(WelcomeMod(bot))

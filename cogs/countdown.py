@@ -3,6 +3,7 @@ from discord.ext import commands
 import json
 from datetime import timezone, datetime
 import asyncio
+import utils
 
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
@@ -22,7 +23,7 @@ class Countdown(commands.Cog):
         target_timestamp = config.get('target_timestamp')
         channel = self.bot.get_channel(countdown_channel_id)  # Get the channel using the ID
 
-        current_timestamp = datetime.now(timezone.utc).timestamp()
+        current_timestamp = utils.get_local_time()
         time_remaining = target_timestamp - current_timestamp
 
         if time_remaining <= 0:  # This is the message it will give once the countdown is finished
