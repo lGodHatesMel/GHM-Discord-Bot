@@ -273,33 +273,53 @@ class Welcome(commands.Cog):
 
     @commands.command()
     @commands.has_any_role("Moderator", "Admin")
-    async def addnote(self, ctx, user_id: int, *, note_content: str):
-        # Check if the user ID exists in the database
-        if str(user_id) in self.user_info:
-            user_data = self.user_info[str(user_id)]
-            notes = user_data["info"]["notes"]
+    async def addnote(self, ctx, user: discord.User, *, note_content: str):
+        user_id = str(user.id)
 
-            # Get the current timestamp
-            timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Check if the user ID exists in the database; if not, add them to the database
+        if user_id not in self.user_info:
+            member = ctx.guild.get_member(user.id)
+            if member:
+                self.user_info[user_id] = {
+                    "info": {
+                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Left": None,
+                        "username": member.name,
+                        "roles": [role.name for role in member.roles],
+                        "total_messages": 0,
+                        "warns": [],
+                        "notes": [],
+                        "avatar_url": str(member.avatar_url),
+                    }
+                }
+                self.save_user_info()
+            else:
+                await ctx.send("User not found in the server.")
+                return
 
-            # Check if there are existing notes
-            note_number = 1
-            for note in notes:
-                if note.get("number"):
-                    note_number = note["number"] + 1
+        # Continue with adding the note
+        user_data = self.user_info[user_id]
+        notes = user_data["info"]["notes"]
 
-            # Add the note to the user's data
-            notes.append({
-                "number": note_number,
-                "timestamp": timestamp,
-                "author": ctx.author.name,
-                "content": note_content
-            })
+        # Get the current timestamp
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-            self.save_user_info()
-            await ctx.send(f"Note added for user {user_id} with note #{note_number}.")
-        else:
-            await ctx.send("User not found in the database.")
+        # Check if there are existing notes
+        note_number = 1
+        for note in notes:
+            if note.get("number"):
+                note_number = note["number"] + 1
+
+        # Add the note to the user's data
+        notes.append({
+            "number": note_number,
+            "timestamp": timestamp,
+            "author": ctx.author.name,
+            "content": note_content
+        })
+
+        self.save_user_info()
+        await ctx.send(f"Note added for user {user.mention} with note #{note_number}.")
 
     @commands.command()
     @commands.has_any_role("Admin")
