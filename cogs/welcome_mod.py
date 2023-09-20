@@ -4,13 +4,16 @@ from discord.ext import commands
 import random
 import json
 import datetime
+import asyncio
 
 class Welcome(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.sticky_messages = {}
         self.database_folder = 'Database'
         self.database_file = os.path.join(self.database_folder, 'DBInfo.json')
         self.load_user_info()
+        self.welcome_channel_id = None
 
     def load_user_info(self):
         if not os.path.exists(self.database_folder):
@@ -25,10 +28,9 @@ class Welcome(commands.Cog):
     def save_user_info(self):
         with open(self.database_file, 'w') as f:
             json.dump(self.user_info, f, indent=4)
-            print("User info saved successfully.")  # Add this line to print a success message
+            print("User info saved successfully.")
 
     async def get_welcome_channel_id(self):
-        # Load your configuration file (config.json)
         with open('config.json', 'r') as config_file:
             config_data = json.load(config_file)
         return config_data.get('welcome_channel_id')
@@ -49,6 +51,28 @@ class Welcome(commands.Cog):
     async def on_message(self, message):
         if not message.author.bot:
             user_id = str(message.author.id)
+
+            # Check if the message is in a channel with a sticky note
+            if message.channel in self.sticky_messages:
+                # Get the original sticky message
+                original_sticky_msg = self.sticky_messages[message.channel]
+                # Add a delay before deleting the old sticky
+                await asyncio.sleep(3)
+                # Delete the old sticky message
+                await original_sticky_msg.delete()
+                # Check if the original sticky message content is not empty
+                if original_sticky_msg.embeds and original_sticky_msg.embeds[0].description:
+                    # Create a new embedded sticky note with the original content
+                    new_embed = discord.Embed(
+                        title="STICKY NOTE",
+                        description=original_sticky_msg.embeds[0].description,
+                        color=discord.Color.red()
+                    )
+                    # Send the new embedded sticky note
+                    new_sticky_msg = await message.channel.send(embed=new_embed)
+                    # Update the reference to the sticky message
+                    self.sticky_messages[message.channel] = new_sticky_msg
+
             if user_id in self.user_info:
                 self.user_info[user_id]["info"]["total_messages"] += 1
                 self.save_user_info()
@@ -89,21 +113,21 @@ class Welcome(commands.Cog):
                 server = member.guild
                 member_count = sum(1 for member in server.members if not member.bot)
                 member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-                
+
                 # Generate a random color in hexadecimal notation
                 random_color = random.randint(0, 0xFFFFFF)
-                
+
                 welcome = {
                     "title": "Welcome!",
                     "description": f"Welcome to GodHatesMe Pokemon Centre {member.mention}, you are our {member_number}!\n\n"
                                 f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
                     "color": random_color,
                 }
-                
+
                 embed = discord.Embed(**welcome)
                 embed.set_thumbnail(url=member.avatar_url)
                 embed.set_footer(text=member.name)
-                
+
                 await channel.send(embed=embed)
                 print(f"{member.name} joined the server as the {member_number}.")
 
@@ -111,16 +135,17 @@ class Welcome(commands.Cog):
                 self.user_info[str(member.id)] = {
                     "info": {
                         "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                        "Left": None,  # Initialize as None, to be updated if the user leaves
+                        "Left": None,
                         "username": member.name,
                         "roles": [role.name for role in member.roles],
                         "total_messages": 0,
-                        "notes": [],  # Initialize notes as an empty list
+                        "warns": [],
+                        "notes": [],
                         "avatar_url": str(member.avatar_url),
                     }
                 }
                 self.save_user_info()
-    
+
     @commands.command()
     async def test_welcome(self, ctx):
         if self.welcome_channel_id:
@@ -137,7 +162,7 @@ class Welcome(commands.Cog):
                                f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
                 "color": random_color,
             }
-            
+
             embed = discord.Embed(title=welcome["title"], description=welcome["description"], color=welcome["color"])
             embed.set_thumbnail(url=ctx.author.avatar_url)
             embed.set_footer(text=ctx.author.name)
@@ -149,7 +174,7 @@ class Welcome(commands.Cog):
         if str(member.id) in self.user_info:
             self.user_info[str(member.id)]["info"]["Left"] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.save_user_info()
-    
+
     @commands.command()
     async def info(self, ctx, user_id: int):
         # Check if the user ID exists in the database
@@ -174,7 +199,6 @@ class Welcome(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    
     @commands.command()
     async def update_info(self, ctx, user_id: int, key: str, *, value: str):
         # Update user information (for testing purposes)
@@ -184,7 +208,7 @@ class Welcome(commands.Cog):
             await ctx.send(f"Updated {key} for user {user_id} to {value}.")
         else:
             await ctx.send("User not found in the database or key does not exist.")
-    
+
     @commands.command()
     async def simulate_join(self, ctx, user_id: int):
         # Simulate a user join (for testing purposes)
@@ -193,11 +217,12 @@ class Welcome(commands.Cog):
             if member:
                 self.user_info[str(user_id)] = {
                     "info": {
-                        "Joined": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
                         "Left": None,
                         "username": member.name,
                         "roles": [role.name for role in member.roles],
                         "total_messages": 0,
+                        "warns": [],
                         "notes": [],
                         "avatar_url": str(member.avatar_url),
                     }
@@ -227,15 +252,15 @@ class Welcome(commands.Cog):
             member = ctx.guild.get_member(user_id)
 
             if member:
-                # Add the user to the database with default information, including "notes" as an empty list and the retrieved username
                 self.user_info[str(user_id)] = {
                     "info": {
-                        "Joined": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        "Left": None,  # Initialize as None, to be updated if the user leaves
-                        "username": member.name,  # Retrieve the username from the member
-                        "notes": [],  # Initialize notes as an empty list
+                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Left": None,
+                        "username": member.name,
                         "roles": [role.name for role in member.roles],
                         "total_messages": 0,
+                        "warns": [],
+                        "notes": [],
                         "avatar_url": str(member.avatar_url),
                     }
                 }
@@ -247,53 +272,140 @@ class Welcome(commands.Cog):
             await ctx.send(f"User with ID {user_id} already exists in the database.")
 
     @commands.command()
-    async def add_note(self, ctx, user_id: int, *, note_content: str):
+    @commands.has_any_role("Moderator", "Admin")
+    async def addnote(self, ctx, user_id: int, *, note_content: str):
         # Check if the user ID exists in the database
         if str(user_id) in self.user_info:
+            user_data = self.user_info[str(user_id)]
+            notes = user_data["info"]["notes"]
+
             # Get the current timestamp
             timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            
+
+            # Check if there are existing notes
+            note_number = 1
+            for note in notes:
+                if note.get("number"):
+                    note_number = note["number"] + 1
+
             # Add the note to the user's data
-            self.user_info[str(user_id)]["info"]["notes"].append({
+            notes.append({
+                "number": note_number,
                 "timestamp": timestamp,
-                "author": ctx.author.name,  # You can change this to the author's username or ID if needed
+                "author": ctx.author.name,
                 "content": note_content
             })
+
             self.save_user_info()
-            await ctx.send(f"Note added for user {user_id}.")
+            await ctx.send(f"Note added for user {user_id} with note #{note_number}.")
         else:
             await ctx.send("User not found in the database.")
-            
+
     @commands.command()
-    async def check_notes(self, ctx, user_id: int):
+    @commands.has_any_role("Admin")
+    async def delnote(self, ctx, user_id: int, note_number: int):
         # Check if the user ID exists in the database
         if str(user_id) in self.user_info:
             user_data = self.user_info[str(user_id)]
             notes = user_data["info"]["notes"]
-            if notes:
-                # Format and send the notes as a list
-                note_list = [f"{note['timestamp']} - {note['author']}: {note['content']}" for note in notes]
-                await ctx.send(f"Notes for user {user_id}:\n" + "\n".join(note_list))
-            else:
-                await ctx.send("No notes found for this user.")
-        else:
-            await ctx.send("User not found in the database.")
-            
-    @commands.command()
-    async def delete_note(self, ctx, user_id: int, note_index: int):
-        # Check if the user ID exists in the database
-        if str(user_id) in self.user_info:
-            user_data = self.user_info[str(user_id)]
-            notes = user_data["info"]["notes"]
-            if notes and 0 <= note_index < len(notes):
-                # Check if the note index is valid
-                deleted_note = notes.pop(note_index)
+
+            # Find the note with the specified number
+            found_note = None
+            for note in notes:
+                if note.get("number") == note_number:
+                    found_note = note
+                    break
+
+            if found_note:
+                notes.remove(found_note)
                 self.save_user_info()
-                await ctx.send(f"Deleted note for user {user_id}:\n{deleted_note['timestamp']} - {deleted_note['author']}: {deleted_note['content']}")
+                await ctx.send(f"Deleted note #{note_number} for user {user_id}.")
             else:
-                await ctx.send("Invalid note index or no notes found for this user.")
+                await ctx.send(f"Note #{note_number} not found for this user.")
         else:
             await ctx.send("User not found in the database.")
+
+    @commands.command()
+    @commands.has_any_role("Moderator", "Admin")
+    async def notes(self, ctx, user_id: int):
+        # Check if the user ID exists in the database
+        if str(user_id) in self.user_info:
+            user_data = self.user_info[str(user_id)]
+            notes = user_data["info"]["notes"]
+
+            if notes:
+                # Create an embed to display user information and notes
+                embed = discord.Embed(
+                    title=f"Notes for {user_data['info']['username']} (UID: {user_id})",
+                    color=0x00ff00,
+                )
+
+                # Add user information to the embed
+                embed.add_field(name="Username", value=user_data["info"]["username"], inline=False)
+                #embed.add_field(name="Warnings", value=user_data["info"]["total_warnings"], inline=False)
+
+                # Format and add the notes as fields in the embed
+                for note in notes:
+                    embed.add_field(
+                        name=f"Note #{note['number']} - {note['timestamp']} - {note['author']}:",
+                        value=note['content'],
+                        inline=False
+                    )
+
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(f"No notes found for user {user_id}.")
+        else:
+            await ctx.send("User not found in the database.")
+
+    ## Start - Announcement | Sticky Notes
+    @commands.command(name='botdown', aliases=['bd', 'down'], help='[#Channel] [Message]')
+    @commands.has_any_role("Admin")
+    async def botdown_command(self, ctx, channel: discord.TextChannel, *, message):
+
+        await channel.send(f"**Bot Down:**\n{message}")
+        await ctx.send(f"Bot Down message sent to {channel.mention}.")
+
+        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        author = ctx.message.author
+        command = ctx.command.name
+        print(f"{current_time} - {author.name} used the *{command}* command.")
+
+    @commands.command(name='announcement', aliases=['announce', 'am'], help='[#Channel] [Message]')
+    @commands.has_any_role("Admin")
+    async def announcement(self, ctx, channel: discord.TextChannel, *, message):
+
+        await channel.send(f"**Announcement:**\n{message}")
+        await ctx.send(f"Announcement sent to {channel.mention}.")
+
+    @commands.command(name='addsticky', aliases=['as'], help='[#Channel] [Message]')
+    @commands.has_any_role("Admin")
+    async def sticky_note(self, ctx, channel: discord.TextChannel, *, message):
+        # Format the message content inside code blocks (```)
+        formatted_message = f'```{message}```'
+
+        embed = discord.Embed(
+            title="STICKY NOTE",
+            description=formatted_message,  # Use the formatted message here
+            color=discord.Color.red()
+        )
+
+        sticky_msg = await channel.send(embed=embed)
+        self.sticky_messages[channel] = sticky_msg
+
+        await ctx.send(f"Sticky note added to {channel.mention}.")
+
+    @commands.command(name='removesticky', aliases=['rs', 'delsticky'], help='[#Channel]')
+    @commands.has_any_role("Admin")
+    async def remove_sticky(self, ctx, channel: discord.TextChannel):
+
+        if channel in self.sticky_messages:
+            sticky_msg = self.sticky_messages.pop(channel)
+            await sticky_msg.delete()
+            await ctx.send(f"Sticky note removed from {channel.mention}.")
+        else:
+            await ctx.send(f"No sticky note found in {channel.mention}.")
+    ## End - Announcements | Sticky Notes
 
 def setup(bot):
     bot.add_cog(Welcome(bot))
