@@ -573,13 +573,30 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
         else:
             await ctx.send("User not found in the database.")
-            
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, member: discord.Member, *, reason: str):
+    async def kick(self, ctx, member: str, *, reason: str):
+        # Check if the user is in the server
+        member = discord.utils.get(ctx.guild.members, mention=member)
+        if member is None:
+            await ctx.send(f"User not found in this server.")
+            return
+
+        # Send a DM to the kicked user
+        try:
+            kick_message = f"You are about to be kicked from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
+            await member.send(kick_message)
+        except discord.Forbidden:
+            # The user has DMs disabled, or the bot doesn't have permission to send DMs
+            await ctx.send(f"Failed to send a kick message to {member.mention} due to permission or privacy settings.")
+        except Exception as e:
+            # Handle other exceptions if necessary
+            await ctx.send(f"An error occurred while sending a kick message to {member.mention}: {e}")
+
         # Check if the user exists in the database
         user_id = str(member.id)
-        
+
         if user_id in self.user_info:
             # Get the user's data from the database
             user_data = self.user_info[user_id]
@@ -608,21 +625,17 @@ class WelcomeMod(commands.Cog):
             # Save the updated user data
             self.save_user_info()
 
-            await member.kick(reason=reason)
-
-            # Send a DM to the kicked user
+            # Attempt to kick the user
             try:
-                kick_message = f"You have been kicked from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
-                await member.send(kick_message)
+                await member.kick(reason=reason)
+                # Send a reply in the channel confirming the kick
+                await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
             except discord.Forbidden:
-                # The user has DMs disabled, or the bot doesn't have permission to send DMs
-                print(f"Failed to send kick message to {member.name} ({member.id}) due to permission or privacy settings.")
+                # The bot doesn't have permission to kick members
+                await ctx.send(f"Failed to kick {member.mention} due to permission settings.")
             except Exception as e:
                 # Handle other exceptions if necessary
-                print(f"An error occurred while sending a kick message to {member.name} ({member.id}): {e}")
-
-                await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
-
+                await ctx.send(f"An error occurred while kicking {member.mention}: {e}")
         else:
             await ctx.send("User not found in the database.")
 
