@@ -27,6 +27,7 @@ def load_or_create_config(bot):
             "faq_channel_id": None,
             "message_logger_channel_id": None,
             "role_channel_id": None,
+            "mod_logs_channel_id": None,
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -46,7 +47,7 @@ def load_or_create_config(bot):
             config['faq_channel_id'] = int(input("Enter the FAQ channel ID: "))
             with open('config.json', 'w') as config_file:
                 json.dump(config, config_file, indent=4)
-            print("⚠ WARNING: 'faq_channel_id' is not set in config.json.")
+                print("⚠ WARNING: 'faq_channel_id' is not set in config.json.")
 
         return config
 
@@ -65,7 +66,7 @@ if __name__ == '__main__':
             bot.load_extension(extension)
             print(f'Loaded extension: {extension}')
         except Exception as e:
-            print(f'Failed to load extension {extension}: {str(e)}')
+            print(f'Failed to load extension {extension}: {str(e)}')  # Print the error message if loading fails
 
 @bot.event
 async def on_ready():
@@ -75,11 +76,9 @@ async def on_ready():
     print(f'Bot UID: {bot.user.id}')
     print(f'===========================================================')
 
-    # Print enabled intents
     print(f'Enabled Intents:')
     for intent, enabled in bot.intents:
         print(f'{intent}: {"Enabled" if enabled else "Disabled"}')
-
     print(f'===========================================================')
 
     # Check if the bot is a member of any servers

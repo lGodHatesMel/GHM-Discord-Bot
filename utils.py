@@ -30,6 +30,46 @@ def is_visible(allowed_roles):
 
     return predicate
 
+async def log_mod_action(guild, action, target, reason, warning_number=None, moderator=None, config=None):
+    if not config:
+        raise ValueError("config is required for log_mod_action")
+
+    mod_logs_channel_id = config.get('mod_logs_channel_id')
+
+    if not mod_logs_channel_id:
+        raise ValueError("mod_logs_channel_id is not defined in the config")
+
+    mod_logs_channel = guild.get_channel(mod_logs_channel_id)
+
+    if not mod_logs_channel:
+        raise ValueError(f"Mod logs channel with ID {mod_logs_channel_id} not found")
+
+    embed = discord.Embed(
+        title=f"{action} Log",
+        color=discord.Color.blue() if action == 'Kick' 
+        else discord.Color.orange() if action == 'Warning' 
+        else discord.Color.gold() if action == 'Note'
+        else discord.Color.red() if action == 'Banned'
+        else discord.Color.lighter_grey() if action == 'Database'
+        else discord.Color.red(),
+        timestamp=datetime.utcnow()
+    )
+
+    # Add fields to the embed
+    embed.add_field(name="Action", value=action, inline=True)
+    embed.add_field(name="Target", value=f"{target.mention} ({target})", inline=True)
+    embed.add_field(name="Reason", value=reason, inline=False)
+
+    # Add warning number and moderator if provided
+    if action == 'Warning':
+        if warning_number:
+            embed.add_field(name="Warning Number", value=warning_number, inline=True)
+        if moderator:
+            embed.add_field(name="Moderator", value=moderator.mention, inline=True)
+
+    # Add the mod log message to the mod logs channel
+    await mod_logs_channel.send(embed=embed)
+
 # Function to format set details with line breaks
 def format_set_details(set_details):
     splittables = [

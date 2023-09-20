@@ -7,6 +7,10 @@ import datetime
 import asyncio
 import utils
 
+# Load the configuration data from config.json
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
 class WelcomeMod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -152,6 +156,7 @@ class WelcomeMod(commands.Cog):
                             "total_messages": 0,
                             "warns": [],
                             "notes": [],
+                            "banned": [],
                             "kick_reason": [],
                             "kicks_amount": 0,
                             "avatar_url": str(member.avatar_url),
@@ -226,6 +231,11 @@ class WelcomeMod(commands.Cog):
             if "notes" in user_data["info"] and user_data["info"]["notes"]:
                 total_notes = len(user_data["info"]["notes"])
                 embed.add_field(name="Notes", value=total_notes, inline=True)
+                
+            # Check if the user has notes
+            # if "banned" in user_data["info"] and user_data["info"]["banned"]:
+            #     banned = len(user_data["info"]["banned"])
+            #     embed.add_field(name="Banned", value=banned, inline=True)
 
             await ctx.send(embed=embed)
         else:
@@ -256,6 +266,7 @@ class WelcomeMod(commands.Cog):
                         "total_messages": 0,
                         "warns": [],
                         "notes": [],
+                        "banned": [],
                         "kick_reason": [],
                         "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
@@ -277,7 +288,7 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"Simulated leave for user {user_id}.")
         else:
             await ctx.send("User not found in the database.")
-    
+
     @commands.command(aliases=['audb', 'addtodb'])
     @commands.has_any_role("Moderator", "Admin")
     async def addusertodb(self, ctx, user_id: int):
@@ -297,6 +308,7 @@ class WelcomeMod(commands.Cog):
                         "total_messages": 0,
                         "warns": [],
                         "notes": [],
+                        "banned": [],
                         "kick_reason": [],
                         "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
@@ -304,6 +316,8 @@ class WelcomeMod(commands.Cog):
                 }
                 self.save_user_info()
                 await ctx.send(f"User with ID `{user_id}` (username: `{member.name}`) added to the database.")
+
+                await utils.log_mod_action(ctx.guild, 'Database', member, f"User added to the database by {ctx.author.name}", config=config)
             else:
                 await ctx.send("User not found in the server.")
         else:
@@ -328,6 +342,7 @@ class WelcomeMod(commands.Cog):
                         "total_messages": 0,
                         "warns": [],
                         "notes": [],
+                        "banned": [],
                         "kick_reason": [],
                         "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
@@ -359,6 +374,8 @@ class WelcomeMod(commands.Cog):
 
         self.save_user_info()
         await ctx.send(f"Note added for user {user.mention} with note #{note_number}.")
+        
+        await utils.log_mod_action(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
     @commands.command()
     @commands.has_any_role("Admin")
@@ -376,34 +393,32 @@ class WelcomeMod(commands.Cog):
                     break
 
             if found_note:
+                deleted_content = found_note.get("content", "")
                 notes.remove(found_note)
                 self.save_user_info()
-                await ctx.send(f"Deleted note #{note_number} for user {user_id}.")
+                await ctx.send(f"Deleted note #{note_number} for user {user_id}: {deleted_content}")
+                await utils.log_mod_action(ctx.guild, 'Note', ctx.author, f"Note #{note_number} deleted for user {user_id}:\n{deleted_content}", config=config)
             else:
                 await ctx.send(f"Note #{note_number} not found for this user.")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
+
+    @commands.command(aliases=["listnotes", "checknotes"])
     @commands.has_any_role("Moderator", "Admin")
     async def notes(self, ctx, user_id: int):
-        # Check if the user ID exists in the database
         if str(user_id) in self.user_info:
             user_data = self.user_info[str(user_id)]
             notes = user_data["info"]["notes"]
 
             if notes:
-                # Create an embed to display user information and notes
                 embed = discord.Embed(
                     title=f"Notes for {user_data['info']['username']} (UID: {user_id})",
                     color=0x00ff00,
                 )
 
-                # Add user information to the embed
                 embed.add_field(name="Username", value=user_data["info"]["username"], inline=False)
-                #embed.add_field(name="Warnings", value=user_data["info"]["total_warnings"], inline=False)
 
-                # Format and add the notes as fields in the embed
                 for note in notes:
                     embed.add_field(
                         name=f"Note #{note['number']} - {note['timestamp']} - {note['author']}:",
@@ -490,6 +505,9 @@ class WelcomeMod(commands.Cog):
 
             warnings.append(new_warning)
 
+            # Log the warning action
+            await utils.log_mod_action(ctx.guild, 'Warning', member, warning, warning_number, ctx.author.name, config=config)
+
             # Check if this is the 3rd warning
             if warning_number == 3:
                 # Send a DM to the user
@@ -497,7 +515,10 @@ class WelcomeMod(commands.Cog):
                 # Automatically kick the user
                 await member.kick(reason="3rd Warning")
                 await ctx.send(f"{member.mention} has been kicked due to their 3rd warning.")
-                
+
+                # Log the kick action
+                await utils.log_mod_action(ctx.guild, 'Kick', member, f"3rd Warning: {warning}", warning_number, ctx.author.name, config=config)
+
                 # Increment the kicks_amount count
                 user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
 
@@ -509,11 +530,14 @@ class WelcomeMod(commands.Cog):
                 await ctx.guild.ban(member, reason="5th Warning")
                 await ctx.send(f"{member.mention} has been banned due to their 5th warning.")
 
+                # Log the ban action
+                await utils.log_mod_action(ctx.guild, 'Ban', member, f"5th Warning: {warning}", warning_number, ctx.author.name, config=config)
+
             # Update the warnings field in the user's data
             user_data["info"]["warns"] = warnings
 
             self.save_user_info()
-            await ctx.send(f"Warning #{warning_number} added for {member.mention}.")
+            await ctx.send(f"Warning #{warning_number} added for {member.mention} by {ctx.author.mention}: {warning}")
         else:
             await ctx.send("User not found in the database.")
 
@@ -566,9 +590,12 @@ class WelcomeMod(commands.Cog):
                     break
 
             if found_warning:
+                deleted_content = found_warning.get("warning", "")
                 warnings.remove(found_warning)
                 self.save_user_info()
-                await ctx.send(f"Deleted warning #{warning_number} for {user.mention}.")
+                await ctx.send(f"Deleted warning #{warning_number} for {user.mention}: {deleted_content}")
+
+                await utils.log_mod_action(ctx.guild, 'Warning', ctx.author, f"Warning #{warning_number} deleted for {user.mention}:\n{deleted_content}", config=config)
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
         else:
@@ -630,6 +657,9 @@ class WelcomeMod(commands.Cog):
                 await member.kick(reason=reason)
                 # Send a reply in the channel confirming the kick
                 await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
+
+                # Log the action in the mod logs, including the kick reason
+                await utils.log_mod_action(ctx.guild, 'Kick', member, reason, moderator=ctx.author, config=config)
             except discord.Forbidden:
                 # The bot doesn't have permission to kick members
                 await ctx.send(f"Failed to kick {member.mention} due to permission settings.")
