@@ -289,7 +289,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=['audb', 'addtodb'])
+    @commands.command(aliases=['adduser', 'addtodb'])
     @commands.has_any_role("Moderator", "Admin")
     async def addusertodb(self, ctx, user_id: int):
         # Check if the user ID exists in the database; if not, add them to the database
@@ -373,11 +373,11 @@ class WelcomeMod(commands.Cog):
         })
 
         self.save_user_info()
-        await ctx.send(f"Note added for user {user.mention} with note #{note_number}.")
+        await ctx.send(f"📝 **Note Added**: {ctx.author.name} added a note for {user.mention} (#{note_number})")
         
         await utils.log_mod_action(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
-    @commands.command()
+    @commands.command(aliases=["removenote"])
     @commands.has_any_role("Admin")
     async def delnote(self, ctx, user_id: int, note_number: int):
         # Check if the user ID exists in the database
@@ -396,17 +396,17 @@ class WelcomeMod(commands.Cog):
                 deleted_content = found_note.get("content", "")
                 notes.remove(found_note)
                 self.save_user_info()
-                await ctx.send(f"Deleted note #{note_number} for user {user_id}: {deleted_content}")
-                await utils.log_mod_action(ctx.guild, 'Note', ctx.author, f"Note #{note_number} deleted for user {user_id}:\n{deleted_content}", config=config)
+                await ctx.send(f"🗑 **Note Removed**: {ctx.author.name} removed a note for {user_id}\n(#{note_number}) - {deleted_content}")
+                await utils.log_mod_action(ctx.guild, 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {user_id}\n(#{note_number}) - {deleted_content}", config=config)
             else:
                 await ctx.send(f"Note #{note_number} not found for this user.")
         else:
             await ctx.send("User not found in the database.")
 
 
-    @commands.command(aliases=["listnotes", "checknotes"])
+    @commands.command(aliases=["notes", "checknotes"])
     @commands.has_any_role("Moderator", "Admin")
-    async def notes(self, ctx, user_id: int):
+    async def listnotes(self, ctx, user_id: int):
         if str(user_id) in self.user_info:
             user_data = self.user_info[str(user_id)]
             notes = user_data["info"]["notes"]
@@ -433,9 +433,9 @@ class WelcomeMod(commands.Cog):
             await ctx.send("User not found in the database.")
 
     ## Start - Announcement | Sticky Notes
-    @commands.command(name='botdown', aliases=['bd', 'down'], help='[#Channel] [Message]')
+    @commands.command(aliases=['bd', 'down'], help='[#Channel] [Message]')
     @commands.has_any_role("Moderator", "Admin")
-    async def botdown_command(self, ctx, channel: discord.TextChannel, *, message):
+    async def botdown(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Bot Down:**\n{message}")
         await ctx.send(f"Bot Down message sent to {channel.mention}.")
@@ -445,7 +445,7 @@ class WelcomeMod(commands.Cog):
         command = ctx.command.name
         print(f"{current_time} - {author.name} used the *{command}* command.")
 
-    @commands.command(name='announcement', aliases=['announce', 'am'], help='[#Channel] [Message]')
+    @commands.command(aliases=['announce', 'am'], help='[#Channel] [Message]')
     @commands.has_any_role("Moderator", "Admin")
     async def announcement(self, ctx, channel: discord.TextChannel, *, message):
 
@@ -481,7 +481,7 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"No sticky note found in {channel.mention}.")
     ## End - Announcements | Sticky Notes
 
-    @commands.command()
+    @commands.command(aliases=['warn'])
     @commands.has_any_role("Moderator", "Admin")
     async def addwarning(self, ctx, member: discord.Member, *, warning: str):
         # Check if the user exists in the database
@@ -495,6 +495,14 @@ class WelcomeMod(commands.Cog):
             warning_number = len(warnings) + 1
             timestamp = utils.get_local_time()
             author = ctx.author.name
+
+            # Customize the message based on other conditions, for example:
+            if "badword" in warning.lower():
+                warning += " Your warning contains offensive language."
+            elif "spam" in warning.lower():
+                warning += " Your warning is related to spamming."
+            elif "promoting" in warning.lower():
+                warning += " Your warning is related to Promoting other services / Platforms."
 
             new_warning = {
                 "number": warning_number,
@@ -537,11 +545,11 @@ class WelcomeMod(commands.Cog):
             user_data["info"]["warns"] = warnings
 
             self.save_user_info()
-            await ctx.send(f"Warning #{warning_number} added for {member.mention} by {ctx.author.mention}: {warning}")
+            await ctx.send(f"⚠️ **Warned**: {ctx.author.mention} warned {member.mention} (warn #{warning_number})\n**Warning Message**:\n{warning}")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
+    @commands.command(aliases=["listwarnings", "listwarns"])
     @commands.has_any_role("Moderator", "Admin")
     async def checkwarning(self, ctx, user: discord.User, warning_number: int):
         user_id = str(user.id)
@@ -572,7 +580,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
+    @commands.command(aliases=["deletewarning", "removewarning"])
     @commands.has_any_role("Moderator", "Admin")
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
         user_id = str(user.id)
