@@ -28,6 +28,8 @@ def load_or_create_config(bot):
             "message_logger_channel_id": None,
             "role_channel_id": None,
             "mod_logs_channel_id": None,
+            "member_logs_channel_id": None,
+            "server_logs_channel_id": None
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -58,6 +60,7 @@ initial_extensions = [
     'cogs.welcome_mod', 'cogs.rules', 'cogs.faq',
     'cogs.messagelogger', 'cogs.games', 'cogs.customcommands',
     'cogs.editimage', 'cogs.translator', 'cogs.toggleroles',
+    'cogs.logs',
 ]
 
 if __name__ == '__main__':
