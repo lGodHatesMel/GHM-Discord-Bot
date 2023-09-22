@@ -239,10 +239,11 @@ class WelcomeMod(commands.Cog):
                 total_notes = len(user_data["info"]["notes"])
                 embed.add_field(name="Notes", value=total_notes, inline=True)
                 
-            # Check if the user has notes
-            # if "banned" in user_data["info"] and user_data["info"]["banned"]:
-            #     banned = len(user_data["info"]["banned"])
-            #     embed.add_field(name="Banned", value=banned, inline=True)
+            # Check if the user has bans
+            if "banned" in user_data["info"] and user_data["info"]["banned"]:
+                embed.add_field(name="Banned", value="Yes", inline=True)
+            else:
+                embed.add_field(name="Banned", value="No", inline=True)
 
             await ctx.send(embed=embed)
         else:
@@ -467,7 +468,7 @@ class WelcomeMod(commands.Cog):
 
         embed = discord.Embed(
             title="STICKY NOTE",
-            description=formatted_message,  # Use the formatted message here
+            description=formatted_message,
             color=discord.Color.red()
         )
 
@@ -497,8 +498,6 @@ class WelcomeMod(commands.Cog):
         if user_id in self.user_info:
             user_data = self.user_info[user_id]
             warnings = user_data["info"].get("warns", [])
-
-            # Add the warning to the user's data
             warning_number = len(warnings) + 1
             timestamp = utils.get_local_time()
             author = ctx.author.name
@@ -520,35 +519,39 @@ class WelcomeMod(commands.Cog):
 
             warnings.append(new_warning)
 
-            # Log the warning action
             await utils.log_mod_action(ctx.guild, 'Warning', member, warning, warning_number, ctx.author.name, config=config)
 
             # Check if this is the 3rd warning
             if warning_number == 3:
-                # Send a DM to the user
+
                 await member.send("You were kicked because of this warning. You can join again right away. Reaching 5 warnings will result in an automatic ban. Permanent invite link: https://discord.gg/SrREp2BbkS.")
-                # Automatically kick the user
                 await member.kick(reason="3rd Warning")
                 await ctx.send(f"{member.mention} has been kicked due to their 3rd warning.")
-
-                # Log the kick action
                 await utils.log_mod_action(ctx.guild, 'Kick', member, f"3rd Warning: {warning}", warning_number, ctx.author.name, config=config)
 
-                # Increment the kicks_amount count
                 user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
 
             # Check if this is the 5th warning
             if warning_number == 5:
-                # Send a DM to the user
+                
+                ban_info = {
+                    "timestamp": utils.get_local_time(),
+                    "issuer": "Shiny Ditto Bot",
+                    "reason": "Banned due to their 5th warning",
+                    "lifted": None, 
+                }
+
+                # Append the ban info to the list of bans in the user's data
+                bans = user_data["info"].get("banned", [])
+                bans.append(ban_info)
+                user_data["info"]["banned"] = bans
+
                 await member.send("You have received your 5th warning and have been banned from the server.")
-                # Automatically ban the user
                 await ctx.guild.ban(member, reason="5th Warning")
                 await ctx.send(f"{member.mention} has been banned due to their 5th warning.")
 
-                # Log the ban action
                 await utils.log_mod_action(ctx.guild, 'Ban', member, f"5th Warning: {warning}", warning_number, ctx.author.name, config=config)
 
-            # Update the warnings field in the user's data
             user_data["info"]["warns"] = warnings
 
             self.save_user_info()
@@ -625,7 +628,6 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"User not found in this server.")
             return
 
-        # Send a DM to the kicked user
         try:
             kick_message = f"You are about to be kicked from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
             await member.send(kick_message)
@@ -648,7 +650,7 @@ class WelcomeMod(commands.Cog):
 
             # Add kick reason to the user's data with a "number" field
             kick_info = {
-                "number": 1,  # Initially set to 1
+                "number": 1,
                 "timestamp": utils.get_local_time(),
                 "issuer": ctx.author.name,
                 "reason": reason
