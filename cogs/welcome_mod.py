@@ -139,7 +139,7 @@ class WelcomeMod(commands.Cog):
                 print(f"{member.name} joined the server as the {member_number}.")
 
                 user_id = str(member.id)
-                
+
                 # Check if the user already exists in the database
                 if user_id in self.user_info:
                     # Update the "Left" field to None when a user rejoins
@@ -163,6 +163,13 @@ class WelcomeMod(commands.Cog):
                         }
                     }
                 self.save_user_info()
+
+                # Check if the user is in the banned list and their ban has not been lifted
+                if user_id in self.user_info and self.user_info[user_id]["info"]["banned"]:
+                    for ban_info in self.user_info[user_id]["info"]["banned"]:
+                        if ban_info.get("lifted") is None:
+                            # Send a message to the mod log indicating the user is still banned
+                            await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
 
     @commands.command()
     async def test_welcome(self, ctx):
@@ -568,12 +575,12 @@ class WelcomeMod(commands.Cog):
 
             if found_warning:
                 timestamp = found_warning["timestamp"]
-                moderator = found_warning["moderator"]
+                issuer = found_warning["issuer"]
                 warning_text = found_warning["warning"]
 
                 await ctx.send(f"**Warning #{warning_number} for {user.mention}:**\n"
                             f"Timestamp: {timestamp}\n"
-                            f"Moderator: {moderator}\n"
+                            f"issuer: {issuer}\n"
                             f"Warning: {warning_text}")
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
@@ -643,7 +650,7 @@ class WelcomeMod(commands.Cog):
             kick_info = {
                 "number": 1,  # Initially set to 1
                 "timestamp": utils.get_local_time(),
-                "moderator": ctx.author.name,
+                "issuer": ctx.author.name,
                 "reason": reason
             }
 
@@ -667,13 +674,79 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
 
                 # Log the action in the mod logs, including the kick reason
-                await utils.log_mod_action(ctx.guild, 'Kick', member, reason, moderator=ctx.author, config=config)
+                await utils.log_mod_action(ctx.guild, 'Kick', member, reason, issuer=ctx.author, config=config)
             except discord.Forbidden:
                 # The bot doesn't have permission to kick members
                 await ctx.send(f"Failed to kick {member.mention} due to permission settings.")
             except Exception as e:
                 # Handle other exceptions if necessary
                 await ctx.send(f"An error occurred while kicking {member.mention}: {e}")
+        else:
+            await ctx.send("User not found in the database.")
+
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx, user: discord.User, *, reason: str):
+        user_id = str(user.id)
+
+        if user_id in self.user_info:
+            user_data = self.user_info[user_id]
+
+            # Add ban information to the user's data
+            ban_info = {
+                "timestamp": utils.get_local_time(),
+                "issuer": ctx.author.name,
+                "reason": reason,
+                "lifted": None, 
+            }
+
+            # Append the ban info to the list of bans in the user's data
+            bans = user_data["info"].get("banned", [])
+            bans.append(ban_info)
+            user_data["info"]["banned"] = bans
+
+            self.save_user_info()
+
+            await ctx.guild.ban(user, reason=reason)
+
+            await utils.log_mod_action(ctx.guild, 'Ban', user, reason, ctx.author, config=config)
+
+            await ctx.send(f"{user.mention} has been banned for the following reason: {reason}")
+        else:
+            await ctx.send("User not found in the database.")
+
+    @commands.command()
+    @commands.has_any_role("Moderator", "Admin")
+    async def checkbans(self, ctx, user: discord.User):
+        user_id = str(user.id)
+
+        if user_id in self.user_info:
+            user_data = self.user_info[user_id]
+            bans = user_data["info"].get("banned", [])
+
+            if bans:
+                embed = discord.Embed(
+                    title=f"Bans for {user_data['info']['username']} (UID: {user_id})",
+                    color=0xFF0000,
+                )
+
+                embed.add_field(name="Username", value=user_data["info"]["username"], inline=False)
+
+                for index, ban_info in enumerate(bans, start=1):
+                    timestamp = ban_info["timestamp"]
+                    issuer = ban_info["issuer"]
+                    reason = ban_info["reason"]
+                    lifted = ban_info["lifted"] or "Not Lifted"
+
+                    embed.add_field(
+                        name=f"Ban #{index}",
+                        value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nLifted: {lifted}",
+                        inline=False
+                    )
+
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(f"No bans found for user {user_id}.")
         else:
             await ctx.send("User not found in the database.")
 

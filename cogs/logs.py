@@ -4,13 +4,12 @@ import json
 import utils
 
 with open('config.json', 'r') as config_file:
-            config = json.load(config_file)
+    config = json.load(config_file)
 
 class Logs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Define get_mention as a class method
     @staticmethod
     def get_mention(target):
         if isinstance(target, discord.Role) or isinstance(target, discord.User):
@@ -34,7 +33,7 @@ class Logs(commands.Cog):
                 await self.log_user_change(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
 
     async def log_user_change(self, user, change_message):
-        member_logs_channel_id = self.config.get('member_logs_channel_id')
+        member_logs_channel_id = config.get('member_logs_channel_id')
 
         if member_logs_channel_id:
             mod_logs_channel = user.guild.get_channel(int(member_logs_channel_id))
