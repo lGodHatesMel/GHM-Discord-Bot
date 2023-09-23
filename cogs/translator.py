@@ -7,8 +7,8 @@ class Translation(commands.Cog):
         self.bot = bot
         self.translator = Translator()
 
-    @commands.command(name='translate')
-    async def translate_text(self, ctx, target_language, *, text_to_translate):
+    @commands.command(help='<target_language> <text_to_translate>')
+    async def translate(self, ctx, target_language, *, text_to_translate):
         try:
             # Detect the source language (optional)
             detected_language = self.translator.detect(text_to_translate)

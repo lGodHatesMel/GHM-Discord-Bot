@@ -87,7 +87,8 @@ class Rules(commands.Cog):
         await ctx.send("✅ Entry added.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['delrule', 'dr'])
+    @commands.command(
+    aliases=['delrule', 'dr'], help='<rules_id>')
     @commands.has_any_role("Admin")
     async def deleterule(self, ctx, rules_id: int = 0):
         if rules_id == 0:
@@ -103,7 +104,7 @@ class Rules(commands.Cog):
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['modify'])
+    @commands.command(aliases=['modify'], help='<rules_id>')
     @commands.has_any_role("Admin")
     async def editrule(self, ctx, rules_id: int = 0, edit_type: str = "d"):
         if rules_id == 0:
@@ -158,7 +159,7 @@ class Rules(commands.Cog):
             msg = "\n\n".join(entry)
         await ctx.send("```\n{}\n```".format(msg))
 
-    @commands.command(aliases=['rule', 'showrule'])
+    @commands.command(aliases=['rule', 'showrule'], help='<rules_id>')
     async def viewrule(self, ctx, rules_id: int = 0):
         if rules_id == 0:
             return await ctx.send("⚠ Rule entry ID is required.")

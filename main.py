@@ -2,10 +2,11 @@ import os
 import discord
 from discord.ext import commands
 import json
-from datetime import timezone, datetime
+import utils
 
 intents = discord.Intents.default()
 intents.members = True
+intents.presences = True
 
 bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
 
@@ -56,11 +57,10 @@ def load_or_create_config(bot):
 config = load_or_create_config(bot)
 
 initial_extensions = [
-    'cogs.ping', 'cogs.countdown', 'cogs.pkmstuff',
+    'cogs.countdown', 'cogs.pkmstuff', 'cogs.logs',
     'cogs.welcome_mod', 'cogs.rules', 'cogs.faq',
     'cogs.messagelogger', 'cogs.games', 'cogs.customcommands',
     'cogs.editimage', 'cogs.translator', 'cogs.toggleroles',
-    'cogs.logs',
 ]
 
 if __name__ == '__main__':
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             bot.load_extension(extension)
             print(f'Loaded extension: {extension}')
         except Exception as e:
-            print(f'Failed to load extension {extension}: {str(e)}')  # Print the error message if loading fails
+            print(f'Failed to load extension {extension}: {str(e)}')
 
 @bot.event
 async def on_ready():
@@ -87,7 +87,7 @@ async def on_ready():
     # Check if the bot is a member of any servers
     if len(bot.guilds) > 0:
         joined_server = bot.guilds[0]  # Assuming the bot is only in one server
-        joined_time = joined_server.me.joined_at.strftime('%Y-%m-%d %H:%M:%S')
+        joined_time = utils.get_local_time()
         print(f'Joined Server at: {joined_time}')
     print(f'===========================================================')
     

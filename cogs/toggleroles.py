@@ -11,8 +11,8 @@ class ToggleRoles(commands.Cog):
         with open('config.json', 'r') as config_file:
             self.config = json.load(config_file)
 
-    @commands.command(name='togglesv')
-    async def toggle_sv(self, ctx):
+    @commands.command(help="Toggle the 'Pokemon Scarlet Violet' role. Usage: !togglesv")
+    async def togglesv(self, ctx):
         role_name = "Pokemon Scarlet Violet"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
@@ -31,8 +31,8 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(name='togglebdsp')
-    async def toggle_sv(self, ctx):
+    @commands.command(help="Toggle the 'Pokemon BDSP' role. Usage: !togglebdsp")
+    async def togglebdsp(self, ctx):
         role_name = "Pokemon BDSP"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
@@ -51,8 +51,8 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(name='togglepla')
-    async def toggle_sv(self, ctx):
+    @commands.command(help="Toggle the 'Pokemon Legends Arceus' role. Usage: !togglepla")
+    async def togglepla(self, ctx):
         role_name = "Pokemon Legends Arceus"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
@@ -71,8 +71,8 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(name='toggleswsh')
-    async def toggle_sv(self, ctx):
+    @commands.command(help="Toggle the 'Pokemon Sword Shield' role. Usage: !toggleswsh")
+    async def toggleswsh(self, ctx):
         role_name = "Pokemon Sword Shield"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
@@ -91,8 +91,8 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(name='toggleacnh')
-    async def toggle_sv(self, ctx):
+    @commands.command(help="Toggle the 'Animal Crossing New Horizon' role. Usage: !toggleanimal")
+    async def toggleanimal(self, ctx):
         role_name = "Animal Crossing New Horizon"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
@@ -111,8 +111,8 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(name='toggleannocement')
-    async def toggle_sv(self, ctx):
+    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannouncement")
+    async def toggleannocement(self, ctx):
         role_name = "Annocement Pings"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:

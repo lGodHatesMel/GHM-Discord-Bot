@@ -13,3 +13,4 @@ config.json
 Database/BDInfo.json
 Database/faq.json
 Database/rules.json
+Database/DBInfo.json

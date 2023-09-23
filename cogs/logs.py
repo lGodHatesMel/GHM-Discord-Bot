@@ -54,7 +54,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
-        server_logs_channel_id = self.config.get('server_logs_channel_id')
+        server_logs_channel_id = config.get('server_logs_channel_id')
 
         if server_logs_channel_id:
             server_logs_channel = channel.guild.get_channel(int(server_logs_channel_id))

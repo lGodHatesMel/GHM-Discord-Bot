@@ -3,11 +3,11 @@ import discord
 from discord.ext import commands
 import random
 import json
-import datetime
 import asyncio
 import utils
+import secrets
+import string
 
-# Load the configuration data from config.json
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
@@ -84,8 +84,8 @@ class WelcomeMod(commands.Cog):
                 self.user_info[user_id]["info"]["total_messages"] += 1
                 self.save_user_info()
 
-    @commands.command()
-    async def update_username(self, ctx, new_username: str):
+    @commands.command(help='<username> or <UID>')
+    async def updateuser(self, ctx, new_username: str):
         user_id = str(ctx.author.id)
         if user_id in self.user_info:
             self.user_info[user_id]["info"]["username"] = new_username
@@ -171,36 +171,43 @@ class WelcomeMod(commands.Cog):
                             # Send a message to the mod log indicating the user is still banned
                             await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
 
-    @commands.command()
-    async def test_welcome(self, ctx):
-        if self.welcome_channel_id:
-            server = ctx.guild
-            member_count = sum(1 for member in server.members if not member.bot)
-            member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-            
-            # Generate a random color in hexadecimal notation
-            random_color = random.randint(0, 0xFFFFFF)
-                
-            welcome = {
-                "title": "Welcome!",
-                "description": f"Welcome to GodHatesMe Pokemon Centre {ctx.author.mention}, you are our {member_number}!\n\n"
-                            f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
-                "color": random_color,
-            }
+    @commands.command(help='Replies with Pong if bot is up')
+    @commands.has_any_role("Moderator", "Admin")
+    async def ping(self, ctx):
+        await ctx.send('Pong')
 
-            embed = discord.Embed(title=welcome["title"], description=welcome["description"], color=welcome["color"])
-            embed.set_thumbnail(url=ctx.author.avatar_url)
-            embed.set_footer(text=ctx.author.name)
-            await ctx.send(embed=embed)
+    # @commands.command()
+    # async def test_welcome(self, ctx):
+    #     if self.welcome_channel_id:
+    #         server = ctx.guild
+    #         member_count = sum(1 for member in server.members if not member.bot)
+    #         member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
+            
+    #         # Generate a random color in hexadecimal notation
+    #         random_color = random.randint(0, 0xFFFFFF)
+                
+    #         welcome = {
+    #             "title": "Welcome!",
+    #             "description": f"Welcome to GodHatesMe Pokemon Centre {ctx.author.mention}, you are our {member_number}!\n\n"
+    #                         f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
+    #             "color": random_color,
+    #         }
+
+    #         embed = discord.Embed(title=welcome["title"], description=welcome["description"], color=welcome["color"])
+    #         embed.set_thumbnail(url=ctx.author.avatar_url)
+    #         embed.set_footer(text=ctx.author.name)
+    #         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         # Log user's leave date in the database when they leave the server
         if str(member.id) in self.user_info:
-            self.user_info[str(member.id)]["info"]["Left"] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            leave_time = utils.get_local_time()
+            self.user_info[str(member.id)]["info"]["Left"] = leave_time.strftime('%Y-%m-%d %H:%M:%S')
             self.save_user_info()
 
-    @commands.command()
+    @commands.command(help='<UID>')
+    @commands.has_any_role("Moderator", "Admin")
     async def info(self, ctx, user_id: int):
         # Check if the user ID exists in the database
         if str(user_id) in self.user_info:
@@ -249,8 +256,9 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
-    async def update_info(self, ctx, user_id: int, key: str, *, value: str):
+    @commands.command(help='<user_id> <key> <value>')
+    @commands.has_any_role("Moderator", "Admin")
+    async def updateinfo(self, ctx, user_id: int, key: str, *, value: str):
         # Update user information (for testing purposes)
         if str(user_id) in self.user_info and key in self.user_info[str(user_id)]["info"]:
             self.user_info[str(user_id)]["info"][key] = value
@@ -259,45 +267,46 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database or key does not exist.")
 
-    @commands.command()
-    async def simulate_join(self, ctx, user_id: int):
-        # Simulate a user join (for testing purposes)
-        if str(user_id) not in self.user_info:
-            member = ctx.guild.get_member(user_id)
-            if member:
-                self.user_info[str(user_id)] = {
-                    "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                        "Left": None,
-                        "username": member.name,
-                        "roles": [role.name for role in member.roles],
-                        "total_messages": 0,
-                        "warns": [],
-                        "notes": [],
-                        "banned": [],
-                        "kick_reason": [],
-                        "kicks_amount": 0,
-                        "avatar_url": str(member.avatar_url),
-                    }
-                }
-                self.save_user_info()
-                await ctx.send(f"Simulated join for user {user_id}.")
-            else:
-                await ctx.send("User not found in the server.")
-        else:
-            await ctx.send("User already exists in the database.")
+    # @commands.command()
+    # async def simulate_join(self, ctx, user_id: int):
+    #     # Simulate a user join (for testing purposes)
+    #     if str(user_id) not in self.user_info:
+    #         member = ctx.guild.get_member(user_id)
+    #         if member:
+    #             self.user_info[str(user_id)] = {
+    #                 "info": {
+    #                     "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+    #                     "Left": None,
+    #                     "username": member.name,
+    #                     "roles": [role.name for role in member.roles],
+    #                     "total_messages": 0,
+    #                     "warns": [],
+    #                     "notes": [],
+    #                     "banned": [],
+    #                     "kick_reason": [],
+    #                     "kicks_amount": 0,
+    #                     "avatar_url": str(member.avatar_url),
+    #                 }
+    #             }
+    #             self.save_user_info()
+    #             await ctx.send(f"Simulated join for user {user_id}.")
+    #         else:
+    #             await ctx.send("User not found in the server.")
+    #     else:
+    #         await ctx.send("User already exists in the database.")
     
-    @commands.command()
-    async def simulate_leave(self, ctx, user_id: int):
-        # Simulate a user leave (for testing purposes)
-        if str(user_id) in self.user_info:
-            self.user_info[str(user_id)]["info"]["Left"] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            self.save_user_info()
-            await ctx.send(f"Simulated leave for user {user_id}.")
-        else:
-            await ctx.send("User not found in the database.")
+    # @commands.command()
+    # async def simulate_leave(self, ctx, user_id: int):
+    #     # Simulate a user leave (for testing purposes)
+    #     if str(user_id) in self.user_info:
+    #         leave_time = utils.get_local_time()
+    #         self.user_info[str(user_id)]["info"]["Left"] = leave_time.strftime('%Y-%m-%d %H:%M:%S')
+    #         self.save_user_info()
+    #         await ctx.send(f"Simulated leave for user {user_id}.")
+    #     else:
+    #         await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=['adduser', 'addtodb'])
+    @commands.command(aliases=['adduser', 'addtodb'], help='<UID>')
     @commands.has_any_role("Moderator", "Admin")
     async def addusertodb(self, ctx, user_id: int):
         # Check if the user ID exists in the database; if not, add them to the database
@@ -331,7 +340,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send(f"User with ID {user_id} already exists in the database.")
 
-    @commands.command()
+    @commands.command(help='<UID> <Note>')
     @commands.has_any_role("Moderator", "Admin")
     async def addnote(self, ctx, user: discord.User, *, note_content: str):
         user_id = str(user.id)
@@ -385,7 +394,7 @@ class WelcomeMod(commands.Cog):
         
         await utils.log_mod_action(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
-    @commands.command(aliases=["removenote"])
+    @commands.command(aliases=["removenote"], help='<UID> <Note #>')
     @commands.has_any_role("Admin")
     async def delnote(self, ctx, user_id: int, note_number: int):
         # Check if the user ID exists in the database
@@ -412,7 +421,7 @@ class WelcomeMod(commands.Cog):
             await ctx.send("User not found in the database.")
 
 
-    @commands.command(aliases=["notes", "checknotes"])
+    @commands.command(aliases=["notes", "checknotes"], help='<UID>')
     @commands.has_any_role("Moderator", "Admin")
     async def listnotes(self, ctx, user_id: int):
         if str(user_id) in self.user_info:
@@ -441,26 +450,26 @@ class WelcomeMod(commands.Cog):
             await ctx.send("User not found in the database.")
 
     ## Start - Announcement | Sticky Notes
-    @commands.command(aliases=['bd', 'down'], help='[#Channel] [Message]')
+    @commands.command(aliases=['bd', 'down'], help='<#Channel> <Message>')
     @commands.has_any_role("Moderator", "Admin")
     async def botdown(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Bot Down:**\n{message}")
         await ctx.send(f"Bot Down message sent to {channel.mention}.")
 
-        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        current_time = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
         author = ctx.message.author
         command = ctx.command.name
         print(f"{current_time} - {author.name} used the *{command}* command.")
 
-    @commands.command(aliases=['announce', 'am'], help='[#Channel] [Message]')
+    @commands.command(aliases=['announce', 'am'], help='<#Channel> <Message>')
     @commands.has_any_role("Moderator", "Admin")
     async def announcement(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Announcement:**\n{message}")
         await ctx.send(f"Announcement sent to {channel.mention}.")
 
-    @commands.command(name='addsticky', aliases=['as'], help='[#Channel] [Message]')
+    @commands.command(name='addsticky', aliases=['as'], help='<#Channel> <Message>')
     @commands.has_any_role("Moderator", "Admin")
     async def sticky_note(self, ctx, channel: discord.TextChannel, *, message):
         # Format the message content inside code blocks (```)
@@ -489,7 +498,7 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"No sticky note found in {channel.mention}.")
     ## End - Announcements | Sticky Notes
 
-    @commands.command(aliases=['warn'])
+    @commands.command(aliases=['warn'], help='<UID> <Reason>')
     @commands.has_any_role("Moderator", "Admin")
     async def addwarning(self, ctx, member: discord.Member, *, warning: str):
         # Check if the user exists in the database
@@ -559,7 +568,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=["listwarnings", "listwarns"])
+    @commands.command(aliases=["listwarnings", "listwarns"], help='<UID> <Warning #>')
     @commands.has_any_role("Moderator", "Admin")
     async def checkwarning(self, ctx, user: discord.User, warning_number: int):
         user_id = str(user.id)
@@ -590,7 +599,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=["deletewarning", "removewarning"])
+    @commands.command(aliases=["deletewarning", "removewarning"], help='<UID> <Warning #>')
     @commands.has_any_role("Moderator", "Admin")
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
         user_id = str(user.id)
@@ -619,7 +628,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
+    @commands.command(help='<UID> <Reason>')
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: str, *, reason: str):
         # Check if the user is in the server
@@ -686,7 +695,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
+    @commands.command(help='<UID> <Reason>')
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, user: discord.User, *, reason: str):
         user_id = str(user.id)
@@ -694,12 +703,29 @@ class WelcomeMod(commands.Cog):
         if user_id in self.user_info:
             user_data = self.user_info[user_id]
 
+            # Send a DM to the user before banning
+            try:
+                ban_message = f"You have been banned from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou can appeal this ban by creating a ticket in the ban appeal discord server. Permanent invite link: https://discord.gg/CBuJgaWkrr"
+                await user.send(ban_message)
+            except discord.Forbidden:
+                # The user has DMs disabled, or the bot doesn't have permission to send DMs
+                await ctx.send(f"Failed to send a ban message to {user.mention} due to permission or privacy settings.")
+                return
+            except Exception as e:
+                # Handle other exceptions if necessary
+                await ctx.send(f"An error occurred while sending a ban message to {user.mention}: {e}")
+                return
+
+            # Generate a random ban ID
+            ban_id = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(6))
+
             # Add ban information to the user's data
             ban_info = {
                 "timestamp": utils.get_local_time(),
                 "issuer": ctx.author.name,
                 "reason": reason,
-                "lifted": None, 
+                "lifted": None,
+                "ban_id": ban_id  # Add a unique identifier for the ban
             }
 
             # Append the ban info to the list of bans in the user's data
@@ -709,15 +735,47 @@ class WelcomeMod(commands.Cog):
 
             self.save_user_info()
 
+            # Ban the user after sending the DM
             await ctx.guild.ban(user, reason=reason)
 
-            await utils.log_mod_action(ctx.guild, 'Ban', user, reason, ctx.author, config=config)
+            await utils.log_mod_action(ctx.guild, 'Ban', user, reason, issuer=ctx.author, ban_id=ban_id, config=config)
 
             await ctx.send(f"{user.mention} has been banned for the following reason: {reason}")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command()
+    @commands.command(help='<UID> <Reason>')
+    @commands.has_permissions(ban_members=True)
+    async def unban(self, ctx, user_id: int, *, unban_reason: str = "No reason provided"):
+        # Attempt to unban the user by their User ID
+        banned_users = await ctx.guild.bans()
+        for ban_entry in banned_users:
+            if ban_entry.user.id == user_id:
+                # Get the reason for the ban (if available)
+                ban_reason = ban_entry.reason or "No reason provided"
+                
+                # Unban the user
+                await ctx.guild.unban(ban_entry.user)
+
+                # Log the unban action
+                await utils.log_mod_action(ctx.guild, 'Unban', ban_entry.user, f"User unbanned by {ctx.author.mention}. Reason for the original ban: {ban_reason}. Unban Reason: {unban_reason}", config=config)
+
+                # Mark the ban as lifted and record the unban reason in the user's data in the database
+                user_data = self.user_info.get(str(user_id))
+                if user_data:
+                    bans = user_data["info"].get("banned", [])
+                    for ban in bans:
+                        if ban["lifted"] is None:
+                            ban["lifted"] = utils.get_local_time()
+                            ban["unban_reason"] = unban_reason
+                    self.save_user_info()
+
+                await ctx.send(f"User with ID {user_id} has been unbanned with reason: {unban_reason}")
+                return
+
+        await ctx.send("User not found in the ban list.")
+
+    @commands.command(help='<UID> <ban_id>')
     @commands.has_any_role("Moderator", "Admin")
     async def checkbans(self, ctx, user: discord.User):
         user_id = str(user.id)
@@ -739,10 +797,12 @@ class WelcomeMod(commands.Cog):
                     issuer = ban_info["issuer"]
                     reason = ban_info["reason"]
                     lifted = ban_info["lifted"] or "Not Lifted"
+                    ban_id = ban_info.get("ban_id", "N/A")
+                    unban_reason = ban_info.get("unban_reason", "N/A")
 
                     embed.add_field(
                         name=f"Ban #{index}",
-                        value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nLifted: {lifted}",
+                        value=f"Ban ID: {ban_id}\nDate/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nLifted: {lifted}\nUnban Reason: {unban_reason}",
                         inline=False
                     )
 

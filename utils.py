@@ -30,7 +30,7 @@ def is_visible(allowed_roles):
 
     return predicate
 
-async def log_mod_action(guild, action, target, reason, warning_number=None, moderator=None, config=None):
+async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, ban_id=None, user_data=None, config=None):
     if not config:
         raise ValueError("config is required for log_mod_action")
 
@@ -55,19 +55,29 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, mod
         timestamp=datetime.utcnow()
     )
 
-    # Add fields to the embed
     embed.add_field(name="Action", value=action, inline=True)
-    embed.add_field(name="Target", value=f"{target.mention} ({target})", inline=True)
+    embed.add_field(name="Target", value=f"{target.mention} ({target.name})", inline=True)
     embed.add_field(name="Reason", value=reason, inline=False)
 
-    # Add warning number and moderator if provided
+    # Add warning number and issuer if provided
     if action == 'Warning':
         if warning_number:
             embed.add_field(name="Warning Number", value=warning_number, inline=True)
-        if moderator:
-            embed.add_field(name="Moderator", value=moderator.mention, inline=True)
+        if issuer:
+            embed.add_field(name="Issuer", value=issuer.mention, inline=True)
 
-    # Add the mod log message to the mod logs channel
+    if ban_id and user_data:
+        bans = [ban for ban in user_data.get("banned", []) if ban.get("ban_id") == ban_id]
+    else:
+        bans = []
+
+    for ban in bans:
+        embed.add_field(
+            name=f"Ban ID: {ban['ban_id']}",
+            value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
+            inline=False
+        )
+
     await mod_logs_channel.send(embed=embed)
 
 # Function to format set details with line breaks
@@ -195,5 +205,5 @@ def get_random_pokemon_fact():
         "In the Pokémon series, Professor Oak, the first Pokémon professor, is known for his iconic line: 'Are you a boy or a girl?'",
         "The Pokémon Gengar is believed to be the shadow of Clefable, another Pokémon, according to its Pokédex entry.",
     ]
-    
+
     return random.choice(pokemon_facts)
