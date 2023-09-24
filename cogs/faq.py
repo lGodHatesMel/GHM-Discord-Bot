@@ -14,13 +14,11 @@ class Faq(commands.Cog):
         self.json_file = os.path.join(database_folder, 'faq.json')
         self.aliases_file = os.path.join(database_folder, 'faq_aliases.json')
 
-        # Load faq_aliases from the file
         if os.path.exists(self.aliases_file):
             with open(self.aliases_file, 'r') as f:
                 self.faq_aliases = json.load(f)
 
     def save_aliases(self):
-        # Save faq_aliases to the file
         with open(self.aliases_file, 'w') as f:
             json.dump(self.faq_aliases, f, indent=4)
 
@@ -71,7 +69,7 @@ class Faq(commands.Cog):
 
         self.save_aliases()
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addfaq(self, ctx):
         # Check if 'faq_channel_id' is set
@@ -133,8 +131,8 @@ class Faq(commands.Cog):
         await ctx.send("✅ Entry added.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
-    @commands.command()
-    @commands.has_any_role("Admin")
+    @commands.command(hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
     async def faqalias(self, ctx, faq_name: str = "", *, words: str = ""):
         if not faq_name:
             return await ctx.send("⚠ FAQ entry name is required.")
@@ -145,7 +143,7 @@ class Faq(commands.Cog):
         await ctx.send("✅ Alias added/updated.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def delalias(self, ctx, word: str):
         if word not in self.faq_aliases:
@@ -189,7 +187,7 @@ class Faq(commands.Cog):
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def editfaq(self, ctx, faq_name: str = "", edit_type: str = "a"):
         if not faq_name:
@@ -265,7 +263,7 @@ class Faq(commands.Cog):
         embed.add_field(name="Answer:", value=f"```{entry['answer']}```", inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def refreshfaq(self, ctx):
         await ctx.send("Refreshing FAQ...")

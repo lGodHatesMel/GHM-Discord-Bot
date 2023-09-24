@@ -12,7 +12,7 @@ class Rules(commands.Cog):
         self.bot = bot
         with open("config.json", "r") as f:
             self.config = json.load(f)
-        self.image_folder = "Images"  # Replace with your folder path
+        self.image_folder = "Images"
 
     async def update_rules(self):
         rules_channel_id = self.config.get("rules_channel_id")
@@ -61,7 +61,7 @@ class Rules(commands.Cog):
             file = message_info[1] if len(message_info) > 1 else None
             await self.bot.get_channel(rules_channel_id).send(embed=embed, file=file)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addrule(self, ctx):
         random_num = random.randint(1, 9999)
@@ -87,8 +87,7 @@ class Rules(commands.Cog):
         await ctx.send("✅ Entry added.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(
-    aliases=['delrule', 'dr'], help='<rules_id>')
+    @commands.command(aliases=['delrule', 'dr'], help='<rules_id>', hidden=True)
     @commands.has_any_role("Admin")
     async def deleterule(self, ctx, rules_id: int = 0):
         if rules_id == 0:
@@ -104,7 +103,7 @@ class Rules(commands.Cog):
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['modify'], help='<rules_id>')
+    @commands.command(aliases=['modify'], help='<rules_id>', hidden=True)
     @commands.has_any_role("Admin")
     async def editrule(self, ctx, rules_id: int = 0, edit_type: str = "d"):
         if rules_id == 0:
@@ -138,7 +137,7 @@ class Rules(commands.Cog):
         await ctx.send("✅ Entry modified.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['source'])
+    @commands.command(aliases=['source'], hidden=True)
     @commands.has_any_role("Admin")
     async def raw(self, ctx, rules_id: int = 0, return_type: str = "both"):
         if rules_id == 0:
@@ -174,7 +173,7 @@ class Rules(commands.Cog):
         embed.description = entry[1]
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def refreshrules(self, ctx):
         await ctx.send("Refreshing rules...")
         self.bot.loop.create_task(self.update_rules())

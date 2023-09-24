@@ -35,30 +35,27 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             print(f'An error occurred while loading custom commands: {str(e)}')
 
-    @commands.command(help='<CommandName> <Reply Message>')
+    @commands.command(help='<CommandName> <Reply Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addcommand(self, ctx, command_name, *, command_response):
         try:
-            # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
                 custom_commands = json.load(file)
 
-            # Convert the command_name to lowercase
             command_name = command_name.lower()
 
-            # Check if the command name already exists
             if command_name in custom_commands:
                 await ctx.send(f'Command "{command_name}" already exists.')
                 return
 
-            # Add the new custom command
+            # Replace '/n' with '\n' to correctly interpret newlines
+            command_response = command_response.replace('/n', '\n')
+
             custom_commands[command_name] = command_response
 
-            # Save the updated custom commands to JSON
             with open(self.commands_file, 'w') as file:
                 json.dump(custom_commands, file, indent=4)
 
-            # Register the new custom command with the bot
             async def custom_command(ctx):
                 await ctx.send(command_response)
             self.bot.add_command(commands.Command(custom_command, name=command_name))
@@ -67,30 +64,28 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help='<CommandName> <Reply Message>')
+    @commands.command(help='<CommandName> <Reply Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def editcommand(self, ctx, command_name, *, new_response):
         try:
-            # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
                 custom_commands = json.load(file)
 
-            # Convert the command_name to lowercase
             command_name = command_name.lower()
 
-            # Check if the command name exists
             if command_name not in custom_commands:
                 await ctx.send(f'Command "{command_name}" does not exist.')
                 return
 
-            # Update the custom command response
+            # Replace '/n' with '\n' to correctly interpret newlines
+            new_response = new_response.replace('/n', '\n')
+
             custom_commands[command_name] = new_response
 
-            # Save the updated custom commands to JSON
             with open(self.commands_file, 'w') as file:
                 json.dump(custom_commands, file, indent=4)
 
-            # Update the custom command function
+            # Update the existing command with the new response
             async def custom_command(ctx):
                 await ctx.send(new_response)
             self.bot.add_command(commands.Command(custom_command, name=command_name))
@@ -99,7 +94,7 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(aliases=['delcommand', 'delcmd'], help='<CommandName>')
+    @commands.command(aliases=['delcommand', 'delcmd'], help='<CommandName>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def deletecommand(self, ctx, command_name):
         try:

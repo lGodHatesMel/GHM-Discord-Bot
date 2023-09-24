@@ -100,12 +100,12 @@ class WelcomeMod(commands.Cog):
                 self.user_info[user_id]["info"]["total_messages"] += 1
                 self.save_user_info()
 
-    @commands.command(help='Replies with Pong if bot is up')
+    @commands.command(help='Replies with Pong if bot is up', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def ping(self, ctx):
         await ctx.send('Pong')
 
-    @commands.command(help='<username> or <UID>')
+    @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def updateuser(self, ctx, new_username: str):
         user_id = str(ctx.author.id)
@@ -229,7 +229,7 @@ class WelcomeMod(commands.Cog):
             self.user_info[user_id]["info"]["Left"] = leave_time_str
             self.save_user_info()
 
-    @commands.command(help='<UID>')
+    @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def info(self, ctx, user_id: int):
         # Check if the user ID exists in the database
@@ -279,7 +279,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<user_id> <key> <value>')
+    @commands.command(help='<user_id> <key> <value>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def updateinfo(self, ctx, user_id: int, key: str, *, value: str):
         # Update user information (for testing purposes)
@@ -329,7 +329,7 @@ class WelcomeMod(commands.Cog):
     #     else:
     #         await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=['adduser', 'addtodb'], help='<UID>')
+    @commands.command(aliases=['adduser', 'addtodb'], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addusertodb(self, ctx, user_id: int):
         # Check if the user ID exists in the database; if not, add them to the database
@@ -363,7 +363,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send(f"User with ID {user_id} already exists in the database.")
 
-    @commands.command(help='<UID> <Note>')
+    @commands.command(help='<UID> <Note>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addnote(self, ctx, user: discord.User, *, note_content: str):
         user_id = str(user.id)
@@ -417,7 +417,7 @@ class WelcomeMod(commands.Cog):
         
         await utils.log_mod_action(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
-    @commands.command(aliases=["removenote"], help='<UID> <Note #>')
+    @commands.command(aliases=["removenote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
     async def delnote(self, ctx, user_id: int, note_number: int):
         # Check if the user ID exists in the database
@@ -443,7 +443,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=["notes", "checknotes"], help='<UID>')
+    @commands.command(aliases=["notes", "checknotes"], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def listnotes(self, ctx, user_id: int):
         if str(user_id) in self.user_info:
@@ -471,7 +471,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=['warn'], help='<UID> <Reason>')
+    @commands.command(aliases=['warn'], help='<UID> <Reason>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addwarning(self, ctx, member: discord.Member, *, warning: str):
         # Check if the user exists in the database
@@ -542,7 +542,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=["listwarnings", "listwarns"], help='<UID> <Warning #>')
+    @commands.command(aliases=["listwarnings", "listwarns"], help='<UID> <Warning #>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def checkwarning(self, ctx, user: discord.User, warning_number: Union[int, None]):
         # Check if the warning_number argument is None (not provided)
@@ -579,7 +579,7 @@ class WelcomeMod(commands.Cog):
             await ctx.send("User not found in the database.")
 
 
-    @commands.command(aliases=["deletewarning", "removewarning"], help='<UID> <Warning #>')
+    @commands.command(aliases=["deletewarning", "removewarning"], help='<UID> <Warning #>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
         user_id = str(user.id)
@@ -747,7 +747,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <ban_id>')
+    @commands.command(help='<UID> <ban_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def checkbans(self, ctx, user: discord.User):
         user_id = str(user.id)
@@ -784,7 +784,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <ban_id> <unban_reason>')
+    @commands.command(help='<UID> <ban_id> <unban_reason>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def unban(self, ctx, user: discord.User, ban_id: str, *, unban_reason: str = None):
         user_id = str(user.id)
@@ -827,7 +827,7 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(aliases=['bd', 'down'], help='<#Channel> <Message>')
+    @commands.command(aliases=['bd', 'down'], help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def botdown(self, ctx, channel: discord.TextChannel, *, message):
 
@@ -839,14 +839,14 @@ class WelcomeMod(commands.Cog):
         command = ctx.command.name
         print(f"{current_time} - {author.name} used the *{command}* command.")
 
-    @commands.command(aliases=['announce', 'am'], help='<#Channel> <Message>')
+    @commands.command(aliases=['announce', 'am'], help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def announcement(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Announcement:**\n{message}")
         await ctx.send(f"Announcement sent to {channel.mention}.")
 
-    @commands.command(name='addsticky', aliases=['as'], help='<#Channel> <Message>')
+    @commands.command(name='addsticky', aliases=['as'], help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def sticky_note(self, ctx, channel: discord.TextChannel, *, message):
         # Format the message content inside code blocks (```)
@@ -859,16 +859,16 @@ class WelcomeMod(commands.Cog):
         )
 
         sticky_msg = await channel.send(embed=embed)
-        self.sticky_messages[channel] = sticky_msg
+        self.sticky_messages[channel.id] = sticky_msg  # Use channel.id as the key
 
         await ctx.send(f"Sticky note added to {channel.mention}.")
 
-    @commands.command(name='removesticky', aliases=['rs', 'delsticky'], help='[#Channel]')
+    @commands.command(name='removesticky', aliases=['rs', 'delsticky'], help='<#Channel>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def remove_sticky(self, ctx, channel: discord.TextChannel):
 
-        if channel in self.sticky_messages:
-            sticky_msg = self.sticky_messages.pop(channel)
+        if channel.id in self.sticky_messages:  # Check for channel.id in the dictionary
+            sticky_msg = self.sticky_messages.pop(channel.id)
             await sticky_msg.delete()
             await ctx.send(f"Sticky note removed from {channel.mention}.")
         else:

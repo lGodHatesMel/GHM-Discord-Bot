@@ -8,7 +8,7 @@ intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
 
-bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
+bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents, owner_ids=[613167456814628884])
 
 def load_or_create_config(bot):
     if hasattr(bot, 'config'):
@@ -56,16 +56,11 @@ def load_or_create_config(bot):
 
 config = load_or_create_config(bot)
 
-initial_extensions = [
-    'cogs.countdown', 'cogs.pkmstuff', 'cogs.logs',
-    'cogs.welcome_mod', 'cogs.rules', 'cogs.faq',
-    'cogs.messagelogger', 'cogs.games', 'cogs.customcommands',
-    'cogs.editimage', 'cogs.translator', 'cogs.toggleroles',
-]
-
-if __name__ == '__main__':
-    for extension in initial_extensions:
+# Dynamically load all .py files in the cogs directory
+for filename in os.listdir('cogs'):
+    if filename.endswith('.py'):
         try:
+            extension = f'cogs.{filename[:-3]}'  # Remove the .py extension and prepend 'cogs.'
             bot.load_extension(extension)
             print(f'Loaded extension: {extension}')
         except Exception as e:

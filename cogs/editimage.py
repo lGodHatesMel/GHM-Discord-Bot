@@ -7,7 +7,7 @@ class ImageEditor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def resize_and_send(self, ctx, size: int, attachment):
+    async def resizetheimage(self, ctx, size: int, attachment):
         try:
             image = Image.open(io.BytesIO(await attachment.read()))
 
@@ -25,7 +25,7 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="[Attach Image URL link]")
+    @commands.command(help="<size> <image url>", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def resizeurlimage(self, ctx, size: int, url: str):
         try:
@@ -47,7 +47,7 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
     
-    @commands.command(help="[Resizes a image from a folder]")
+    @commands.command(help="<size> <attach image>", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def resizeimage(self, ctx, size: int):
         if len(ctx.message.attachments) == 0:
@@ -55,7 +55,7 @@ class ImageEditor(commands.Cog):
             return
 
         attachment = ctx.message.attachments[0]
-        await self.resize_and_send(ctx, size, attachment)
+        await self.resizetheimage(ctx, size, attachment)
 
 def setup(bot):
     bot.add_cog(ImageEditor(bot))
