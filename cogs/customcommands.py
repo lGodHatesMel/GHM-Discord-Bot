@@ -35,8 +35,9 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             print(f'An error occurred while loading custom commands: {str(e)}')
 
-    @commands.command(name='addcommand')
-    async def add_custom_command(self, ctx, command_name, *, command_response):
+    @commands.command(help='<CommandName> <Reply Message>')
+    @commands.has_any_role("Moderator", "Admin")
+    async def addcommand(self, ctx, command_name, *, command_response):
         try:
             # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
@@ -66,8 +67,9 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(name='editcommand')
-    async def edit_custom_command(self, ctx, command_name, *, new_response):
+    @commands.command(help='<CommandName> <Reply Message>')
+    @commands.has_any_role("Moderator", "Admin")
+    async def editcommand(self, ctx, command_name, *, new_response):
         try:
             # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
@@ -97,8 +99,9 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(name='delcommand')
-    async def delete_custom_command(self, ctx, command_name):
+    @commands.command(aliases=['delcommand', 'delcmd'], help='<CommandName>')
+    @commands.has_any_role("Moderator", "Admin")
+    async def deletecommand(self, ctx, command_name):
         try:
             # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
@@ -112,14 +115,11 @@ class CustomCommands(commands.Cog):
                 await ctx.send(f'Command "{command_name}" does not exist.')
                 return
 
-            # Remove the custom command
             del custom_commands[command_name]
 
-            # Save the updated custom commands to JSON
             with open(self.commands_file, 'w') as file:
                 json.dump(custom_commands, file, indent=4)
 
-            # Unregister the custom command from the bot
             self.bot.remove_command(command_name)
 
             await ctx.send(f'Command "{command_name}" deleted successfully.')

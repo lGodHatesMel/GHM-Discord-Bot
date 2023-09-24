@@ -1,0 +1,11 @@
+
+===
+```Kingambit @ Black Glasses 
+Ability: Supreme Overlord 
+Tera Type: Flying 
+EVs: 252 Atk / 4 Def / 252 Spe 
+Adamant Nature 
+- Swords Dance 
+- Kowtow Cleave 
+- Sucker Punch 
+- Iron Head ```

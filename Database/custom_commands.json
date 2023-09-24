@@ -1,1 +1,5 @@
-{}
+{
+    "raidsheet": "Here is the Raid Docs for all the possible raids you can pick from:   https://drive.google.com/drive/folders/1dWCQnNXs8JvCWh99PjU8s39aaa2m9l9N - Note: You need the ID. So for example for the top right raid you would do `2addraid ID`",
+    "requestlist": "Heres a link to the special request list:   https://docs.google.com/spreadsheets/d/1eP8sh8rtrB_1QY4Ti5muOf4uRXKzbF4fbU_58XiCoEs/edit?usp=sharing",
+    "tradecommands": "Here are the trade commands for the bots:   Pokemon Scarlet Violet - `!svtrade` === Pokemon Sword Shield - `!swshtrade` === Pokemon Legends: Arceus - `!platrade`"
+}

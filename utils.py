@@ -1,14 +1,17 @@
 import discord
 from discord.ext import commands
-import pytz
 from datetime import datetime
+import pytz
 import random
 
-def get_local_time(timezone='US/Eastern'):
-    local_timezone = pytz.timezone(timezone)
-    utc_time = datetime.utcnow()
-    local_time = utc_time.astimezone(local_timezone)
-    return local_time.strftime('%Y-%m-%d %H:%M:%S %Z')
+def get_local_time():
+    # Get the current UTC time
+    utc_now = datetime.utcnow()
+    # Define the target time zone (e.g., 'US/Eastern')
+    target_timezone = pytz.timezone('US/Eastern')
+    # Convert the UTC time to the target timezone
+    local_time = utc_now.astimezone(target_timezone)
+    return local_time
 
 # Function to customize command visibility based on roles
 def is_visible(allowed_roles):
@@ -30,7 +33,7 @@ def is_visible(allowed_roles):
 
     return predicate
 
-async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, ban_id=None, user_data=None, config=None):
+async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, ban_id=None, user_data=None, config=None, embed=None):
     if not config:
         raise ValueError("config is required for log_mod_action")
 
@@ -44,15 +47,18 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, iss
     if not mod_logs_channel:
         raise ValueError(f"Mod logs channel with ID {mod_logs_channel_id} not found")
 
+    embed_color = discord.Color.blue() if action == 'Kick' \
+        else discord.Color.orange() if action == 'Warning' \
+        else discord.Color.gold() if action == 'Note' \
+        else discord.Color.red() if action == 'Banned' \
+        else discord.Color.red() if action == 'Unban' \
+        else discord.Color.lighter_grey() if action == 'Database' \
+        else discord.Color.red()
+
     embed = discord.Embed(
         title=f"{action} Log",
-        color=discord.Color.blue() if action == 'Kick' 
-        else discord.Color.orange() if action == 'Warning' 
-        else discord.Color.gold() if action == 'Note'
-        else discord.Color.red() if action == 'Banned'
-        else discord.Color.lighter_grey() if action == 'Database'
-        else discord.Color.red(),
-        timestamp=datetime.utcnow()
+        color=embed_color,
+        timestamp=get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z")
     )
 
     embed.add_field(name="Action", value=action, inline=True)
@@ -64,7 +70,10 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, iss
         if warning_number:
             embed.add_field(name="Warning Number", value=warning_number, inline=True)
         if issuer:
-            embed.add_field(name="Issuer", value=issuer.mention, inline=True)
+            if isinstance(issuer, str):
+                embed.add_field(name="Issuer", value=issuer, inline=True)
+            else:
+                embed.add_field(name="Issuer", value=issuer.mention, inline=True)
 
     if ban_id and user_data:
         bans = [ban for ban in user_data.get("banned", []) if ban.get("ban_id") == ban_id]

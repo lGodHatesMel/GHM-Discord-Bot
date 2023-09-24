@@ -25,8 +25,9 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command()
-    async def resize_url_image(self, ctx, size: int, url: str):
+    @commands.command(help="[Attach Image URL link]")
+    @commands.has_any_role("Moderator", "Admin")
+    async def resizeurlimage(self, ctx, size: int, url: str):
         try:
             response = await self.bot.session.get(url)
             img_data = await response.read()
@@ -46,8 +47,9 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
     
-    @commands.command()
-    async def resize_attached_image(self, ctx, size: int):
+    @commands.command(help="[Resizes a image from a folder]")
+    @commands.has_any_role("Moderator", "Admin")
+    async def resizeimage(self, ctx, size: int):
         if len(ctx.message.attachments) == 0:
             await ctx.send('No image attached to the message.')
             return

@@ -17,38 +17,38 @@ class POKEMON_COMMANDS(commands.Cog):
         # Send the fact as a message
         await ctx.send(f'**Random Pokémon Fact:**\n{random_fact}')
 
-    @commands.command(name='requestlist', aliases=['rl'], help='Gives link for Special Request List.')
-    async def requestlist_link(self, ctx):
-        requestlist_url = "https://docs.google.com/spreadsheets/d/1eP8sh8rtrB_1QY4Ti5muOf4uRXKzbF4fbU_58XiCoEs/edit?usp=sharing"
-        await ctx.send(f"Heres a link to the special request list:\n{requestlist_url}")
-        
-        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        author = ctx.message.author
-        command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
+    # @commands.command(name='requestlist', aliases=['rl'], help='Gives link for Special Request List.')
+    # async def requestlist_link(self, ctx):
+    #     requestlist_url = "https://docs.google.com/spreadsheets/d/1eP8sh8rtrB_1QY4Ti5muOf4uRXKzbF4fbU_58XiCoEs/edit?usp=sharing"
+    #     await ctx.send(f"Heres a link to the special request list:\n{requestlist_url}")
 
-    @commands.command(name='raidsheet', aliases=['raidpokemon'], help='Gives link for all possible Raid Pokemon.')
-    async def raidsheet_link(self, ctx):
-        raidsheet_url = "https://drive.google.com/drive/folders/1dWCQnNXs8JvCWh99PjU8s39aaa2m9l9N"
-        await ctx.send(f"Here is the Raid Docs for all the possible raids you can pick from:\n{raidsheet_url}\n\nNote: You need the ID. So for example for the top right raid you would do `2addraid ID`")
-        
-        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        author = ctx.message.author
-        command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
+    #     current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    #     author = ctx.message.author
+    #     command = ctx.command.name
+    #     print(f"{current_time} - {author.name} used the *{command}* command.")
 
-    @commands.command(name='tradecommands', help='Gives a list of trade commands')
-    async def tradecommands(self, ctx):
-        trade_commands = "Here are the trade commands for the bots:"
-        await ctx.send(f"{trade_commands}\nPokemon Scarlet Violet - `!svtrade`\nPokemon Sword Shield - `!swshtrade`\nPokemon Legends: Arceus - `!platrade`")
-        
-        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        author = ctx.message.author
-        command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
+    # @commands.command(name='raidsheet', aliases=['raidpokemon'], help='Gives link for all possible Raid Pokemon.')
+    # async def raidsheet_link(self, ctx):
+    #     raidsheet_url = "https://drive.google.com/drive/folders/1dWCQnNXs8JvCWh99PjU8s39aaa2m9l9N"
+    #     await ctx.send(f"Here is the Raid Docs for all the possible raids you can pick from:\n{raidsheet_url}\n\nNote: You need the ID. So for example for the top right raid you would do `2addraid ID`")
 
-    @commands.command(name='showdown', aliases=['sd'], help='Usage: !showdown [Game: sv, swsh, pla, bdsp] [Pokemon Name]')
-    async def random_poke_set(self, ctx, game, pokemon_name):
+    #     current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    #     author = ctx.message.author
+    #     command = ctx.command.name
+    #     print(f"{current_time} - {author.name} used the *{command}* command.")
+
+    # @commands.command(name='tradecommands', help='Gives a list of trade commands')
+    # async def tradecommands(self, ctx):
+    #     trade_commands = "Here are the trade commands for the bots:"
+    #     await ctx.send(f"{trade_commands}\nPokemon Scarlet Violet - `!svtrade`\nPokemon Sword Shield - `!swshtrade`\nPokemon Legends: Arceus - `!platrade`")
+
+    #     current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    #     author = ctx.message.author
+    #     command = ctx.command.name
+    #     print(f"{current_time} - {author.name} used the *{command}* command.")
+
+    @commands.command(aliases=['showdownset'], help='Usage: !showdown [Game: sv, swsh, pla, bdsp] <Pokemon Name>')
+    async def showdown(self, ctx, game, pokemon_name):
         try:
             # Convert game and valid_games to lowercase
             game = game.lower()
@@ -87,8 +87,9 @@ class POKEMON_COMMANDS(commands.Cog):
             print(e)
             await ctx.send("An error occurred while fetching Pokémon sets.")
 
-    @commands.command(name='addset', help='Usage: !addset [Game: "sv, swsh, pla, bdsp"] [Pokemon Name] [Set Details]')
-    async def add_set(self, ctx, game, pokemon_name, *set_details):
+    @commands.command(help='Usage: !addset [Game: "sv, swsh, pla, bdsp"] [Pokemon Name] [Set Details]')
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def addset(self, ctx, game, pokemon_name, *set_details):
         try:
             # Convert game and valid_games to lowercase
             game = game.lower()
