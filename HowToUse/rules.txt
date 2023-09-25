@@ -1,21 +1,44 @@
-## Rule Commands
+Rules Commands:
 
-1. `addrule`: Add a new rule to the list of rules.
+1. `addrule` Command:
    - Usage: `!addrule`
+   - Description: Add a new rule to the server's rules list.
+   - Instructions:
+     - Type `!addrule` to start adding a new rule.
+     - Follow the prompts to enter the rule and its description.
+     - Type `cancel-XXXX` at any time to cancel the operation (replace XXXX with a random number).
 
-2. `deleterule`: Delete a rule by its ID.
+2. `deleterule` Command:
    - Usage: `!deleterule <rule_id>`
+   - Description: Delete a rule from the server's rules list.
+   - Instructions:
+     - Type `!deleterule <rule_id>` to delete a rule by specifying its ID.
 
-3. `editrule`: Edit an existing rule.
-   - Usage: `!editrule <rule_id> <edit_type>`
-   - `<edit_type>` (optional): Specify whether to edit the rule or its description (default).
+3. `editrule` Command:
+   - Usage: `!editrule <rule_id> <type>`
+   - Description: Edit an existing rule in the server's rules list.
+   - Instructions:
+     - Type `!editrule <rule_id> <type>` to start editing a rule.
+     - Replace `<rule_id>` with the ID of the rule you want to edit.
+     - Replace `<type>` with either "rule" or "description" to specify what you want to edit.
+     - Follow the prompts to enter the new content.
 
-4. `raw`: View the raw content of a rule.
-   - Usage: `!raw <rule_id> [return_type]`
-   - `[return_type]` (optional): Specify whether to view the rule, description, or both (default).
+4. `raw` Command:
+   - Usage: `!raw <rule_id> <type>`
+   - Description: View the raw content of a rule (either rule text, description text, or both).
+   - Instructions:
+     - Type `!raw <rule_id> <type>` to view the raw content of a rule.
+     - Replace `<rule_id>` with the ID of the rule you want to view.
+     - Replace `<type>` with "rule" to view only the rule text, "description" to view only the description text, or "both" to view both.
 
-5. `viewrule`: View a rule with a nice embed format.
+5. `viewrule` Command:
    - Usage: `!viewrule <rule_id>`
+   - Description: View a rule along with its rule ID.
+   - Instructions:
+     - Type `!viewrule <rule_id>` to view a rule by specifying its ID.
 
-6. `refreshrules`: Manually refresh the rules display.
+6. `refreshrules` Command:
    - Usage: `!refreshrules`
+   - Description: Refresh the server's rules by re-sending them to the rules channel.
+   - Instructions:
+     - Type `!refreshrules` to refresh the server's rules and update the rules channel with the latest content.
