@@ -3,6 +3,8 @@ import discord
 from discord.ext import commands
 import json
 import utils
+import asyncio
+from cogs.stickynotes import StickyNotes
 
 intents = discord.Intents.default()
 intents.members = True
@@ -88,4 +90,6 @@ async def on_ready():
     
     await bot.change_presence(status=discord.Status.online, activity=discord.Game("OOHHH YEEAAAHHHH!!!"))
 
-bot.run(config['token'])
+# Start the bot with the token
+if __name__ == "__main__":
+    bot.run(config['token'])

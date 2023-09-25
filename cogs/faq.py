@@ -241,6 +241,10 @@ class Faq(commands.Cog):
         with open(self.json_file, "r") as f:
             faq_db = json.load(f)
 
+        # Check if faq_req is an alias
+        if faq_req in self.faq_aliases:
+            faq_req = self.faq_aliases[faq_req]
+
         if faq_req not in faq_db:
             return await ctx.send("⚠ No such entry exists.")
 
