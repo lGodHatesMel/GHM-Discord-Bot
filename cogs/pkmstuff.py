@@ -87,7 +87,7 @@ class POKEMON_COMMANDS(commands.Cog):
             print(e)
             await ctx.send("An error occurred while fetching Pokémon sets.")
 
-    @commands.command(help='Game: <sv, swsh, pla, bdsp> <Pokemon Name< <ShowdownSet Details>')
+    @commands.command(help='Game: <sv, swsh, pla, bdsp> <Pokemon Name> <ShowdownSet Details>')
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def addset(self, ctx, game, pokemon_name, *set_details):
         try:
