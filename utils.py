@@ -1,37 +1,93 @@
 import discord
 from discord.ext import commands
-import pytz
 from datetime import datetime
+import pytz
 import random
 
-def get_local_time(timezone='US/Eastern'):
-    local_timezone = pytz.timezone(timezone)
-    utc_time = datetime.utcnow()
-    local_time = utc_time.astimezone(local_timezone)
-    return local_time.strftime('%Y-%m-%d %H:%M:%S %Z')
+def get_local_time():
+    # Get the current UTC time
+    utc_now = datetime.utcnow()
+    # Define the target time zone (e.g., 'US/Eastern')
+    target_timezone = pytz.timezone('US/Eastern')
+    # Convert the UTC time to the target timezone
+    local_time = utc_now.astimezone(target_timezone)
+    return local_time
 
-# Function to check for required role or higher
-def has_role_or_higher(role_name):
+# Function to customize command visibility based on roles
+def is_visible(allowed_roles):
     def predicate(ctx):
         async def check(ctx):
             if ctx.author.id == ctx.guild.owner_id:
                 return True
 
-            required_role = discord.utils.get(ctx.guild.roles, name=role_name)
-            if required_role:
-                # Check if the user has the required role or any role higher in the hierarchy
-                user_roles = ctx.author.roles
-                for role in user_roles:
-                    if role >= required_role:
-                        return True
+            user_roles = ctx.author.roles
+            for role_name in allowed_roles:
+                required_role = discord.utils.get(ctx.guild.roles, name=role_name)
+                if required_role and required_role in user_roles:
+                    return True
 
-            await ctx.send(f"You don't have the required {role_name} role or higher to use this command.")
+            await ctx.send(f"You don't have the required roles ({', '.join(allowed_roles)}) or higher to use this command.")
             return False
 
         return commands.check(check)
 
     return predicate
 
+async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, ban_id=None, user_data=None, config=None, embed=None):
+    if not config:
+        raise ValueError("config is required for log_mod_action")
+
+    mod_logs_channel_id = config.get('mod_logs_channel_id')
+
+    if not mod_logs_channel_id:
+        raise ValueError("mod_logs_channel_id is not defined in the config")
+
+    mod_logs_channel = guild.get_channel(mod_logs_channel_id)
+
+    if not mod_logs_channel:
+        raise ValueError(f"Mod logs channel with ID {mod_logs_channel_id} not found")
+
+    embed_color = discord.Color.blue() if action == 'Kick' \
+        else discord.Color.orange() if action == 'Warning' \
+        else discord.Color.gold() if action == 'Note' \
+        else discord.Color.red() if action == 'Banned' \
+        else discord.Color.red() if action == 'Unban' \
+        else discord.Color.lighter_grey() if action == 'Database' \
+        else discord.Color.red()
+
+    embed = discord.Embed(
+        title=f"{action} Log",
+        color=embed_color,
+        timestamp=get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z")
+    )
+
+    embed.add_field(name="Action", value=action, inline=True)
+    embed.add_field(name="Target", value=f"{target.mention} ({target.name})", inline=True)
+    embed.add_field(name="Reason", value=reason, inline=False)
+
+    # Add warning number and issuer if provided
+    if action == 'Warning':
+        if warning_number:
+            embed.add_field(name="Warning Number", value=warning_number, inline=True)
+        if issuer:
+            if isinstance(issuer, str):
+                embed.add_field(name="Issuer", value=issuer, inline=True)
+            else:
+                embed.add_field(name="Issuer", value=issuer.mention, inline=True)
+
+    if ban_id and user_data:
+        bans = [ban for ban in user_data.get("banned", []) if ban.get("ban_id") == ban_id]
+    else:
+        bans = []
+
+    for ban in bans:
+        embed.add_field(
+            name=f"Ban ID: {ban['ban_id']}",
+            value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
+            inline=False
+        )
+
+    await mod_logs_channel.send(embed=embed)
 
 # Function to format set details with line breaks
 def format_set_details(set_details):
@@ -158,5 +214,5 @@ def get_random_pokemon_fact():
         "In the Pokémon series, Professor Oak, the first Pokémon professor, is known for his iconic line: 'Are you a boy or a girl?'",
         "The Pokémon Gengar is believed to be the shadow of Clefable, another Pokémon, according to its Pokédex entry.",
     ]
-    
+
     return random.choice(pokemon_facts)

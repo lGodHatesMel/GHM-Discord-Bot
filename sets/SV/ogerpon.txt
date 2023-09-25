@@ -1,0 +1,11 @@
+
+===
+```Ogerpon-Wellspring (F) @ Wellspring Mask 
+Ability: Water Absorb 
+Tera Type: Water 
+EVs: 252 Atk / 4 SpD / 252 Spe 
+Jolly Nature 
+- Swords Dance 
+- Power Whip 
+- Ivy Cudgel 
+- Knock Off```

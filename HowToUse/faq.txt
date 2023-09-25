@@ -1,0 +1,79 @@
+FAQ Commands:
+
+1. `addfaq` (Admins Only)
+   - Description: Add a new FAQ entry.
+   - Usage: `!addfaq`
+   - Instructions:
+     - Type the name for this FAQ entry (no spaces or special characters).
+     - Type the question for the FAQ entry.
+     - Type the answer for the FAQ entry.
+     - Follow the on-screen prompts to complete the process.
+
+2. `faqaddaliases` (Moderators/Admins)
+   - Description: Add or update aliases for an FAQ entry.
+   - Usage: `!faqaddaliases [faq_name] [alias1] [alias2] ...`
+   - Instructions:
+     - Specify the FAQ entry's name you want to alias.
+     - Provide one or more alias words separated by spaces.
+     - Aliases allow users to access the FAQ entry using these words.
+
+3. `deletealias` (Admins Only)
+   - Description: Delete an alias for an FAQ entry.
+   - Usage: `!deletealias [alias_word]`
+   - Instructions:
+     - Specify the alias word you want to remove.
+     - This command removes an alias associated with an FAQ entry.
+
+4. `listaliases`
+   - Description: List aliases for a specific FAQ entry.
+   - Usage: `!listaliases [faq_name]`
+   - Instructions:
+     - Specify the FAQ entry's name you want to list aliases for.
+     - This command displays all aliases associated with the FAQ entry.
+
+5. `deletefaq` (GitHub Contributors/Moderators/Admins)
+   - Description: Delete an existing FAQ entry.
+   - Usage: `!deletefaq [faq_name]`
+   - Instructions:
+     - Specify the FAQ entry's name you want to delete.
+     - This command removes the FAQ entry and its associated aliases.
+
+6. `editfaq` (Admins Only)
+   - Description: Modify an existing FAQ entry.
+   - Usage: `!editfaq [faq_name] [edit_type]`
+   - Instructions:
+     - Specify the FAQ entry's name you want to edit.
+     - Optionally, specify the edit type: 'question' or 'answer'.
+     - Follow the prompts to update the content.
+
+7. `faqraw`
+   - Description: View raw content (question, answer, or both) of an FAQ entry.
+   - Usage: `!faqraw [faq_name] [return_type]`
+   - Instructions:
+     - Specify the FAQ entry's name you want to view.
+     - Optionally, specify the return type: 'question', 'answer', or 'both'.
+     - This command displays the raw content of the FAQ entry.
+
+8. `faqview`
+   - Description: View an FAQ entry with a formatted embed.
+   - Usage: `!faq' [faq_name]`
+   - Instructions:
+     - Specify the FAQ entry's name you want to view.
+     - This command presents the FAQ entry in an attractive embed format.
+
+9. `refreshfaq` (Admins Only)
+   - Description: Refresh the FAQ entries in the designated FAQ channel.
+   - Usage: `!refreshfaq`
+   - Instructions:
+     - This command refreshes the FAQ entries in the designated channel.
+
+Extra Info:
+
+if wanting to make a new paragraph
+```
+!addfaq
+<FAQ Entry Name>
+This is the first paragraph.
+Shift + Enter (This will work for the embed)
+This is the second paragraph.
+```
