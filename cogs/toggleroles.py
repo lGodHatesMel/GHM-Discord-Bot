@@ -91,8 +91,8 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(help="Toggle the 'Animal Crossing New Horizon' role. Usage: !toggleanimal")
-    async def toggleanimal(self, ctx):
+    @commands.command(help="Toggle the 'Animal Crossing New Horizon' role. Usage: !toggleacnh")
+    async def toggleacnh(self, ctx):
         role_name = "Animal Crossing New Horizon"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
@@ -111,9 +111,9 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannouncement")
-    async def toggleannocement(self, ctx):
-        role_name = "Annocement Pings"
+    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannouncements")
+    async def toggleannocements(self, ctx):
+        role_name = "Announcement Pings"
         role_channel_id = self.config.get('role_channel_id')
         if ctx.channel.id != role_channel_id:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
