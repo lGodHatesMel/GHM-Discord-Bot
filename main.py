@@ -4,7 +4,7 @@ from discord.ext import commands
 import json
 import utils
 import asyncio
-from cogs.stickynotes import StickyNotes
+from cogs.channelmessages import StickyNotes
 
 intents = discord.Intents.default()
 intents.members = True

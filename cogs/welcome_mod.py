@@ -15,7 +15,6 @@ with open('config.json', 'r') as config_file:
 class WelcomeMod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.sticky_messages = {}
         self.database_folder = 'Database'
         self.database_file = os.path.join(self.database_folder, 'DBInfo.json')
         self.user_info = self.load_user_info()
@@ -74,31 +73,29 @@ class WelcomeMod(commands.Cog):
     async def on_message(self, message):
         if not message.author.bot:
             user_id = str(message.author.id)
-
-            # Check if the message is in a channel with a sticky note
-            if message.channel in self.sticky_messages:
-                # Get the original sticky message
-                original_sticky_msg = self.sticky_messages[message.channel]
-                # Add a delay before deleting the old sticky
-                await asyncio.sleep(3)
-                # Delete the old sticky message
-                await original_sticky_msg.delete()
-                # Check if the original sticky message content is not empty
-                if original_sticky_msg.embeds and original_sticky_msg.embeds[0].description:
-                    # Create a new embedded sticky note with the original content
-                    new_embed = discord.Embed(
-                        title="STICKY NOTE",
-                        description=original_sticky_msg.embeds[0].description,
-                        color=discord.Color.red()
-                    )
-                    # Send the new embedded sticky note
-                    new_sticky_msg = await message.channel.send(embed=new_embed)
-                    # Update the reference to the sticky message
-                    self.sticky_messages[message.channel] = new_sticky_msg
-
+            
             if user_id in self.user_info:
                 self.user_info[user_id]["info"]["total_messages"] += 1
                 self.save_user_info()
+
+            # Check if the message is in a channel with a sticky note
+            # if message.channel.id in self.sticky_messages:
+            #     # Get the original sticky message
+            #     original_sticky_msg = self.sticky_messages[message.channel.id]
+            #     # Add a delay before creating the new sticky note
+            #     await asyncio.sleep(2)
+            #     # Delete the old sticky message
+            #     await original_sticky_msg.delete()
+            #     # Create a new embedded sticky note with the original content
+            #     new_embed = discord.Embed(
+            #         title="**STICKY NOTE**",
+            #         description=original_sticky_msg.embeds[0].description,
+            #         color=discord.Color.random()
+            #     )
+            #     # Send the new embedded sticky note
+            #     new_sticky_msg = await message.channel.send(embed=new_embed)
+            #     # Update the reference to the sticky message
+            #     self.sticky_messages[message.channel.id] = new_sticky_msg
 
     @commands.command(help='Replies with Pong if bot is up', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -199,10 +196,10 @@ class WelcomeMod(commands.Cog):
     #         server = ctx.guild
     #         member_count = sum(1 for member in server.members if not member.bot)
     #         member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-            
+
     #         # Generate a random color in hexadecimal notation
     #         random_color = random.randint(0, 0xFFFFFF)
-                
+
     #         welcome = {
     #             "title": "Welcome!",
     #             "description": f"Welcome to GodHatesMe Pokemon Centre {ctx.author.mention}, you are our {member_number}!\n\n"
@@ -214,6 +211,45 @@ class WelcomeMod(commands.Cog):
     #         embed.set_thumbnail(url=ctx.author.avatar_url)
     #         embed.set_footer(text=ctx.author.name)
     #         await ctx.send(embed=embed)
+
+    # @commands.command()
+    # async def simulate_join(self, ctx, user_id: int):
+    #     # Simulate a user join (for testing purposes)
+    #     if str(user_id) not in self.user_info:
+    #         member = ctx.guild.get_member(user_id)
+    #         if member:
+    #             self.user_info[str(user_id)] = {
+    #                 "info": {
+    #                     "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+    #                     "Left": None,
+    #                     "username": member.name,
+    #                     "roles": [role.name for role in member.roles],
+    #                     "total_messages": 0,
+    #                     "warns": [],
+    #                     "notes": [],
+    #                     "banned": [],
+    #                     "kick_reason": [],
+    #                     "kicks_amount": 0,
+    #                     "avatar_url": str(member.avatar_url),
+    #                 }
+    #             }
+    #             self.save_user_info()
+    #             await ctx.send(f"Simulated join for user {user_id}.")
+    #         else:
+    #             await ctx.send("User not found in the server.")
+    #     else:
+    #         await ctx.send("User already exists in the database.")
+
+    # @commands.command()
+    # async def simulate_leave(self, ctx, user_id: int):
+    #     # Simulate a user leave (for testing purposes)
+    #     if str(user_id) in self.user_info:
+    #         leave_time = utils.get_local_time()
+    #         self.user_info[str(user_id)]["info"]["Left"] = leave_time.strftime('%Y-%m-%d %H:%M:%S')
+    #         self.save_user_info()
+    #         await ctx.send(f"Simulated leave for user {user_id}.")
+    #     else:
+    #         await ctx.send("User not found in the database.")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -289,45 +325,6 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"Updated {key} for user {user_id} to {value}.")
         else:
             await ctx.send("User not found in the database or key does not exist.")
-
-    # @commands.command()
-    # async def simulate_join(self, ctx, user_id: int):
-    #     # Simulate a user join (for testing purposes)
-    #     if str(user_id) not in self.user_info:
-    #         member = ctx.guild.get_member(user_id)
-    #         if member:
-    #             self.user_info[str(user_id)] = {
-    #                 "info": {
-    #                     "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-    #                     "Left": None,
-    #                     "username": member.name,
-    #                     "roles": [role.name for role in member.roles],
-    #                     "total_messages": 0,
-    #                     "warns": [],
-    #                     "notes": [],
-    #                     "banned": [],
-    #                     "kick_reason": [],
-    #                     "kicks_amount": 0,
-    #                     "avatar_url": str(member.avatar_url),
-    #                 }
-    #             }
-    #             self.save_user_info()
-    #             await ctx.send(f"Simulated join for user {user_id}.")
-    #         else:
-    #             await ctx.send("User not found in the server.")
-    #     else:
-    #         await ctx.send("User already exists in the database.")
-    
-    # @commands.command()
-    # async def simulate_leave(self, ctx, user_id: int):
-    #     # Simulate a user leave (for testing purposes)
-    #     if str(user_id) in self.user_info:
-    #         leave_time = utils.get_local_time()
-    #         self.user_info[str(user_id)]["info"]["Left"] = leave_time.strftime('%Y-%m-%d %H:%M:%S')
-    #         self.save_user_info()
-    #         await ctx.send(f"Simulated leave for user {user_id}.")
-    #     else:
-    #         await ctx.send("User not found in the database.")
 
     @commands.command(aliases=['adduser', 'addtodb'], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -826,53 +823,6 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"No ban with ID {ban_id} found for {user.mention}.")
         else:
             await ctx.send("User not found in the database.")
-
-    @commands.command(aliases=['bd', 'down'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def botdown(self, ctx, channel: discord.TextChannel, *, message):
-
-        await channel.send(f"**Bot Down:**\n{message}")
-        await ctx.send(f"Bot Down message sent to {channel.mention}.")
-
-        current_time = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
-        author = ctx.message.author
-        command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
-
-    @commands.command(aliases=['announce', 'am'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def announcement(self, ctx, channel: discord.TextChannel, *, message):
-
-        await channel.send(f"**Announcement:**\n{message}")
-        await ctx.send(f"Announcement sent to {channel.mention}.")
-
-    @commands.command(name='addsticky', aliases=['as'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def sticky_note(self, ctx, channel: discord.TextChannel, *, message):
-        # Format the message content inside code blocks (```)
-        formatted_message = f'```{message}```'
-
-        embed = discord.Embed(
-            title="STICKY NOTE",
-            description=formatted_message,
-            color=discord.Color.red()
-        )
-
-        sticky_msg = await channel.send(embed=embed)
-        self.sticky_messages[channel.id] = sticky_msg  # Use channel.id as the key
-
-        await ctx.send(f"Sticky note added to {channel.mention}.")
-
-    @commands.command(name='removesticky', aliases=['rs', 'delsticky'], help='<#Channel>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def remove_sticky(self, ctx, channel: discord.TextChannel):
-
-        if channel.id in self.sticky_messages:  # Check for channel.id in the dictionary
-            sticky_msg = self.sticky_messages.pop(channel.id)
-            await sticky_msg.delete()
-            await ctx.send(f"Sticky note removed from {channel.mention}.")
-        else:
-            await ctx.send(f"No sticky note found in {channel.mention}.")
 
 def setup(bot):
     bot.add_cog(WelcomeMod(bot))
