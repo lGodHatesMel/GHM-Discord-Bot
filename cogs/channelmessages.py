@@ -61,20 +61,14 @@ class StickyNotes(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.load_sticky_notes()
-
-    async def on_disconnect(self):
-        # Delete old sticky messages and update message IDs before disconnecting
+        self.cleanup()
+        
+    def cleanup(self):
         for channel_id, data in self.sticky_messages.items():
-            channel = self.bot.get_channel(int(channel_id))
-            if channel and isinstance(data["message"], discord.Message):
-                await data["message"].delete()
-                # Send the updated sticky message
-                new_sticky_msg = await channel.send(embed=discord.Embed(
-                    title="**STICKY NOTE**",
-                    description=data["content"],
-                    color=discord.Color.random()
-                ))
-                data["message"] = new_sticky_msg
+            asyncio.run_coroutine_threadsafe(
+                data["message"].delete(),
+                self.bot.loop
+            )
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -91,9 +85,17 @@ class StickyNotes(commands.Cog):
                     if original_sticky_msg_id != message.id:
                         # Verify that the author of the old sticky note matches the bot's user ID
                         if original_sticky_msg_author_id == self.bot.user.id:
-                            # Delete the old sticky note
+                            # Attempt to fetch the old sticky note
                             channel = message.channel
-                            old_sticky_msg = await channel.fetch_message(original_sticky_msg_id)
+                            try:
+                                old_sticky_msg = await channel.fetch_message(original_sticky_msg_id)
+                            except discord.NotFound:
+                                # Message not found, it might have been deleted
+                                old_sticky_msg = None
+
+                            await asyncio.sleep(2.5)
+
+                            # Delete the old sticky note if it exists
                             if old_sticky_msg:
                                 await old_sticky_msg.delete()
 
@@ -196,17 +198,6 @@ class StickyNotes(commands.Cog):
 
         await channel.send(f"**Announcement:**\n{message}")
         await ctx.send(f"Announcement sent to {channel.mention}.")
-
-    def cleanup(self):
-        for channel_id, data in self.sticky_messages.items():
-            asyncio.run_coroutine_threadsafe(
-                data["message"].delete(),
-                self.bot.loop
-            )
-
-    async def on_disconnect(self):
-        # Perform cleanup when the bot disconnects
-        self.cleanup()
 
 def setup(bot):
     bot.add_cog(StickyNotes(bot))
