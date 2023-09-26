@@ -18,8 +18,10 @@ class ExtensionManagement(commands.Cog):
             self.bot.unload_extension(extension)
             self.bot.load_extension(extension)
             await ctx.send(f":white_check_mark: Extension '{extension}' reloaded.")
+            print(f"Extension '{extension}' reloaded.")
         except Exception as e:
             await ctx.send(f":x: Operation failed!\n\n{type(e).__name__}: {e}")
+            print(f"Operation failed!\n\n{type(e).__name__}: {e}")
             traceback.print_exc()
 
     @commands.command(hidden=True)
