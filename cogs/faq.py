@@ -79,7 +79,7 @@ class FactsQuestions(commands.Cog):
             await ctx.send("⚠ FAQ channel not found. Make sure 'faq_channel_id' in config.json points to a valid channel.")
             return
 
-        await ctx.send("Type the name for this FAQ entry (no spaces or special characters), or type `cancel` to cancel:")
+        await ctx.send("Type the bot command name for this FAQ entry (no spaces or special characters), or type `cancel` to cancel:")
 
         try:
             name = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
@@ -87,14 +87,14 @@ class FactsQuestions(commands.Cog):
             if name == "cancel":
                 return await ctx.send("❌ Canceled by user.")
             
-            await ctx.send("Type the question to be added after this message (note: all questions are automatically underlined):")
+            await ctx.send("Type the question to be added after this message:")
 
-            question = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
+            question = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=60.0)
             question_content = question.content
 
             await ctx.send("Type the answer after this message:")
 
-            answer = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
+            answer = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=60.0)
             answer_content = answer.content
 
         except asyncio.TimeoutError:
