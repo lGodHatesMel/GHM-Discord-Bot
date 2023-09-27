@@ -3,13 +3,12 @@ from discord.ext import commands
 import json
 from datetime import datetime
 import utils
-from utils import get_local_time
 
 class MessageLogger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(aliases=["clear", "purge"])
+    @commands.command(aliases=["clear", "purge"], hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def clearmessages(self, ctx, amount: int):
         """
@@ -50,13 +49,13 @@ class MessageLogger(commands.Cog):
             return
 
         logging_channel = self.bot.get_channel(message_logger_channel_id)
+        timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
 
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{message.author.name}", icon_url=message.author.avatar_url)
         embed.description = f"Message deleted in {message.channel.mention}"
         embed.add_field(name="Deleted Message", value=message.content, inline=False)
-        embed.set_footer(text=f"|| {utils.get_local_time()} | UID: {message.author.id} | MID: {message.id} ||")
-
+        embed.set_footer(text=f"UID: {message.author.id} • Message ID: {message.id} • {timestamp}")
 
         await logging_channel.send(embed=embed)
 
@@ -75,15 +74,16 @@ class MessageLogger(commands.Cog):
             return
 
         logging_channel = self.bot.get_channel(message_logger_channel_id)
+        timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
 
         embed = discord.Embed(color=discord.Color.orange())
         embed.set_author(name=f"{before.author.name}", icon_url=before.author.avatar_url)
         embed.description = f"Message edited in {before.channel.mention}"
         embed.add_field(name="Original Message", value=before.content, inline=False)
         embed.add_field(name="Edited Message", value=after.content, inline=False)
-        embed.set_footer(text=f"|| {utils.get_local_time()} | User ID: {before.author.id} | MID: {before.id} ||")
+        embed.set_footer(text=f"UID: {before.author.id} • Message ID: {before.id} • {timestamp}")
 
         await logging_channel.send(embed=embed)
-        
+
 def setup(bot):
     bot.add_cog(MessageLogger(bot))

@@ -114,7 +114,7 @@ class StickyNotes(commands.Cog):
             except Exception as e:
                 print(f"An error occurred in on_message: {e}")
 
-    @commands.command(name='addsticky', help='<#Channel> <Message>', hidden=True)
+    @commands.command(help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addsticky(self, ctx, channel: discord.TextChannel, *, message):
         formatted_message = f'{message}'

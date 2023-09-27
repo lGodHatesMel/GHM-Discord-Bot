@@ -23,7 +23,7 @@ class Countdown(commands.Cog):
         target_timestamp = config.get('target_timestamp')
         channel = self.bot.get_channel(countdown_channel_id)  # Get the channel using the ID
 
-        current_timestamp = utils.get_local_time()
+        current_timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
         time_remaining = target_timestamp - current_timestamp
 
         if time_remaining <= 0:  # This is the message it will give once the countdown is finished

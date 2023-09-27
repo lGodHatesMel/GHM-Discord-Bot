@@ -5,7 +5,7 @@ import random
 import discord
 from discord.ext import commands
 
-class Faq(commands.Cog):
+class FactsQuestions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.faq_aliases = {}
@@ -143,7 +143,7 @@ class Faq(commands.Cog):
         await ctx.send("✅ Alias removed.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
-    @commands.command(aliases=['aliases'])
+    @commands.command(aliases=['aliases'], help='<faqname> [This will give you all the aliases to that faq]')
     async def listaliases(self, ctx, faq_name: str = ""):
         if not faq_name:
             return await ctx.send("⚠ FAQ entry name is required.")
@@ -236,8 +236,8 @@ class Faq(commands.Cog):
             msg = "\n\n".join([entry['question'], entry['answer']])
         await ctx.send("```\n{}\n```".format(msg))
 
-    @commands.command(aliases=['faq'])
-    async def faqview(self, ctx, faq_req: str):
+    @commands.command(aliases=['faqview'], help='<faq_name> or <faq_alias_name>')
+    async def faq(self, ctx, faq_req: str):
         with open(self.json_file, "r") as f:
             faq_db = json.load(f)
 
@@ -262,4 +262,4 @@ class Faq(commands.Cog):
         self.bot.loop.create_task(self.update_faq(ctx))
 
 def setup(bot):
-    bot.add_cog(Faq(bot))
+    bot.add_cog(FactsQuestions(bot))

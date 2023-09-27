@@ -5,11 +5,8 @@ import pytz
 import random
 
 def get_local_time():
-    # Get the current UTC time
     utc_now = datetime.utcnow()
-    # Define the target time zone (e.g., 'US/Eastern')
     target_timezone = pytz.timezone('US/Eastern')
-    # Convert the UTC time to the target timezone
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
@@ -33,7 +30,7 @@ def is_visible(allowed_roles):
 
     return predicate
 
-async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, ban_id=None, user_data=None, config=None, embed=None):
+async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
     if not config:
         raise ValueError("config is required for log_mod_action")
 
@@ -47,45 +44,39 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, iss
     if not mod_logs_channel:
         raise ValueError(f"Mod logs channel with ID {mod_logs_channel_id} not found")
 
-    embed_color = discord.Color.blue() if action == 'Kick' \
-        else discord.Color.orange() if action == 'Warning' \
-        else discord.Color.gold() if action == 'Note' \
-        else discord.Color.red() if action == 'Banned' \
-        else discord.Color.red() if action == 'Unban' \
-        else discord.Color.lighter_grey() if action == 'Database' \
-        else discord.Color.red()
+    embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
+
+    timestamp = get_local_time()
 
     embed = discord.Embed(
         title=f"{action} Log",
         color=embed_color,
-        timestamp=get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z")
+        timestamp=timestamp
     )
 
     embed.add_field(name="Action", value=action, inline=True)
-    embed.add_field(name="Target", value=f"{target.mention} ({target.name})", inline=True)
+    embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=True)
     embed.add_field(name="Reason", value=reason, inline=False)
 
-    # Add warning number and issuer if provided
     if action == 'Warning':
         if warning_number:
             embed.add_field(name="Warning Number", value=warning_number, inline=True)
         if issuer:
-            if isinstance(issuer, str):
-                embed.add_field(name="Issuer", value=issuer, inline=True)
-            else:
-                embed.add_field(name="Issuer", value=issuer.mention, inline=True)
+            value = issuer if isinstance(issuer, str) else issuer.mention
+            embed.add_field(name="Issuer", value=value, inline=True)
 
-    if ban_id and user_data:
-        bans = [ban for ban in user_data.get("banned", []) if ban.get("ban_id") == ban_id]
-    else:
-        bans = []
+    if action in ('Ban', 'Unban', 'Kick') and issuer:
+        value = issuer if isinstance(issuer, str) else issuer.mention
+        embed.add_field(name="Issuer", value=value, inline=True)
 
-    for ban in bans:
-        embed.add_field(
-            name=f"Ban ID: {ban['ban_id']}",
-            value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
-            inline=False
-        )
+    if user_data and action == 'Ban':
+        bans = [ban for ban in user_data.get("banned", [])]
+        for ban in bans:
+            embed.add_field(
+                name="Ban Info",
+                value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
+                inline=False
+            )
 
     await mod_logs_channel.send(embed=embed)
 

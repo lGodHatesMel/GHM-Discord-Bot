@@ -9,12 +9,9 @@ class CustomCommands(commands.Cog):
         self.database_folder = 'Database'
         self.commands_file = os.path.join(self.database_folder, 'custom_commands.json')
 
-        # Check if the custom_commands.json file exists, and create it if not
         if not os.path.exists(self.commands_file):
             with open(self.commands_file, 'w') as file:
                 json.dump({}, file)
-
-        # Load custom commands when the bot starts
         self.load_custom_commands()
 
     def load_custom_commands(self):
@@ -120,6 +117,80 @@ class CustomCommands(commands.Cog):
             await ctx.send(f'Command "{command_name}" deleted successfully.')
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
+            
+    @commands.command(aliases=['modcommands'], help='Display the moderation command list')
+    @commands.has_any_role("Moderator", "Admin")
+    async def staffcommands(self, ctx):
+        embed = discord.Embed(
+            title='**__Moderation Command List__**',
+            description='*Here are the moderation commands:*',
+            color=discord.Color.random()
+        )
+        embed.add_field(
+            name='User Database:',
+            value=(
+                "`!adduser <uid>` - Add a user to the database.\n"
+                "`!updateinfo <uid> <key> <value>` - Update user information."
+            ),
+            inline=False
+        )
+        embed.add_field(
+            name='Info:',
+            value='`!info <uid>` - Retrieve user information.',
+            inline=False
+        )
+        embed.add_field(
+            name='Bans:',
+            value=(
+                "`!ban <uid> <reason>` - Ban a user.\n"
+                "`!unban <uid> <reason>` - Unban a user.\n"
+                "`!checkbans <uid>` - Check a user's bans."
+            ),
+            inline=False
+        )
+        embed.add_field(
+            name='Notes:',
+            value=(
+                "`!addnote <uid> <message>` - Add a note for a user.\n"
+                "`!removenote <uid> <note#> <message>` - Remove a user's note.\n"
+                "`!notes <uid> <note#>` - View a user's notes."
+            ),
+            inline=False
+        )
+        embed.add_field(
+            name='Warnings:',
+            value=(
+                "`!addwarning <uid> <reason>` - Add a warning for a user.\n"
+                "`!removewarning <uid> <warning#> <reason>` - Remove a user's warning.\n"
+                "`!checkwarning <uid> <warning#>` - View a user's warnings."
+            ),
+            inline=False
+        )
+        embed.add_field(
+            name='Kicks:',
+            value='`!kick <uid> <reason>` - Kick a user.',
+            inline=False
+        )
+        embed.add_field(
+            name='Others:',
+            value=(
+                "`!botdown <channel> <message>` - Send a bot down message.\n"
+                "`!announcement <channel> <message>` - Send an announcement.\n"
+                "`!addsticky <channel> <message>` - Add a sticky note.\n"
+                "`!rekovesticky <channel>` - Remove a sticky note.\n"
+                "`!addcommand <command_name> <respond_message>` - Add's a custom command.\n"
+                "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`"
+            ),
+            inline=False
+        )
+        embed.add_field(name='\u200b', value='\u200b', inline=False)
+        embed.set_footer(
+        text="Note: If you use a command and it says 'User not in database', "
+            "use the `!adduser <uid>` command to add them first, "
+            "and then use the other command."
+    )
+
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(CustomCommands(bot))

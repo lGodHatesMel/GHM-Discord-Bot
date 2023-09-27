@@ -1,12 +1,10 @@
+import datetime
 import os
 import discord
 from discord.ext import commands
 import random
 import json
-import asyncio
 import utils
-import secrets
-import string
 from typing import Union
 
 with open('config.json', 'r') as config_file:
@@ -41,7 +39,7 @@ class WelcomeMod(commands.Cog):
         import datetime
 
         # Filter out users with empty data before saving to the database
-        filtered_user_info = {user_id: data for user_id, data in self.user_info.items() if data["info"]}
+        filtered_user_info = {uid: data for uid, data in self.user_info.items() if data["info"]}
 
         with open(self.database_file, 'w') as f:
             json.dump(
@@ -61,21 +59,21 @@ class WelcomeMod(commands.Cog):
     async def on_member_update(self, before, after):
         if before.roles != after.roles:
             # If the roles of a member have changed
-            user_id = str(after.id)
+            uid = str(after.id)
 
             # Check if the user exists in the database
-            if user_id in self.user_info:
+            if uid in self.user_info:
                 # Update the user's roles in the database
-                self.user_info[user_id]["info"]["roles"] = [role.name for role in after.roles]
+                self.user_info[uid]["info"]["roles"] = [role.name for role in after.roles]
                 self.save_user_info()
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
-            user_id = str(message.author.id)
+            uid = str(message.author.id)
             
-            if user_id in self.user_info:
-                self.user_info[user_id]["info"]["total_messages"] += 1
+            if uid in self.user_info:
+                self.user_info[uid]["info"]["total_messages"] += 1
                 self.save_user_info()
 
             # Check if the message is in a channel with a sticky note
@@ -105,9 +103,9 @@ class WelcomeMod(commands.Cog):
     @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def updateuser(self, ctx, new_username: str):
-        user_id = str(ctx.author.id)
-        if user_id in self.user_info:
-            self.user_info[user_id]["info"]["username"] = new_username
+        uid = str(ctx.author.id)
+        if uid in self.user_info:
+            self.user_info[uid]["info"]["username"] = new_username
             self.save_user_info()
             await ctx.send(f"Updated username to {new_username}.")
         else:
@@ -117,20 +115,17 @@ class WelcomeMod(commands.Cog):
     async def on_user_update(self, before, after):
         if before.avatar_url != after.avatar_url:
             # If the user's avatar URL has changed
-            user_id = str(after.id)
-
+            uid = str(after.id)
             # Check if the user exists in the database
-            if user_id in self.user_info:
+            if uid in self.user_info:
                 # Update the user's avatar URL in the database
-                self.user_info[user_id]["info"]["avatar_url"] = str(after.avatar_url)
+                self.user_info[uid]["info"]["avatar_url"] = str(after.avatar_url)
                 self.save_user_info()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        # Add a debug message to check if the event is triggered
         print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
 
-        # Retrieve the welcome_channel_id
         self.welcome_channel_id = await self.get_welcome_channel_id()
 
         if self.welcome_channel_id:
@@ -139,8 +134,6 @@ class WelcomeMod(commands.Cog):
                 server = member.guild
                 member_count = sum(1 for member in server.members if not member.bot)
                 member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-
-                # Generate a random color in hexadecimal notation
                 random_color = random.randint(0, 0xFFFFFF)
 
                 welcome = {
@@ -157,15 +150,15 @@ class WelcomeMod(commands.Cog):
                 await channel.send(embed=embed)
                 print(f"{member.name} joined the server as the {member_number}.")
 
-                user_id = str(member.id)
+                uid = str(member.id)
 
                 # Check if the user already exists in the database
-                if user_id in self.user_info:
+                if uid in self.user_info:
                     # Update the "Left" field to None when a user rejoins
-                    self.user_info[user_id]["info"]["Left"] = None
+                    self.user_info[uid]["info"]["Left"] = None
                 else:
                     # If the user doesn't exist, create a new entry in the database
-                    self.user_info[user_id] = {
+                    self.user_info[uid] = {
                         "info": {
                             "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
                             "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -184,8 +177,8 @@ class WelcomeMod(commands.Cog):
                 self.save_user_info()
 
                 # Check if the user is in the banned list and their ban has not been lifted
-                if user_id in self.user_info and self.user_info[user_id]["info"]["banned"]:
-                    for ban_info in self.user_info[user_id]["info"]["banned"]:
+                if uid in self.user_info and self.user_info[uid]["info"]["banned"]:
+                    for ban_info in self.user_info[uid]["info"]["banned"]:
                         if ban_info.get("lifted") is None:
                             # Send a message to the mod log indicating the user is still banned
                             await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
@@ -253,24 +246,19 @@ class WelcomeMod(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        # Get the leave time as a datetime object
         leave_time = utils.get_local_time()
-        
-        # Convert the datetime object to a formatted string
         leave_time_str = leave_time.strftime('%Y-%m-%d %H:%M:%S')
-        
-        # Update the user info with the leave time
-        user_id = str(member.id)
-        if user_id in self.user_info:
-            self.user_info[user_id]["info"]["Left"] = leave_time_str
+
+        uid = str(member.id)
+        if uid in self.user_info:
+            self.user_info[uid]["info"]["Left"] = leave_time_str
             self.save_user_info()
 
     @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def info(self, ctx, user_id: int):
-        # Check if the user ID exists in the database
-        if str(user_id) in self.user_info:
-            user_data = self.user_info[str(user_id)]
+    async def info(self, ctx, uid: int):
+        if str(uid) in self.user_info:
+            user_data = self.user_info[str(uid)]
             join_date = user_data["info"]["Joined"]
             leave_date = user_data["info"]["Left"] if "Left" in user_data["info"] else "N/A"
 
@@ -290,22 +278,18 @@ class WelcomeMod(commands.Cog):
             total_messages = user_data["info"]["total_messages"]
             embed.add_field(name="Total Messages", value=total_messages, inline=True)
 
-            # Check if the user has warnings
             if "warns" in user_data["info"] and user_data["info"]["warns"]:
                 total_warnings = len(user_data["info"]["warns"])
                 embed.add_field(name="Warnings", value=total_warnings, inline=True)
 
-            # Check if the user has kicks_amount
             if "kicks_amount" in user_data["info"]:
                 total_kicks = user_data["info"]["kicks_amount"]
                 embed.add_field(name="Kicks", value=total_kicks, inline=True)
 
-            # Check if the user has notes
             if "notes" in user_data["info"] and user_data["info"]["notes"]:
                 total_notes = len(user_data["info"]["notes"])
                 embed.add_field(name="Notes", value=total_notes, inline=True)
                 
-            # Check if the user has bans
             if "banned" in user_data["info"] and user_data["info"]["banned"]:
                 embed.add_field(name="Banned", value="Yes", inline=True)
             else:
@@ -317,25 +301,25 @@ class WelcomeMod(commands.Cog):
 
     @commands.command(help='<user_id> <key> <value>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def updateinfo(self, ctx, user_id: int, key: str, *, value: str):
+    async def updateinfo(self, ctx, uid: int, key: str, *, value: str):
         # Update user information (for testing purposes)
-        if str(user_id) in self.user_info and key in self.user_info[str(user_id)]["info"]:
-            self.user_info[str(user_id)]["info"][key] = value
+        if str(uid) in self.user_info and key in self.user_info[str(uid)]["info"]:
+            self.user_info[str(uid)]["info"][key] = value
             self.save_user_info()
-            await ctx.send(f"Updated {key} for user {user_id} to {value}.")
+            await ctx.send(f"Updated {key} for user {uid} to {value}.")
         else:
             await ctx.send("User not found in the database or key does not exist.")
 
     @commands.command(aliases=['adduser', 'addtodb'], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def addusertodb(self, ctx, user_id: int):
+    async def addusertodb(self, ctx, uid: int):
         # Check if the user ID exists in the database; if not, add them to the database
-        if str(user_id) not in self.user_info:
+        if str(uid) not in self.user_info:
             # Attempt to fetch the member from the server
-            member = ctx.guild.get_member(user_id)
+            member = ctx.guild.get_member(uid)
 
             if member:
-                self.user_info[str(user_id)] = {
+                self.user_info[str(uid)] = {
                     "info": {
                         "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
                         "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -352,24 +336,24 @@ class WelcomeMod(commands.Cog):
                     }
                 }
                 self.save_user_info()
-                await ctx.send(f"User with ID `{user_id}` (username: `{member.name}`) added to the database.")
+                await ctx.send(f"User with ID `{uid}` (username: `{member.name}`) added to the database.")
 
                 await utils.log_mod_action(ctx.guild, 'Database', member, f"User added to the database by {ctx.author.name}", config=config)
             else:
                 await ctx.send("User not found in the server.")
         else:
-            await ctx.send(f"User with ID {user_id} already exists in the database.")
+            await ctx.send(f"User with ID {uid} already exists in the database.")
 
     @commands.command(help='<UID> <Note>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addnote(self, ctx, user: discord.User, *, note_content: str):
-        user_id = str(user.id)
+        uid = str(user.id)
 
         # Check if the user ID exists in the database; if not, add them to the database
-        if user_id not in self.user_info:
+        if uid not in self.user_info:
             member = ctx.guild.get_member(user.id)
             if member:
-                self.user_info[user_id] = {
+                self.user_info[uid] = {
                     "info": {
                         "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
                         "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -391,10 +375,9 @@ class WelcomeMod(commands.Cog):
                 return
 
         # Continue with adding the note
-        user_data = self.user_info[user_id]
+        user_data = self.user_info[uid]
         notes = user_data["info"]["notes"]
-        timestamp = utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z")
-
+        timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
         # Check if there are existing notes
         note_number = 1
         for note in notes:
@@ -414,12 +397,12 @@ class WelcomeMod(commands.Cog):
         
         await utils.log_mod_action(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
-    @commands.command(aliases=["removenote"], help='<UID> <Note #>', hidden=True)
+    @commands.command(aliases=["removenote", "deletenote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
-    async def delnote(self, ctx, user_id: int, note_number: int):
+    async def delnote(self, ctx, uid: int, note_number: int):
         # Check if the user ID exists in the database
-        if str(user_id) in self.user_info:
-            user_data = self.user_info[str(user_id)]
+        if str(uid) in self.user_info:
+            user_data = self.user_info[str(uid)]
             notes = user_data["info"]["notes"]
 
             # Find the note with the specified number
@@ -433,8 +416,8 @@ class WelcomeMod(commands.Cog):
                 deleted_content = found_note.get("content", "")
                 notes.remove(found_note)
                 self.save_user_info()
-                await ctx.send(f"🗑 **Note Removed**: {ctx.author.name} removed a note for {user_id}\n(#{note_number}) - {deleted_content}")
-                await utils.log_mod_action(ctx.guild, 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {user_id}\n(#{note_number}) - {deleted_content}", config=config)
+                await ctx.send(f"🗑 **Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}")
+                await utils.log_mod_action(ctx.guild, 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}", config=config)
             else:
                 await ctx.send(f"Note #{note_number} not found for this user.")
         else:
@@ -442,14 +425,14 @@ class WelcomeMod(commands.Cog):
 
     @commands.command(aliases=["notes", "checknotes"], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def listnotes(self, ctx, user_id: int):
-        if str(user_id) in self.user_info:
-            user_data = self.user_info[str(user_id)]
+    async def listnotes(self, ctx, uid: int):
+        if str(uid) in self.user_info:
+            user_data = self.user_info[str(uid)]
             notes = user_data["info"]["notes"]
 
             if notes:
                 embed = discord.Embed(
-                    title=f"Notes for {user_data['info']['username']} (UID: {user_id})",
+                    title=f"Notes for {user_data['info']['username']} (UID: {uid})",
                     color=0x00ff00,
                 )
 
@@ -464,21 +447,20 @@ class WelcomeMod(commands.Cog):
 
                 await ctx.send(embed=embed)
             else:
-                await ctx.send(f"No notes found for user {user_id}.")
+                await ctx.send(f"No notes found for user {uid}.")
         else:
             await ctx.send("User not found in the database.")
 
     @commands.command(aliases=['warn'], help='<UID> <Reason>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addwarning(self, ctx, member: discord.Member, *, warning: str):
-        # Check if the user exists in the database
-        user_id = str(member.id)
+        uid = str(member.id)
 
-        if user_id in self.user_info:
-            user_data = self.user_info[user_id]
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
             warnings = user_data["info"].get("warns", [])
             warning_number = len(warnings) + 1
-            timestamp = utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z")
+            timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
             author = ctx.author.name
 
             # Customize the message based on other conditions, for example:
@@ -491,10 +473,10 @@ class WelcomeMod(commands.Cog):
 
             new_warning = {
                 "number": warning_number,
-                "timestamp": utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z"),
+                "timestamp": timestamp,
                 "author": author,
                 "warning": warning,
-                "issuer": ctx.author.name  # Add the issuer here
+                "issuer": ctx.author.name
             }
 
             warnings.append(new_warning)
@@ -515,7 +497,7 @@ class WelcomeMod(commands.Cog):
             if warning_number == 5:
                 
                 ban_info = {
-                    "timestamp": utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z"),
+                    "timestamp": datetime.datetime.now(),
                     "issuer": "Shiny Ditto Bot",
                     "reason": "Banned due to their 5th warning",
                     "lifted": None, 
@@ -547,11 +529,11 @@ class WelcomeMod(commands.Cog):
             await ctx.send("Please provide a warning number after the user ID.")
             return
 
-        user_id = str(user.id)
+        uid = str(user.id)
 
         # Check if the user ID exists in the database
-        if user_id in self.user_info:
-            user_data = self.user_info[user_id]
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
             warnings = user_data["info"]["warns"]
 
             # Find the warning with the specified number
@@ -579,11 +561,11 @@ class WelcomeMod(commands.Cog):
     @commands.command(aliases=["deletewarning", "removewarning"], help='<UID> <Warning #>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
-        user_id = str(user.id)
+        uid = str(user.id)
 
         # Check if the user ID exists in the database
-        if user_id in self.user_info:
-            user_data = self.user_info[user_id]
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
             warnings = user_data["info"]["warns"]
 
             # Find the warning with the specified number
@@ -619,11 +601,11 @@ class WelcomeMod(commands.Cog):
                 return
 
         # Check if the user exists in the database
-        user_id = str(member.id)
+        uid = str(member.id)
 
-        if user_id in self.user_info:
+        if uid in self.user_info:
             # Get the user's data from the database
-            user_data = self.user_info[user_id]
+            user_data = self.user_info[uid]
 
             # Increment the kicks_amount count
             user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
@@ -631,7 +613,7 @@ class WelcomeMod(commands.Cog):
             # Add kick reason to the user's data with a "number" field
             kick_info = {
                 "number": 1,
-                "timestamp": utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z"),
+                "timestamp": datetime.datetime.now(),
                 "issuer": ctx.author.name,
                 "reason": reason
             }
@@ -684,12 +666,11 @@ class WelcomeMod(commands.Cog):
             await ctx.send("Please provide a reason for the ban.")
             return
 
-        user_id = str(user.id)
-        user_with_uid = f"{user.name} - ({user_id})"
+        uid = str(user.id)
+        user_with_uid = f"{user.name} - UID: {uid}"
 
-        if user_id in self.user_info:
-            user_data = self.user_info[user_id]
-
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
             # Send a DM to the user before banning
             try:
                 ban_message = f"You have been banned from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou can appeal this ban by creating a ticket in the ban appeal discord server. Permanent invite link: https://discord.gg/CBuJgaWkrr"
@@ -703,16 +684,11 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"An error occurred while sending a ban message to {user_with_uid}: {e}")
                 return
 
-            # Generate a random ban ID with 6 digits
-            ban_id = ''.join(secrets.choice(string.digits) for _ in range(6))
-
-            # Add ban information to the user's data
             ban_info = {
-                "timestamp": utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z"),
+                "timestamp": datetime.datetime.now(),
                 "issuer": ctx.author.name,
                 "reason": reason,
                 "lifted": None,
-                "ban_id": ban_id  # Add a unique identifier for the ban
             }
 
             # Append the ban info to the list of bans in the user's data
@@ -734,28 +710,26 @@ class WelcomeMod(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             embed.add_field(name="User", value=user_with_uid, inline=False)
             embed.add_field(name="Reason", value=reason, inline=False)
-            embed.add_field(name="UID", value=user_id, inline=True)
-            embed.add_field(name="Ban ID", value=ban_id, inline=True)
-            embed.add_field(name="Timestamp", value=utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z"), inline=True)
+            embed.add_field(name="Timestamp", value=datetime.datetime.now(), inline=True)
 
-            await utils.log_mod_action(ctx.guild, 'Ban', user, reason, ctx.author, config=config, embed=embed)
+            await utils.log_mod_action(ctx.guild, 'Ban', user, reason, ctx.author, user_data=user_data, config=config, embed=embed)
 
             await ctx.send(f"{user_with_uid} has been banned for the following reason: {reason}")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <ban_id>', hidden=True)
+    @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def checkbans(self, ctx, user: discord.User):
-        user_id = str(user.id)
+        uid = str(user.id)
 
-        if user_id in self.user_info:
-            user_data = self.user_info[user_id]
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
             bans = user_data["info"].get("banned", [])
 
             if bans:
                 embed = discord.Embed(
-                    title=f"Bans for {user_data['info']['username']} (UID: {user_id})",
+                    title=f"Bans for {user_data['info']['username']} (UID: {uid})",
                     color=0xFF0000,
                 )
 
@@ -766,63 +740,81 @@ class WelcomeMod(commands.Cog):
                     issuer = ban_info["issuer"]
                     reason = ban_info["reason"]
                     lifted = ban_info["lifted"] or "Not Lifted"
-                    ban_id = ban_info.get("ban_id", "N/A")
                     unban_reason = ban_info.get("unban_reason", "N/A")
 
                     embed.add_field(
                         name=f"Ban #{index}",
-                        value=f"Ban ID: {ban_id}\nDate/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nLifted: {lifted}\nUnban Reason: {unban_reason}",
+                        value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nLifted: {lifted}\nUnban Reason: {unban_reason}",
                         inline=False
                     )
 
                 await ctx.send(embed=embed)
             else:
-                await ctx.send(f"No bans found for user {user_id}.")
+                await ctx.send(f"No bans found for user {uid}.")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <ban_id> <unban_reason>', hidden=True)
+    @commands.command(help='<UID> <unban_reason>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def unban(self, ctx, user: discord.User, ban_id: str, *, unban_reason: str = None):
-        user_id = str(user.id)
+    async def unban(self, ctx, user: discord.User, *, unban_reason: str = None):
+        uid = str(user.id)
 
-        if user_id in self.user_info:
-            user_data = self.user_info[user_id]
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
             bans = user_data["info"].get("banned", [])
 
             for ban_info in bans:
-                if ban_info.get("ban_id") == ban_id:
-                    if ban_info.get("lifted"):
-                        await ctx.send(f"The ban with ID {ban_id} for {user.mention} has already been lifted.")
-                        return
-
-                    ban_info["lifted"] = utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z")
+                if not ban_info.get("lifted"):
+                    ban_info["lifted"] = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
                     ban_info["unban_reason"] = unban_reason
 
                     self.save_user_info()
 
-                    # Unban the user
                     await ctx.guild.unban(user)
 
-                    # Create an embed for the mod logs
                     embed = discord.Embed(
                         title="Unban",
                         color=discord.Color.green(),
                     )
                     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
                     embed.add_field(name="User", value=user.mention, inline=False)
-                    embed.add_field(name="Ban ID", value=ban_id, inline=False)
                     embed.add_field(name="Unban Reason", value=unban_reason or "N/A", inline=False)
-                    embed.add_field(name="Timestamp", value=utils.get_local_time().strftime("%Y-%m-%d %I:%M:%S %p %Z"), inline=False)
+                    embed.add_field(name="Timestamp", value=datetime.datetime.now(), inline=False)
 
                     await utils.log_mod_action(ctx.guild, 'Unban', user, unban_reason, ctx.author, config=config, embed=embed)
 
-                    await ctx.send(f"{user.mention} has been unbanned. Ban ID: {ban_id}")
+                    await ctx.send(f"{user.mention} has been unbanned.")
                     return
 
-            await ctx.send(f"No ban with ID {ban_id} found for {user.mention}.")
+            await ctx.send(f"No active ban found for {user.mention}.")
         else:
             await ctx.send("User not found in the database.")
+    
+    @commands.command(hidden=True)
+    @commands.has_permissions(administrator=True)
+    async def togglechannel(self, ctx, channel: discord.TextChannel, role: discord.Role, permission_name: str):
+        if permission_name not in ('send_messages', 'read_messages'):
+            await ctx.send("Invalid permission name. Use 'send_messages' or 'read_messages'.")
+            return
+
+        permissions = channel.overwrites_for(role)
+
+        if getattr(permissions, permission_name):
+            setattr(permissions, permission_name, False)
+        else:
+            setattr(permissions, permission_name, True)
+
+        await channel.set_permissions(role, overwrite=permissions)
+
+        if getattr(permissions, permission_name):
+            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled.")
+        else:
+            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled.")
+
+    @togglechannel.error
+    async def togglechannel_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You don't have the required permissions to use this command.")
 
 def setup(bot):
     bot.add_cog(WelcomeMod(bot))

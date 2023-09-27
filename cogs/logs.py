@@ -46,9 +46,9 @@ class Logs(commands.Cog):
                 )
 
                 embed.add_field(name="Change Details", value=change_message, inline=False)
-                
-                timestamp = utils.get_local_time()
-                embed.set_footer(text=f"|| ^UID: {user.id} • {timestamp}^ ||")
+
+                timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+                embed.set_footer(text=f"UID: {user.id} • {timestamp}")
 
                 await mod_logs_channel.send(embed=embed)
 
@@ -65,8 +65,8 @@ class Logs(commands.Cog):
                     description=f"Channel: {channel.mention}",
                     color=discord.Color.green(),
                 )
-                timestamp = utils.get_local_time()
-                embed.set_footer(text=f"Timestamp: {timestamp} | Channel ID: {channel.id}")
+                timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+                embed.set_footer(text=f"Channel ID: {channel.id} • {timestamp}")
                 await server_logs_channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -104,8 +104,8 @@ class Logs(commands.Cog):
                 if change_message:
                     embed.add_field(name="Change Details", value=change_message, inline=False)
 
-                    timestamp = utils.get_local_time()
-                    embed.set_footer(text=f"||Channel ID: {after.id} • {timestamp}||")
+                    timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+                    embed.set_footer(text=f"Channel ID: {after.id} • {timestamp}")
 
                     await server_logs_channel.send(embed=embed)
 
