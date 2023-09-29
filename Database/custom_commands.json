@@ -1,5 +1,6 @@
 {
-    "raidsheet": "Here is the Raid Docs for all the possible raids you can pick from:   https://drive.google.com/drive/folders/1dWCQnNXs8JvCWh99PjU8s39aaa2m9l9N - Note: You need the ID. So for example for the top right raid you would do `2addraid ID`",
-    "requestlist": "Heres a link to the special request list:   https://docs.google.com/spreadsheets/d/1eP8sh8rtrB_1QY4Ti5muOf4uRXKzbF4fbU_58XiCoEs/edit?usp=sharing",
-    "tradecommands": "Here are the trade commands for the bots:   Pokemon Scarlet Violet - `!svtrade` === Pokemon Sword Shield - `!swshtrade` === Pokemon Legends: Arceus - `!platrade`"
+    "raidsheet": "Here is the Raid Docs for all the possible raids you can pick from:\nhttps://drive.google.com/drive/folders/1dWCQnNXs8JvCWh99PjU8s39aaa2m9l9N\nNote: You need the ID. So for example for the top right raid you would do 2addraid ID",
+    "requestlist": "Here's a link to the special request list:\nhttps://docs.google.com/spreadsheets/d/1eP8sh8rtrB_1QY4Ti5muOf4uRXKzbF4fbU_58XiCoEs/edit?usp=sharing",
+    "tradecommands": "Here are the trade commands for the bots:\n\nPok\u00e9mon  Scarlet Violet - `!svtrade`\nPok\u00e9mon Sword Shield - `!swshtrade`\nPok\u00e9mon Legends: Arceus - `!platrade`\nPok\u00e9mon Brilliant Diamond and Shining Pearl - `!bdsptrade`",
+    "batchcommands": "Here's a list of different batch commands you can use when making a Pok\u00e9mon with a Showdown Set:\nhttps://pastebin.com/HixDtDxc"
 }

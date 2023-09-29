@@ -497,7 +497,7 @@ class WelcomeMod(commands.Cog):
             if warning_number == 5:
                 
                 ban_info = {
-                    "timestamp": datetime.datetime.now(),
+                    "timestamp": timestamp,
                     "issuer": "Shiny Ditto Bot",
                     "reason": "Banned due to their 5th warning",
                     "lifted": None, 

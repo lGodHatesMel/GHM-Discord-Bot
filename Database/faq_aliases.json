@@ -1,1 +1,7 @@
-{}
+{
+    "botcommands": "bots",
+    "accessbots": "bots",
+    "homeupdate": "homedata",
+    "code10015": "homedata",
+    "hometransfers": "homedata"
+}
