@@ -4,7 +4,6 @@ from discord.ext import commands
 import random
 import utils
 
-
 class POKEMON_COMMANDS(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -13,31 +12,25 @@ class POKEMON_COMMANDS(commands.Cog):
     async def pokefacts(self, ctx):
         try:
             random_fact = utils.get_random_pokemon_fact()
-
             image_folder = os.path.join('images', 'pokemonimages')
             image_files = [f for f in os.listdir(image_folder) if os.path.isfile(os.path.join(image_folder, f))]
 
+            embed = discord.Embed(
+                title="**__Random Pokémon Fact__**",
+                description=random_fact,
+                color=discord.Color.random()
+            )
+
             if image_files:
                 random_image_filename = random.choice(image_files)
-                image_path = os.path.join(image_folder, random_image_filename)
+                image_path = os.path.abspath(os.path.join(image_folder, random_image_filename))
 
-                embed = discord.Embed(
-                    title="**__Random Pokémon Fact__**",
-                    description=random_fact,
-                    color=discord.Color.random()
-                )
-                embed.set_thumbnail(url=f'attachment://{random_image_filename}')
+                with open(image_path, "rb") as image_file:
+                    thumbnail = discord.File(image_file, filename=os.path.basename(image_path))
+                    embed.set_thumbnail(url=f"attachment://{os.path.basename(image_path)}")
 
-                with open(image_path, 'rb') as image_file:
-                    image = discord.File(image_file)
-                    await ctx.send(embed=embed, file=image)
-            else:
-                embed = discord.Embed(
-                    title="**__Random Pokémon Fact__**",
-                    description=random_fact,
-                    color=discord.Color.random()
-                )
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed, file=thumbnail)
+
         except Exception as e:
             print(e)
             await ctx.send("An error occurred while fetching Pokémon facts.")
