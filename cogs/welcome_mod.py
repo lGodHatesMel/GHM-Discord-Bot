@@ -76,25 +76,6 @@ class WelcomeMod(commands.Cog):
                 self.user_info[uid]["info"]["total_messages"] += 1
                 self.save_user_info()
 
-            # Check if the message is in a channel with a sticky note
-            # if message.channel.id in self.sticky_messages:
-            #     # Get the original sticky message
-            #     original_sticky_msg = self.sticky_messages[message.channel.id]
-            #     # Add a delay before creating the new sticky note
-            #     await asyncio.sleep(2)
-            #     # Delete the old sticky message
-            #     await original_sticky_msg.delete()
-            #     # Create a new embedded sticky note with the original content
-            #     new_embed = discord.Embed(
-            #         title="**STICKY NOTE**",
-            #         description=original_sticky_msg.embeds[0].description,
-            #         color=discord.Color.random()
-            #     )
-            #     # Send the new embedded sticky note
-            #     new_sticky_msg = await message.channel.send(embed=new_embed)
-            #     # Update the reference to the sticky message
-            #     self.sticky_messages[message.channel.id] = new_sticky_msg
-
     @commands.command(help='Replies with Pong if bot is up', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def ping(self, ctx):
@@ -172,16 +153,62 @@ class WelcomeMod(commands.Cog):
                             "kick_reason": [],
                             "kicks_amount": 0,
                             "avatar_url": str(member.avatar_url),
+                        },
+                        "coindata": {
+                            "right_count": 0, 
+                            "wrong_count": 0, 
+                            "total_coins": 0
                         }
                     }
                 self.save_user_info()
 
-                # Check if the user is in the banned list and their ban has not been lifted
                 if uid in self.user_info and self.user_info[uid]["info"]["banned"]:
                     for ban_info in self.user_info[uid]["info"]["banned"]:
                         if ban_info.get("lifted") is None:
-                            # Send a message to the mod log indicating the user is still banned
                             await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
+
+    # Good to use if you are using this after already having alot of members in your server
+    @commands.command(hidden=True)
+    @commands.has_permissions(administrator=True)
+    async def addalltodb(self, ctx):
+        guild = ctx.guild
+
+        for member in guild.members:
+            uid = str(member.id)
+
+            # Check if the user already exists in the database
+            if uid not in self.user_info:
+                # If the user doesn't exist, create a new entry in the database
+                self.user_info[uid] = {
+                    "info": {
+                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Left": None,
+                        "username": member.name,
+                        "roles": [role.name for role in member.roles],
+                        "total_messages": 0,
+                        "warns": [],
+                        "notes": [],
+                        "banned": [],
+                        "kick_reason": [],
+                        "kicks_amount": 0,
+                        "avatar_url": str(member.avatar_url),
+                    },
+                    "coindata": {"right_count": 0, "wrong_count": 0, "total_coins": 0},
+                }
+
+        self.save_user_info()
+
+        await ctx.send("Database updated with all server members!")
+
+    @commands.command(hidden=True)
+    @commands.has_permissions(administrator=True)  # Only allow administrators to use this command
+    async def forcesavedb(self, ctx):
+        # Replace the following line with the actual logic to save your database
+        # For example, if your save function is self.save_user_info(), call it here
+        self.save_user_info()
+
+        await ctx.send("Database saved successfully!")
 
     # @commands.command()
     # async def test_welcome(self, ctx):
@@ -557,7 +584,6 @@ class WelcomeMod(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-
     @commands.command(aliases=["deletewarning", "removewarning"], help='<UID> <Warning #>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
@@ -582,7 +608,6 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"Deleted warning #{warning_number} for {user.mention}: {deleted_content}")
 
                 await utils.log_mod_action(ctx.guild, 'Warning', user, warning, warning_number, ctx.author, config=config)
-
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
         else:
@@ -606,10 +631,8 @@ class WelcomeMod(commands.Cog):
         if uid in self.user_info:
             # Get the user's data from the database
             user_data = self.user_info[uid]
-
             # Increment the kicks_amount count
             user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
-
             # Add kick reason to the user's data with a "number" field
             kick_info = {
                 "number": 1,

@@ -26,7 +26,10 @@ def load_or_create_config():
             "mod_logs_channel_id": None,
             "member_logs_channel_id": None,
             "server_logs_channel_id": None,
-            "owner_id": 123456789012345678
+            "owner_id": 123456789012345678,
+            "trivia_channel_id": "YOUR_CHANNEL_ID",
+            "min_question_interval_minutes": 30,
+            "max_question_interval_minutes": 60
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -54,7 +57,7 @@ def load_or_create_config():
 
 config = load_or_create_config()
 
-bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents, owner_ids=config['owner_id'])
+bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
 
 for filename in os.listdir('cogs'):
     if filename.endswith('.py'):
