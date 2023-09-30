@@ -22,9 +22,9 @@ class CustomCommands(commands.Cog):
 
             # Register each custom command with the bot
             for command_name, command_response in custom_commands.items():
-                # Create a new custom command function
-                async def custom_command(ctx):
-                    await ctx.send(command_response)
+                # Dynamically create a function for each custom command
+                async def custom_command(ctx, response=command_response):
+                    await ctx.send(response)
 
                 # Register the custom command with the bot
                 self.bot.add_command(commands.Command(custom_command, name=command_name))
@@ -32,7 +32,35 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             print(f'An error occurred while loading custom commands: {str(e)}')
 
-    @commands.command(help='<CommandName> <Reply Message>', hidden=True)
+    def refresh_custom_commands(self):
+        # Load custom commands from JSON file and refresh the bot's commands
+        with open(self.commands_file, 'r') as file:
+            custom_commands = json.load(file)
+
+        # Remove existing custom commands from the bot
+        for command in self.bot.commands:
+            if command.name in custom_commands:
+                self.bot.remove_command(command.name)
+
+        # Register updated custom commands
+        for command_name, command_response in custom_commands.items():
+            # Dynamically create a function for each custom command
+            async def custom_command(ctx, response=command_response):
+                await ctx.send(response)
+
+            # Register the custom command with the bot
+            self.bot.add_command(commands.Command(custom_command, name=command_name))
+
+    @commands.command(help='Refresh custom commands from the JSON file', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def refreshcommands(self, ctx):
+        try:
+            self.refresh_custom_commands()
+            await ctx.send('Custom commands refreshed successfully.')
+        except Exception as e:
+            await ctx.send(f'An error occurred: {str(e)}')
+
+    @commands.command(help='<command_name> <reply_message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addcommand(self, ctx, command_name, *, command_response):
         try:
@@ -47,7 +75,6 @@ class CustomCommands(commands.Cog):
 
             # Replace '/n' with '\n' to correctly interpret newlines
             command_response = command_response.replace('/n', '\n')
-
             custom_commands[command_name] = command_response
 
             with open(self.commands_file, 'w') as file:
@@ -61,7 +88,7 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help='<CommandName> <Reply Message>', hidden=True)
+    @commands.command(help='<command_name> <reply_message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def editcommand(self, ctx, command_name, *, new_response):
         try:
@@ -76,7 +103,6 @@ class CustomCommands(commands.Cog):
 
             # Replace '/n' with '\n' to correctly interpret newlines
             new_response = new_response.replace('/n', '\n')
-
             custom_commands[command_name] = new_response
 
             with open(self.commands_file, 'w') as file:
@@ -91,17 +117,15 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(aliases=['delcommand', 'delcmd'], help='<CommandName>', hidden=True)
+    @commands.command(aliases=['delcommand', 'delcmd'], help='<command_name>>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def deletecommand(self, ctx, command_name):
         try:
             # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
                 custom_commands = json.load(file)
-
             # Convert the command_name to lowercase
             command_name = command_name.lower()
-
             # Check if the command name exists
             if command_name not in custom_commands:
                 await ctx.send(f'Command "{command_name}" does not exist.')
@@ -179,7 +203,8 @@ class CustomCommands(commands.Cog):
                 "`!addsticky <channel> <message>` - Add a sticky note.\n"
                 "`!rekovesticky <channel>` - Remove a sticky note.\n"
                 "`!addcommand <command_name> <respond_message>` - Add's a custom command.\n"
-                "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`"
+                "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`\n"
+                "`!efreshcommands` - Refreshes the custom_commands.json"
             ),
             inline=False
         )
