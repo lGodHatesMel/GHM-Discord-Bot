@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import os
 import discord
@@ -209,67 +210,6 @@ class WelcomeMod(commands.Cog):
         self.save_user_info()
 
         await ctx.send("Database saved successfully!")
-
-    # @commands.command()
-    # async def test_welcome(self, ctx):
-    #     if self.welcome_channel_id:
-    #         server = ctx.guild
-    #         member_count = sum(1 for member in server.members if not member.bot)
-    #         member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-
-    #         # Generate a random color in hexadecimal notation
-    #         random_color = random.randint(0, 0xFFFFFF)
-
-    #         welcome = {
-    #             "title": "Welcome!",
-    #             "description": f"Welcome to GodHatesMe Pokemon Centre {ctx.author.mention}, you are our {member_number}!\n\n"
-    #                         f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
-    #             "color": random_color,
-    #         }
-
-    #         embed = discord.Embed(title=welcome["title"], description=welcome["description"], color=welcome["color"])
-    #         embed.set_thumbnail(url=ctx.author.avatar_url)
-    #         embed.set_footer(text=ctx.author.name)
-    #         await ctx.send(embed=embed)
-
-    # @commands.command()
-    # async def simulate_join(self, ctx, user_id: int):
-    #     # Simulate a user join (for testing purposes)
-    #     if str(user_id) not in self.user_info:
-    #         member = ctx.guild.get_member(user_id)
-    #         if member:
-    #             self.user_info[str(user_id)] = {
-    #                 "info": {
-    #                     "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-    #                     "Left": None,
-    #                     "username": member.name,
-    #                     "roles": [role.name for role in member.roles],
-    #                     "total_messages": 0,
-    #                     "warns": [],
-    #                     "notes": [],
-    #                     "banned": [],
-    #                     "kick_reason": [],
-    #                     "kicks_amount": 0,
-    #                     "avatar_url": str(member.avatar_url),
-    #                 }
-    #             }
-    #             self.save_user_info()
-    #             await ctx.send(f"Simulated join for user {user_id}.")
-    #         else:
-    #             await ctx.send("User not found in the server.")
-    #     else:
-    #         await ctx.send("User already exists in the database.")
-
-    # @commands.command()
-    # async def simulate_leave(self, ctx, user_id: int):
-    #     # Simulate a user leave (for testing purposes)
-    #     if str(user_id) in self.user_info:
-    #         leave_time = utils.get_local_time()
-    #         self.user_info[str(user_id)]["info"]["Left"] = leave_time.strftime('%Y-%m-%d %H:%M:%S')
-    #         self.save_user_info()
-    #         await ctx.send(f"Simulated leave for user {user_id}.")
-    #     else:
-    #         await ctx.send("User not found in the database.")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -633,10 +573,12 @@ class WelcomeMod(commands.Cog):
             user_data = self.user_info[uid]
             # Increment the kicks_amount count
             user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
-            # Add kick reason to the user's data with a "number" field
+
+            timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+
             kick_info = {
                 "number": 1,
-                "timestamp": datetime.datetime.now(),
+                "timestamp": timestamp,
                 "issuer": ctx.author.name,
                 "reason": reason
             }
@@ -707,8 +649,10 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"An error occurred while sending a ban message to {user_with_uid}: {e}")
                 return
 
+            timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+
             ban_info = {
-                "timestamp": datetime.datetime.now(),
+                "timestamp": timestamp,
                 "issuer": ctx.author.name,
                 "reason": reason,
                 "lifted": None,
@@ -812,7 +756,54 @@ class WelcomeMod(commands.Cog):
             await ctx.send(f"No active ban found for {user.mention}.")
         else:
             await ctx.send("User not found in the database.")
-    
+
+    @commands.command(help='<UID> <Reason>', hidden=True)
+    @commands.has_permissions(ban_members=True)
+    async def softban(self, ctx, member: Union[discord.Member, int], *, reason: str):
+        if isinstance(member, int):
+            try:
+                member = await ctx.guild.fetch_member(member)
+            except discord.NotFound:
+                await ctx.send("User not found in this server.")
+                return
+
+        uid = str(member.id)
+
+        if uid in self.user_info:
+            user_data = self.user_info[uid]
+
+            try:
+                # Send a DM to the user before banning
+                ban_message = f"You have been Soft-Banned from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
+                await member.send(ban_message)
+                # Ban the member
+                await member.ban(reason=reason)
+                # Wait for a short duration to allow the ban to take effect
+                await asyncio.sleep(2)
+                # Unban the member
+                await member.unban(reason="Soft ban")
+
+                timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+
+                ban_info = {
+                    "timestamp": timestamp,
+                    "issuer": ctx.author.name,
+                    "reason": reason,
+                    "lifted": True,
+                }
+
+                user_data["info"].setdefault("banned", []).append(ban_info)
+
+                self.save_user_info()
+
+                await utils.log_mod_action(ctx.guild, 'SoftBanned', member, reason, issuer=ctx.author, config=config)
+
+                await ctx.send(f"{member.mention} has been soft-banned.")
+            except discord.Forbidden:
+                await ctx.send("Failed to send a DM to the user or perform the soft ban due to permission settings.")
+        else:
+            await ctx.send("User not found in the database.")
+
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
     async def togglechannel(self, ctx, channel: discord.TextChannel, role: discord.Role, permission_name: str):

@@ -76,11 +76,14 @@ class MessageLogger(commands.Cog):
         logging_channel = self.bot.get_channel(message_logger_channel_id)
         timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
 
+        original_message = utils.truncate_text(before.content, 1024)
+        edited_message = utils.truncate_text(after.content, 1024)
+
         embed = discord.Embed(color=discord.Color.orange())
         embed.set_author(name=f"{before.author.name}", icon_url=before.author.avatar_url)
         embed.description = f"Message edited in {before.channel.mention}"
-        embed.add_field(name="Original Message", value=before.content, inline=False)
-        embed.add_field(name="Edited Message", value=after.content, inline=False)
+        embed.add_field(name="Original Message", value=original_message, inline=False)
+        embed.add_field(name="Edited Message", value=edited_message, inline=False)
         embed.set_footer(text=f"UID: {before.author.id} • Message ID: {before.id} • {timestamp}")
 
         await logging_channel.send(embed=embed)

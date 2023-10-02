@@ -65,7 +65,7 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, iss
             value = issuer if isinstance(issuer, str) else issuer.mention
             embed.add_field(name="Issuer", value=value, inline=True)
 
-    if action in ('Ban', 'Unban', 'Kick') and issuer:
+    if action in ('Ban', 'Unban', 'Kick', 'SoftBanned') and issuer:
         value = issuer if isinstance(issuer, str) else issuer.mention
         embed.add_field(name="Issuer", value=value, inline=True)
 
