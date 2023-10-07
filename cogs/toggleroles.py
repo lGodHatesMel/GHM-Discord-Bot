@@ -111,7 +111,7 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannouncements")
+    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannocements")
     async def toggleannocements(self, ctx):
         role_name = "Announcement Pings"
         role_channel_id = self.config.get('role_channel_id')

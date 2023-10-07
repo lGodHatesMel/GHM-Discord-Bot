@@ -36,6 +36,16 @@ class ExtensionManagement(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.is_owner()
+    async def stop(self, ctx, extension: str):
+        try:
+            self.bot.unload_extension(extension)
+            await ctx.send(f":white_check_mark: Extension '{extension}' stopped.")
+        except Exception as e:
+            await ctx.send(f":x: Operation failed!\n\n{type(e).__name__}: {e}")
+            traceback.print_exc()
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
     async def refreshconfig(self, ctx):
         with open('config.json', 'r') as config_file:
             config = json.load(config_file)

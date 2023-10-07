@@ -59,6 +59,10 @@ class MessageLogger(commands.Cog):
 
         await logging_channel.send(embed=embed)
 
+    @staticmethod
+    def truncate_text(text, length):
+        return text[:length]
+
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         # Check if the edited message is from a user and not a bot
@@ -74,10 +78,11 @@ class MessageLogger(commands.Cog):
             return
 
         logging_channel = self.bot.get_channel(message_logger_channel_id)
-        timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        original_message = utils.truncate_text(before.content, 1024)
-        edited_message = utils.truncate_text(after.content, 1024)
+        # Truncate the message content to fit within the character limit
+        original_message = self.truncate_text(before.content, 1024)
+        edited_message = self.truncate_text(after.content, 1024)
 
         embed = discord.Embed(color=discord.Color.orange())
         embed.set_author(name=f"{before.author.name}", icon_url=before.author.avatar_url)
@@ -87,6 +92,5 @@ class MessageLogger(commands.Cog):
         embed.set_footer(text=f"UID: {before.author.id} • Message ID: {before.id} • {timestamp}")
 
         await logging_channel.send(embed=embed)
-
 def setup(bot):
     bot.add_cog(MessageLogger(bot))

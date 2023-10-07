@@ -173,6 +173,13 @@ class CustomCommands(commands.Cog):
             inline=False
         )
         embed.add_field(
+            name='SoftBan:',
+            value=(
+                "`!softban <uid> <reason>` - SoftBan a user"
+            ),
+            inline=False
+        )
+        embed.add_field(
             name='Notes:',
             value=(
                 "`!addnote <uid> <message>` - Add a note for a user.\n"
