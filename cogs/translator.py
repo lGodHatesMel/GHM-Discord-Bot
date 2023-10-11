@@ -19,7 +19,7 @@ class Translation(commands.Cog):
             # Create and send an embed with the translation result
             embed = discord.Embed(
                 title='Translation Result',
-                color=discord.Color.blue()
+                color=discord.Color.random()
             )
             embed.add_field(name='Source Language', value=detected_language.lang, inline=True)
             embed.add_field(name='Target Language', value=target_language, inline=True)

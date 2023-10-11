@@ -1,25 +1,36 @@
 import os
 import asyncio
-import json
 import random
+import sqlite3
 import discord
 from discord.ext import commands
 
 class FactsQuestions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.faq_aliases = {}
-        database_folder = 'Database'
-        self.json_file = os.path.join(database_folder, 'faq.json')
-        self.aliases_file = os.path.join(database_folder, 'faq_aliases.json')
+        self.database_folder = 'Database'
+        self.commands_file = os.path.join(self.database_folder, 'GHM_Discord_Bot.db')
+        self.conn = sqlite3.connect(self.commands_file)
+        self.cursor = self.conn.cursor()
 
-        if os.path.exists(self.aliases_file):
-            with open(self.aliases_file, 'r') as f:
-                self.faq_aliases = json.load(f)
+        # Create tables if they don't exist
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS faq (
+                                name TEXT PRIMARY KEY,
+                                question TEXT,
+                                answer TEXT
+                            )''')
+
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS aliases (
+                                word TEXT PRIMARY KEY,
+                                faq_name TEXT,
+                                FOREIGN KEY (faq_name) REFERENCES faq (name) ON DELETE CASCADE
+                            )''')
+
+        self.conn.commit()
 
     def save_aliases(self):
-        with open(self.aliases_file, 'w') as f:
-            json.dump(self.faq_aliases, f, indent=4)
+        # This method is not needed when using SQLite
+        pass
 
     async def update_faq(self, ctx):
         faq_channel_id = self.bot.config.get('faq_channel_id')
@@ -34,22 +45,27 @@ class FactsQuestions(commands.Cog):
             await ctx.send("⚠ FAQ channel not found. Make sure 'faq_channel_id' in config.json points to a valid channel.")
             return
 
-        with open(self.json_file, "r") as f:
-            faq_db = json.load(f)
+        self.cursor.execute("SELECT * FROM faq")
+        rows = self.cursor.fetchall()
+
         messages = []
-        for faq_name, entry in faq_db.items():
+        for row in rows:
+            faq_name, question, answer = row
             embed = discord.Embed(color=discord.Color.red())
             embed.title = f"FAQ {faq_name.upper()}"
-            embed.add_field(name="Question:", value=entry['question'], inline=False)
-            embed.add_field(name="Answer:", value=f"{entry['answer']}", inline=False)
-            aliases = []
-            for word, faq in self.faq_aliases.items():
-                if faq == faq_name:
-                    aliases.append(word)
+            embed.add_field(name="Question:", value=question, inline=False)
+            embed.add_field(name="Answer:", value=f"{answer}", inline=False)
+            
+            # Fetch aliases for the FAQ entry
+            self.cursor.execute("SELECT word FROM aliases WHERE faq_name=?", (faq_name,))
+            alias_rows = self.cursor.fetchall()
+            aliases = [alias_row[0] for alias_row in alias_rows]
+
             if aliases:
                 embed.set_footer(text="Aliases: " + ", ".join(aliases))
+
             messages.append(embed)
-        
+
         for message in messages:
             existing_message = None
             async for msg in faq_channel.history(limit=100):
@@ -86,7 +102,7 @@ class FactsQuestions(commands.Cog):
             name = name.content.lower()
             if name == "cancel":
                 return await ctx.send("❌ Canceled by user.")
-            
+
             await ctx.send("Type the question to be added after this message:")
 
             question = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=60.0)
@@ -103,19 +119,8 @@ class FactsQuestions(commands.Cog):
         if len("❔ QX. __{}__\n{}".format(question_content, answer_content)) > 1950:
             return await ctx.send("⚠ This FAQ entry is too long.")
 
-        with open(self.json_file, "r") as f:
-            faq_db = json.load(f)
-
-        if name in faq_db:
-            return await ctx.send("⚠ This name is already in use for another FAQ entry.")
-
-        faq_db[name] = {
-            "question": question_content,
-            "answer": answer_content
-        }
-
-        with open(self.json_file, "w") as f:
-            json.dump(faq_db, f, indent=4)
+        self.cursor.execute("INSERT INTO faq (name, question, answer) VALUES (?, ?, ?)", (name, question_content, answer_content))
+        self.conn.commit()
 
         await ctx.send("✅ Entry added.")
         self.bot.loop.create_task(self.update_faq(ctx))
@@ -125,21 +130,22 @@ class FactsQuestions(commands.Cog):
     async def faqalias(self, ctx, faq_name: str = "", *, words: str = ""):
         if not faq_name:
             return await ctx.send("⚠ FAQ entry name is required.")
+
+        # Split the words and add aliases to the database
         for word in words.strip().split():
-            self.faq_aliases[word] = faq_name
-        with open(self.aliases_file, "w") as f:
-            json.dump(self.faq_aliases, f, indent=4)
+            self.cursor.execute("INSERT OR REPLACE INTO aliases (word, faq_name) VALUES (?, ?)", (word, faq_name))
+        self.conn.commit()
+
         await ctx.send("✅ Alias added/updated.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def deletealias(self, ctx, word: str):
-        if word not in self.faq_aliases:
-            return await ctx.send("⚠ FAQ alias does not exist.")
-        del self.faq_aliases[word]
-        with open(self.aliases_file, "w") as f:
-            json.dump(self.faq_aliases, f, indent=4)
+        # Delete the alias from the database
+        self.cursor.execute("DELETE FROM aliases WHERE word=?", (word,))
+        self.conn.commit()
+
         await ctx.send("✅ Alias removed.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
@@ -147,32 +153,28 @@ class FactsQuestions(commands.Cog):
     async def listaliases(self, ctx, faq_name: str = ""):
         if not faq_name:
             return await ctx.send("⚠ FAQ entry name is required.")
-        aliases = []
-        for word, faq in self.faq_aliases.items():
-            if faq == faq_name:
-                aliases.append(word)
+
+        # Fetch aliases from the database for the given FAQ
+        self.cursor.execute("SELECT word FROM aliases WHERE faq_name=?", (faq_name,))
+        rows = self.cursor.fetchall()
+        aliases = [row[0] for row in rows]
+
         if not aliases:
             return await ctx.send("⚠ No aliases found.")
-        await ctx.send("Aliases for FAQ entry {}: {}".format(faq_name, ", ".join(aliases)))
+
+        await ctx.send(f"Aliases for FAQ entry {faq_name}: {', '.join(aliases)}")
 
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def deletefaq(self, ctx, faq_name: str = ""):
         if not faq_name:
             return await ctx.send("⚠ FAQ entry name is required.")
-        with open(self.json_file, "r") as f:
-            faq_db = json.load(f)
-        try:
-            del faq_db[faq_name]
-            for word, faq in self.faq_aliases.items():
-                if faq == faq_name:
-                    del self.faq_aliases[word]
-            with open(self.json_file, "w") as f:
-                json.dump(faq_db, f, indent=4)
-        except KeyError:
-            return await ctx.send("⚠ No such entry exists.")
-        with open(self.aliases_file, "w") as f:
-            json.dump(self.faq_aliases, f, indent=4)
+
+        # Delete the FAQ entry and associated aliases from the database
+        self.cursor.execute("DELETE FROM faq WHERE name=?", (faq_name,))
+        self.cursor.execute("DELETE FROM aliases WHERE faq_name=?", (faq_name,))
+        self.conn.commit()
+
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
@@ -183,35 +185,26 @@ class FactsQuestions(commands.Cog):
             return await ctx.send("⚠ FAQ entry name is required.")
         if not(edit_type[0] == "q" or edit_type[0] == "a"):
             return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `question`, `answer` (default).")
-        with open(self.json_file, "r") as f:
-            faq_db = json.load(f)
-        try:
-            entry = faq_db[faq_name]
-        except KeyError:
-            return await ctx.send("⚠ No such entry exists.")
+
         random_num = random.randint(1, 9999)
         edit_type_readable = {
             "q": "question",
             "a": "answer"
         }
-        await ctx.send("Enter the new {} content:\n\nType `cancel-{:04d}` to cancel.".format(edit_type_readable[edit_type[0]], random_num))
+
+        await ctx.send(f"Enter the new {edit_type_readable[edit_type[0]]} content:\n\nType `cancel-{random_num:04d}` to cancel.")
+
         try:
             new_content = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
-            if new_content.content == "cancel-{:04d}".format(random_num):
+            if new_content.content == f"cancel-{random_num:04d}":
                 return await ctx.send("❌ Canceled by user.")
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, cancelling.")
-        
-        if edit_type[0] == "q":
-            entry['question'] = new_content.content
-        elif edit_type[0] == "a":
-            entry['answer'] = new_content.content
-        
-        faq_db[faq_name] = entry
-        
-        with open(self.json_file, "w") as f:
-            json.dump(faq_db, f, indent=4)
-        
+
+        # Update the FAQ entry in the database
+        self.cursor.execute(f"UPDATE faq SET {edit_type_readable[edit_type[0]]}=? WHERE name=?", (new_content.content, faq_name))
+        self.conn.commit()
+
         await ctx.send("✅ Entry modified.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
@@ -222,37 +215,47 @@ class FactsQuestions(commands.Cog):
             return await ctx.send("⚠ FAQ entry name is required.")
         if not(return_type[0] == "q" or return_type[0] == "a" or return_type[0] == "b"):
             return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `question`, `answer`, `both` (default).")
-        with open(self.json_file, "r") as f:
-            faq_db = json.load(f)
-        try:
-            entry = faq_db[faq_name]
-        except KeyError:
+
+        # Fetch the FAQ entry from the database
+        self.cursor.execute("SELECT * FROM faq WHERE name=?", (faq_name,))
+        row = self.cursor.fetchone()
+
+        if not row:
             return await ctx.send("⚠ No such entry exists.")
+
+        faq_name, question, answer = row
+
         if return_type[0] == "q":
-            msg = entry['question']
+            msg = question
         elif return_type[0] == "a":
-            msg = entry['answer']
+            msg = answer
         else:
-            msg = "\n\n".join([entry['question'], entry['answer']])
-        await ctx.send("```\n{}\n```".format(msg))
+            msg = f"\n\n".join([question, answer])
+
+        await ctx.send(f"```\n{msg}\n```")
 
     @commands.command(aliases=['faqview'], help='<faq_name> or <faq_alias_name>')
     async def faq(self, ctx, faq_req: str):
-        with open(self.json_file, "r") as f:
-            faq_db = json.load(f)
-
         # Check if faq_req is an alias
-        if faq_req in self.faq_aliases:
-            faq_req = self.faq_aliases[faq_req]
+        self.cursor.execute("SELECT faq_name FROM aliases WHERE word=?", (faq_req,))
+        alias_row = self.cursor.fetchone()
 
-        if faq_req not in faq_db:
+        if alias_row:
+            faq_req = alias_row[0]
+
+        # Fetch the FAQ entry from the database
+        self.cursor.execute("SELECT * FROM faq WHERE name=?", (faq_req,))
+        row = self.cursor.fetchone()
+
+        if not row:
             return await ctx.send("⚠ No such entry exists.")
 
-        entry = faq_db[faq_req]
+        faq_name, question, answer = row
+
         embed = discord.Embed(color=discord.Color.red())
-        embed.title = f"FAQ: {faq_req.upper()}"
-        embed.add_field(name="Question:", value=entry['question'], inline=False)
-        embed.add_field(name="Answer:", value=f"{entry['answer']}", inline=False)
+        embed.title = f"FAQ: {faq_name}"
+        embed.add_field(name="Question:", value=question, inline=False)
+        embed.add_field(name="Answer:", value=f"{answer}", inline=False)
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True)

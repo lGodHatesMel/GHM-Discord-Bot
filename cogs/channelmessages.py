@@ -1,68 +1,68 @@
 import os
-import json
 import discord
 from pathlib import Path
 from discord.ext import commands
 import asyncio
 import utils
+import sqlite3
 
 class StickyNotes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.sticky_messages = {}
         self.database_folder = 'Database'
-        self.database_file = os.path.join(self.database_folder, 'sticky_notes.json')
+        self.commands_file = os.path.join(self.database_folder, 'GHM_Discord_Bot.db')
+        self.conn = sqlite3.connect(self.commands_file)
+        self.cursor = self.conn.cursor()
+
+        # Create tables if they don't exist
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS sticky_notes (
+                channel_id INTEGER PRIMARY KEY,
+                message_id INTEGER,
+                author_id INTEGER,
+                content TEXT
+            )
+        """)
+        self.conn.commit()
 
     async def load_sticky_notes(self):
-        file = Path(self.database_file)
+        self.cursor.execute("SELECT * FROM sticky_notes")
+        rows = self.cursor.fetchall()
 
-        if not file.exists():
-            return
+        for row in rows:
+            channel_id, message_id, author_id, content = row
+            channel = self.bot.get_channel(channel_id)
 
-        with file.open() as f:
-            sticky_data = json.load(f)
-            for channel_id, data in sticky_data.items():
-                author_id = data.get("author_id")
-                content = data.get("content")
-                message = data.get("message")
+            if channel:
+                embed = discord.Embed(
+                    title="**STICKY NOTE**",
+                    description=content,
+                    color=discord.Color.random()
+                )
 
-                if message is None:
-                    # Skip messages with None as message
-                    continue
-
-                channel = self.bot.get_channel(int(channel_id))
-                if channel:
-                    embed = discord.Embed(
-                        title="**STICKY NOTE**",
-                        description=content,
-                        color=discord.Color.random()
-                    )
-
-                    # Send the sticky note to the channel
-                    sticky_msg = await channel.send(embed=embed)
-                    self.sticky_messages[int(channel_id)] = {
-                        "message": sticky_msg,
-                        "author_id": int(author_id),
-                        "content": content
-                    }
+                # Send the sticky note to the channel
+                sticky_msg = await channel.send(embed=embed)
+                self.sticky_messages[channel_id] = {
+                    "message": sticky_msg,
+                    "author_id": author_id,
+                    "content": content
+                }
 
     async def save_sticky_notes(self):
-        sticky_data = {}
+        self.cursor.execute("DELETE FROM sticky_notes")
         for channel_id, data in self.sticky_messages.items():
-            sticky_data[channel_id] = {
-                "message": data["message"].id,
-                "author_id": data["author_id"],
-                "content": data["content"]
-            }
-
-        with open(self.database_file, 'w') as file:
-            json.dump(sticky_data, file, indent=4)
+            message_id = data["message"].id
+            author_id = data["author_id"]
+            content = data["content"]
+            self.cursor.execute("INSERT INTO sticky_notes VALUES (?, ?, ?, ?)", (channel_id, message_id, author_id, content))
+        self.conn.commit()
 
     @commands.Cog.listener()
     async def on_ready(self):
         await self.load_sticky_notes()
         self.cleanup()
-        
+
     def cleanup(self):
         for channel_id, data in self.sticky_messages.items():
             asyncio.run_coroutine_threadsafe(
