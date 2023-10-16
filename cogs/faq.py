@@ -49,20 +49,42 @@ class FactsQuestions(commands.Cog):
             if aliases:
                 embed.set_footer(text="Aliases: " + ", ".join(aliases))
             messages.append(embed)
-        
+
         for message in messages:
             existing_message = None
             async for msg in faq_channel.history(limit=100):
                 if msg.author == self.bot.user and msg.embeds and msg.embeds[0].title == message.title:
                     existing_message = msg
                     break
-            
+
             if existing_message:
-                await existing_message.edit(embed=message)
+                await self.edit_message_with_retry(existing_message, message)
             else:
-                await faq_channel.send(embed=message)
+                await self.send_message_with_retry(faq_channel, message)
 
         self.save_aliases()
+
+    async def send_message_with_retry(self, channel, message):
+        while True:
+            try:
+                await channel.send(embed=message)
+                break
+            except discord.HTTPException as e:
+                if e.status == 429:
+                    await asyncio.sleep(5)  # Retry after 5 seconds
+                else:
+                    raise
+
+    async def edit_message_with_retry(self, message, new_message):
+        while True:
+            try:
+                await message.edit(embed=new_message)
+                break
+            except discord.HTTPException as e:
+                if e.status == 429:
+                    await asyncio.sleep(5)
+                else:
+                    raise
 
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
