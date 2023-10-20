@@ -16,6 +16,7 @@ def load_or_create_config():
             "token": "YOUR_TOKEN_HERE",
             "prefix": "!",
             "enable_countdown": False,
+            "token_refresher_enabled": False,
             "countdown_channel_id": None,
             "target_timestamp": None,
             "welcome_channel_id": None,
