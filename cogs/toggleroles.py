@@ -131,25 +131,5 @@ class ToggleRoles(commands.Cog):
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
 
-    @commands.command(help="Toggle the 'Tera Raiders' role. Usage: !toggleteraraider")
-    async def toggleteraraider(self, ctx):
-        role_name = "Tera Raiders"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
-            await ctx.send("You can only use this command in the <#956769501607755806> channel.")
-            return
-
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
-        if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
-            return
-
-        if role in ctx.author.roles:
-            await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
-        else:
-            await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
-
 def setup(bot):
     bot.add_cog(ToggleRoles(bot))
