@@ -7,24 +7,24 @@ from discord.ext import commands, tasks
 class TokenRefresher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.token_config = self.load_token_config()
+        self.token_config = self.LoadTokenConfig()
         self.refresh_token.start()
 
     def cog_unload(self):
         self.refresh_token.cancel()
 
-    def load_token_config(self):
+    def LoadTokenConfig(self):
         with open('token-config.json', 'r') as file:
             return json.load(file)
 
-    def should_run_token_refresher(self):
+    def RunTokenRefresher(self):
         with open('config.json', 'r') as file:
             config = json.load(file)
         return config.get('token_refresher_enabled', False)
 
     @tasks.loop(hours=3)
     async def refresh_token(self):
-        if not self.should_run_token_refresher():
+        if not self.RunTokenRefresher():
             return
 
         # Define the token refresh endpoint
