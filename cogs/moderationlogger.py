@@ -8,7 +8,13 @@ class ModerationLogger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.delete_words = [
-            "youtu.be", "temu", "t.me", "discord.gg", "youtu.be"
+            "youtu.be", "temu", "t.me", "discord.gg", "Pedophile", "kys",
+
+            "porn", "sex", "gay", "Homosexual", "Molest", "masterbate",
+            "masterbation", "masturbate", "xrated", "vagina", "tittyfuck",
+            "chaturbate", "xxx",
+
+            "niggers", "nigga", "nijja", "niggah", "niggaz", "nigg3r",
         ]
         self.delete_emojis = [] # ex: "🚫", "❌"
         self.reply_words = {
@@ -73,19 +79,22 @@ class ModerationLogger(commands.Cog):
 
         # Check for blacklisted emojis
         if any(emoji in message.content for emoji in self.delete_emojis):
-            await message.delete()
-            user_id = message.author.id
-            reason = "Contains banned emoji"
-            await self.log_mod_action(message.guild, "Deletion", message.author, reason, user_id)
-            await self.LogBlacklistedEmojis(message.channel, "Deletion", message.author, reason, user_id)
+            if not any(role.name.lower() in ["admin", "moderator", "helper"] for role in message.author.roles):
+                await message.delete()
+                user_id = message.author.id
+                reason = "Contains banned emoji"
+                await self.log_mod_action(message.guild, "Deletion", message.author, reason, user_id)
+                await self.LogBlacklistedEmojis(message.channel, "Deletion", message.author, reason, user_id)
 
+        # Check for trigger words
         for trigger, response in self.reply_words.items():
             if trigger in message.content.lower():
-                await message.channel.send(response)
-                user_id = message.author.id
-                reason = f"Contains trigger word: {trigger}"
-                await self.log_mod_action(message.guild, "Response Sent", message.author, reason, user_id)
-                await self.LogBlacklistedWords(message.channel, "Response Sent", message.author, reason, user_id)
+                if not any(role.name.lower() in ["admin", "moderator", "helper"] for role in message.author.roles):
+                    await message.channel.send(response)
+                    user_id = message.author.id
+                    reason = f"Contains trigger word: {trigger}"
+                    await self.log_mod_action(message.guild, "Response Sent", message.author, reason, user_id)
+                    await self.LogBlacklistedWords(message.channel, "Response Sent", message.author, reason, user_id)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
