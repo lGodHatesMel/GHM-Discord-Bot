@@ -1,0 +1,11 @@
+
+===
+```Scizor @ Heavy-Duty Boots 
+Ability: Technician 
+Tera Type: Steel 
+EVs: 252 HP / 252 Atk / 4 Spe 
+Adamant Nature 
+- U-turn 
+- Bullet Punch 
+- Knock Off 
+- Defog```

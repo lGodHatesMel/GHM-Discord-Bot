@@ -1,6 +1,9 @@
 {
-    "raidsheet": "Here is the Raid Docs for all the possible raids you can pick from:\nhttps://drive.google.com/drive/folders/1dWCQnNXs8JvCWh99PjU8s39aaa2m9l9N\nNote: You need the ID. So for example for the top right raid you would do 2addraid ID",
     "requestlist": "Here's a link to the special request list:\nhttps://docs.google.com/spreadsheets/d/1eP8sh8rtrB_1QY4Ti5muOf4uRXKzbF4fbU_58XiCoEs/edit?usp=sharing",
     "tradecommands": "Here are the trade commands for the bots:\n\nPok\u00e9mon  Scarlet Violet - `!svtrade`\nPok\u00e9mon Sword Shield - `!swshtrade`\nPok\u00e9mon Legends: Arceus - `!platrade`\nPok\u00e9mon Brilliant Diamond and Shining Pearl - `!bdsptrade`",
-    "batchcommands": "Here's a list of different batch commands you can use when making a Pok\u00e9mon with a Showdown Set:\nhttps://pastebin.com/HixDtDxc"
+    "batchcommands": "Here's a list of different batch commands you can use when making a Pok\u00e9mon with a Showdown Set:\nhttps://pastebin.com/HixDtDxc",
+    "svmetlocations": "Here is a list of all the possible SV met locations:\n\nSV Met Locations \nhttps://pastebin.com/UNE9brU7",
+    "versionmarks": "Here's a list of all Pokemon game version IDs & marks:\n\nhttps://pastebin.com/EwtkQYrx",
+    "raidsheet": "Here is the Raid Docs for all the possible raids you can pick from:\n\nhttps://drive.google.com/drive/folders/1mmYBPXQesbl1lebtc8YxjBxmuZRQVGyn?usp=drive_link\n\nNote: You need the ID. So for an example top left raid would be 1addraid ID",
+    "requestraidinfo": "Here is how you can request raids to add to the Raid Rotation List: https://pastebin.com/BtsG79Ee"
 }

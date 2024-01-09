@@ -1,0 +1,11 @@
+
+===
+```Tornadus-Therian @ Heavy-Duty Boots 
+Ability: Regenerator 
+Tera Type: Fire 
+EVs: 252 SpA / 80 SpD / 176 Spe 
+Timid Nature 
+- Knock Off 
+- U-turn 
+- Bleakwind Storm 
+- Heat Wave```

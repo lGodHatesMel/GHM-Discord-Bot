@@ -8,11 +8,11 @@ class ModerationLogger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.delete_words = [
-            "youtu.be", "temu", "t.me", "discord.gg", "Pedophile", "kys",
+            "t.me", "Pedophile", "kys",
 
             "porn", "sex", "gay", "Homosexual", "Molest", "masterbate",
             "masterbation", "masturbate", "xrated", "vagina", "tittyfuck",
-            "chaturbate", "xxx",
+            "chaturbate",
 
             "niggers", "nigga", "nijja", "niggah", "niggaz", "nigg3r",
         ]

@@ -1,0 +1,12 @@
+
+===
+```Gliscor @ Toxic Orb 
+Ability: Poison Heal 
+Tera Type: Water 
+Shiny: Yes 
+EVs: 244 HP / 252 SpD / 12 Spe 
+Careful Nature 
+- Earthquake 
+- Facade 
+- Swords Dance 
+- Protect```

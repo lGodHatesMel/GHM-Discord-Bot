@@ -1,0 +1,11 @@
+
+===
+```Glimmora @ Focus Sash 
+Ability: Toxic Debris 
+Tera Type: Rock 
+EVs: 4 Atk / 252 SpA / 252 Spe 
+Naive Nature 
+- Stealth Rock 
+- Earth Power 
+- Power Gem 
+- Mortal Spin```

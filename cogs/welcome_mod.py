@@ -209,7 +209,7 @@ class WelcomeMod(commands.Cog):
         # For example, if your save function is self.save_user_info(), call it here
         self.save_user_info()
 
-        await ctx.send("Force Database save successfully!")
+        await ctx.send("Database saved successfully!")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):

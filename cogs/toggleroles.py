@@ -130,7 +130,7 @@ class ToggleRoles(commands.Cog):
         else:
             await ctx.author.add_roles(role)
             await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
-            
+
     @commands.command(help="Toggle the 'Tera Raiders' role. Usage: !toggleteraraider")
     async def toggleteraraider(self, ctx):
         role_name = "Tera Raiders"

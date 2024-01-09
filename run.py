@@ -21,16 +21,16 @@ window = tk.Tk()
 window.title("GHM Discord Bot")
 
 # Set initial size of the window
-window.geometry("800x600")  # You can adjust the width and height as needed
+window.geometry("100x100")  # You can adjust the width and height as needed
 
 # Configure background color
 window.configure(bg="#FF0000")
 
-# Add a logo/image
+# # Add a logo/image
 logo_image = Image.open(r"C:\GHM-Discord-Bot\images\Logo.png")  # Use the 'r' prefix to treat the string as a raw string
-logo_photo = ImageTk.PhotoImage(logo_image)
-logo_label = tk.Label(window, image=logo_photo, bg="#FF0000")  # Adjust bg color to match the window
-logo_label.pack()
+#logo_photo = ImageTk.PhotoImage(logo_image)
+#logo_label = tk.Label(window, image=logo_photo, bg="#FF0000")  # Adjust bg color to match the window
+#logo_label.pack()
 
 # Create "Start" button
 start_button = tk.Button(window, text="Discord Start", command=discord_start_script, bg="#7289DA", fg="white")

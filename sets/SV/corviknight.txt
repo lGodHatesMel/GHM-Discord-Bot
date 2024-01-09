@@ -1,0 +1,12 @@
+
+===
+```Corviknight @ Heavy-Duty Boots 
+Ability: Mirror Armor 
+Tera Type: Dragon 
+Shiny: Yes 
+EVs: 252 HP / 76 Def / 180 SpD 
+Careful Nature 
+- Roost 
+- Iron Defense 
+- Body Press 
+- U-turn```

@@ -9,3 +9,13 @@ Jolly Nature
 - Power Whip 
 - Ivy Cudgel 
 - Knock Off```
+===
+```Ogerpon-Cornerstone (F) @ Cornerstone Mask 
+Ability: Sturdy 
+Tera Type: Rock 
+EVs: 4 HP / 252 Atk / 252 Spe 
+Jolly Nature 
+- U-turn 
+- Ivy Cudgel 
+- Superpower 
+- Horn Leech```

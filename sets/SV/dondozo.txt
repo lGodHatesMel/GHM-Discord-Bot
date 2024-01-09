@@ -1,0 +1,13 @@
+
+===
+```Dondozo @ Heavy-Duty Boots 
+Ability: Unaware 
+Tera Type: Dragon 
+Shiny: Yes 
+EVs: 252 HP / 252 Def / 4 SpD 
+Relaxed Nature 
+IVs: 0 Spe 
+- Liquidation 
+- Body Press 
+- Rest 
+- Sleep Talk```
