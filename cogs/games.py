@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from PIL import Image, ImageDraw, ImageFont
+import io
 import random
 import os
 
@@ -32,6 +34,26 @@ class Games(commands.Cog):
 
         await ctx.send(embed=embed, file=discord.File(image_path, filename=os.path.basename(image_path)))
 
+    @commands.command(name='flipcoin', aliases=['gcoin', 'flip'])
+    async def gimmighoul_coin(self, ctx):
+
+        result = 'Heads' if random.choice([True, False]) else 'Tails'
+
+        heads_image_path = os.path.join('images', 'heads.png')
+        tails_image_path = os.path.join('images', 'tails.png')
+
+        if not (os.path.exists(heads_image_path) and os.path.exists(tails_image_path)):
+            await ctx.send("Error: Missing coin images.")
+            return
+
+        image_path = heads_image_path if result == 'Heads' else tails_image_path
+        image = Image.open(image_path)
+
+        image_buffer = io.BytesIO()
+        image.save(image_buffer, format='PNG')
+        image_buffer.seek(0)
+
+        await ctx.send(file=discord.File(image_buffer, f'gimmighoul_coin_{result.lower()}.png'))
 
 def setup(bot):
     bot.add_cog(Games(bot))
