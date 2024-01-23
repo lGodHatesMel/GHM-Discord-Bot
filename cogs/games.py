@@ -34,8 +34,8 @@ class Games(commands.Cog):
 
         await ctx.send(embed=embed, file=discord.File(image_path, filename=os.path.basename(image_path)))
 
-    @commands.command(name='flipcoin', aliases=['gcoin', 'flip'])
-    async def gimmighoul_coin(self, ctx):
+    @commands.command(aliases=['gimmighoulcoin', 'gcoin', 'flip'])
+    async def flipcoin(self, ctx):
 
         result = 'Heads' if random.choice([True, False]) else 'Tails'
 
