@@ -36,7 +36,6 @@ class Games(commands.Cog):
 
     @commands.command(aliases=['gimmighoulcoin', 'gcoin', 'flip'])
     async def flipcoin(self, ctx):
-
         result = 'Heads' if random.choice([True, False]) else 'Tails'
 
         heads_image_path = os.path.join('images', 'heads.png')
@@ -53,7 +52,11 @@ class Games(commands.Cog):
         image.save(image_buffer, format='PNG')
         image_buffer.seek(0)
 
-        await ctx.send(file=discord.File(image_buffer, f'gimmighoul_coin_{result.lower()}.png'))
+        embed = discord.Embed(title="Coin Flip Result", color=0x00ff00)
+        embed.add_field(name="Result", value=result, inline=False)
+        embed.set_image(url="attachment://gimmighoul_coin.png")
+
+        await ctx.send(embed=embed, file=discord.File(image_buffer, 'gimmighoul_coin.png'))
 
 def setup(bot):
     bot.add_cog(Games(bot))
