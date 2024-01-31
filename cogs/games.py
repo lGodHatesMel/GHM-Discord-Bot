@@ -53,7 +53,7 @@ class Games(commands.Cog):
         image_buffer.seek(0)
 
         embed = discord.Embed(title="Coin Flip Result", color=0x00ff00)
-        embed.add_field(name="Result", value=result, inline=False)
+        embed.add_field(name="Result", value=f"You flipped {result.lower()}", inline=False)
         embed.set_image(url="attachment://gimmighoul_coin.png")
 
         await ctx.send(embed=embed, file=discord.File(image_buffer, 'gimmighoul_coin.png'))
