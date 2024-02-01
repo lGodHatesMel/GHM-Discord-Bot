@@ -2,10 +2,9 @@ import os
 import discord
 from discord.ext import commands
 import random
+import requests
+import io
 import utils
-# import ctypes
-# from enum import Enum
-# from datetime import datetime
 
 class POKEMON_COMMANDS(commands.Cog):
     def __init__(self, bot):
@@ -15,8 +14,7 @@ class POKEMON_COMMANDS(commands.Cog):
     async def pokefacts(self, ctx):
         try:
             random_fact = utils.get_random_pokemon_fact()
-            image_folder = os.path.join('images', 'pokemonimages')
-            image_files = [f for f in os.listdir(image_folder) if os.path.isfile(os.path.join(image_folder, f))]
+            github_api_link = "https://api.github.com/repos/lGodHatesMel/Pokemon-Data/contents/PokemonImages/Sprites/AlternateArt"
 
             embed = discord.Embed(
                 title="**__Random Pokémon Fact__**",
@@ -24,16 +22,18 @@ class POKEMON_COMMANDS(commands.Cog):
                 color=discord.Color.random()
             )
 
-            if image_files:
-                random_image_filename = random.choice(image_files)
-                image_path = os.path.abspath(os.path.join(image_folder, random_image_filename))
+            response = requests.get(github_api_link)
+            if response.status_code == 200:
+                data = response.json()
+                image_filenames = [file['name'] for file in data if file['type'] == 'file' and file['name'].endswith('.png')]
 
-                with open(image_path, "rb") as image_file:
-                    thumbnail = discord.File(image_file, filename=os.path.basename(image_path))
-                    embed.set_thumbnail(url=f"attachment://{os.path.basename(image_path)}")
+                random_image_filename = random.choice(image_filenames)
+                image_url = f"https://raw.githubusercontent.com/lGodHatesMel/Pokemon-Data/main/PokemonImages/Sprites/AlternateArt/{random_image_filename}"
 
-            await ctx.send(embed=embed, file=thumbnail)
-
+                embed.set_image(url=image_url)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send("Failed to fetch file list from GitHub.")
         except Exception as e:
             print(e)
             await ctx.send("An error occurred while fetching Pokémon facts.")
@@ -99,58 +99,6 @@ class POKEMON_COMMANDS(commands.Cog):
         except Exception as e:
             print(e)
             await ctx.send("An error occurred while adding the set.")
-
-    # @commands.command()
-    # async def otinfo(self, ctx):
-    #     if not ctx.message.attachments:
-    #         await ctx.send(f"Please attach 1 of these files:\n\n`{formatted_extensions}`")
-    #         return
-
-    #     attachment = ctx.message.attachments[0]
-    #     allowed_extensions = ['.pk7', '.pb7', '.pk8', '.pa8', '.pb8', '.pk9']
-    #     formatted_extensions = ', '.join(allowed_extensions)
-
-    #     if not any(attachment.filename.endswith(ext) for ext in allowed_extensions):
-    #         await ctx.send(f"Please attach a valid file with extension that has 1 of the following:\n\n`{formatted_extensions}`")
-    #         return
-
-    #     # Read the content of the attached file
-    #     file_content = await attachment.read()
-
-    #     try:
-    #         # Load the PKHex DLL
-    #         pkhex_dll = ctypes.CDLL('./DLLS/PKHeX.Core.dll')
-    #     except OSError as e:
-    #         await ctx.send(f"Error loading the DLL: {e}")
-    #         return
-
-    #     # Assuming the DLL has a function named 'get_ot_info'
-    #     get_ot_info = pkhex_dll.TrainerIDFormat
-    #     get_ot_info.argtypes = [ctypes.c_char_p]
-    #     get_ot_info.restype = ctypes.c_char_p
-
-    #     # Call the DLL function to get OT information
-    #     ot_info = get_ot_info(file_content)
-
-    #     # Convert to PKM
-    #     converted_pkm = convert_to_pkm()
-
-    #     # Create an Embed to display the information
-    #     embed = discord.Embed(title="OT Information", color=0x00ff00)
-    #     embed.add_field(name="Details", value=f"\n{ot_info.decode('utf-8')}\n", inline=False)
-    #     # Add PKM details to the embed
-    #     embed.add_field(name="Converted PKM Details", value=f"\n{converted_pkm}\n", inline=False)
-
-    #     await ctx.send(embed=embed)
-    
-    # def convert_to_pkm(tr):
-    #     pk = PK9()
-    #     pk.OT_Name = tr.OT
-    #     pk.OT_Gender = tr.Gender
-    #     pk.ID32 = tr.ID32
-
-    #     pk.ResetPartyStats()
-    #     return pk
 
 def setup(bot):
     bot.add_cog(POKEMON_COMMANDS(bot))

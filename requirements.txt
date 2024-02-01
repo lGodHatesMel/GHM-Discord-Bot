@@ -1,6 +1,5 @@
-py -m pip install
 discord.py==1.7.3
 pytz
 pillow
-requests 
+requests
 googletrans==4.0.0-rc1

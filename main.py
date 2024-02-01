@@ -28,9 +28,9 @@ def load_or_create_config():
             "member_logs_channel_id": None,
             "server_logs_channel_id": None,
             "owner_id": 123456789012345678,
-            "trivia_channel_id": "YOUR_CHANNEL_ID",
-            "min_question_interval_minutes": 30,
-            "max_question_interval_minutes": 60
+            # "trivia_channel_id": "YOUR_CHANNEL_ID",
+            # "min_question_interval_minutes": 30,
+            # "max_question_interval_minutes": 60
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -86,6 +86,14 @@ async def on_ready():
     print(f'===========================================================')
 
     await bot.change_presence(status=discord.Status.online, activity=discord.Game("OOHHH YEEAAAHHHH!!!"))
+    
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        # Ignore the error silently when a command is not found
+        return
+    # Handle other errors here, for example, you can print the error to the console
+    print(f'Error: {error}')
 
 if __name__ == "__main__":
     try:
