@@ -1,0 +1,17 @@
+{
+    "token": "YOUR_BOT_TOKEN",
+    "prefix": "!",
+    "owner_id": OWNER_ID_HERE,
+    "enable_countdown": false,
+    "countdown_channel_id": CHANNEL_ID_HERE,
+    "target_timestamp": 1668421200,
+    "welcome_channel_id": CHANNEL_ID_HERE,
+    "rules_channel_id": CHANNEL_ID_HERE,
+    "mod_logs_channel_id": CHANNEL_ID_HERE,
+    "faq_channel_id": CHANNEL_ID_HERE,
+    "message_logger_channel_id": CHANNEL_ID_HERE,
+    "role_channel_id": CHANNEL_ID_HERE,
+    "member_logs_channel_id": CHANNEL_ID_HERE,
+    "server_logs_channel_id": CHANNEL_ID_HERE,
+    "token_refresher_enabled": false
+}
