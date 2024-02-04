@@ -1,0 +1,29 @@
+import discord
+from discord.ext import commands
+import requests
+
+class PalInfo(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='palinfo')
+    async def pal_info(self, ctx, pal_name):
+        try:
+            response = requests.get(f'https://raw.githubusercontent.com/lGodHatesMel/Palworld-Data/main/{pal_name}.json')
+            pal_data = response.json()
+
+            embed = discord.Embed(title=pal_data['name'], description=pal_data['description'], color=0x00ff00)
+
+            embed.set_thumbnail(url=pal_data['imageWiki'])
+
+            embed.add_field(name='Type', value=', '.join(pal_data['types']), inline=False)
+            embed.add_field(name='Rarity', value=str(pal_data['rarity']), inline=False)
+            embed.add_field(name='Price', value=str(pal_data['price']), inline=False)
+
+            await ctx.send(embed=embed)
+
+        except Exception as e:
+            await ctx.send(f"Error fetching pal info: {e}")
+
+def setup(bot):
+    bot.add_cog(PalInfo(bot))
