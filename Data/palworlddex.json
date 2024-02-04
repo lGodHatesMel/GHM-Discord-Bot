@@ -1,24 +1,24 @@
 [
   {
     "pal_id": "001",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/001.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/001.png",
     "name": "Lamball",
     "wiki": "https://palworld.fandom.com/wiki/Lamball",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -52,29 +52,29 @@
   },
   {
     "pal_id": "002",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/002.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/002.png",
     "name": "Cattiva",
     "wiki": "https://palworld.fandom.com/wiki/Cattiva",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -108,19 +108,19 @@
   },
   {
     "pal_id": "003",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/003.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/003.png",
     "name": "Chikipi",
     "wiki": "https://palworld.fandom.com/wiki/Chikipi",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -154,34 +154,34 @@
   },
   {
     "pal_id": "004",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/004.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/004.png",
     "name": "Lifmunk",
     "wiki": "https://palworld.fandom.com/wiki/Lifmunk",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -215,14 +215,14 @@
   },
   {
     "pal_id": "005",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/005.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/005.png",
     "name": "Foxparks",
     "wiki": "https://palworld.fandom.com/wiki/Foxparks",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       }
     ],
@@ -256,24 +256,24 @@
   },
   {
     "pal_id": "006",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/006.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/006.png",
     "name": "Fuack",
     "wiki": "https://palworld.fandom.com/wiki/Fuack",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 1
       }
     ],
@@ -307,24 +307,24 @@
   },
   {
     "pal_id": "007",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/007.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/007.png",
     "name": "Sparkit",
     "wiki": "https://palworld.fandom.com/wiki/Sparkit",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 1
       }
     ],
@@ -358,34 +358,34 @@
   },
   {
     "pal_id": "008",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/008.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/008.png",
     "name": "Tanzee",
     "wiki": "https://palworld.fandom.com/wiki/Tanzee",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -419,14 +419,14 @@
   },
   {
     "pal_id": "009",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/009.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/009.png",
     "name": "Rooby",
     "wiki": "https://palworld.fandom.com/wiki/Rooby",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       }
     ],
@@ -460,29 +460,29 @@
   },
   {
     "pal_id": "010",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/010.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/010.png",
     "name": "Pengullet",
     "wiki": "https://palworld.fandom.com/wiki/Pengullet",
-    "types": ["water", "ice"],
+    "types": ["water-ice"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 1
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 1
       }
     ],
@@ -516,34 +516,34 @@
   },
   {
     "pal_id": "011",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/011.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/011.png",
     "name": "Penking",
     "wiki": "https://palworld.fandom.com/wiki/Penking",
-    "types": ["water", "ice"],
+    "types": ["water-ice"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       }
     ],
@@ -577,14 +577,14 @@
   },
   {
     "pal_id": "012",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/012.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/012.png",
     "name": "Jolthog",
     "wiki": "https://palworld.fandom.com/wiki/Jolthog",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 1
       }
     ],
@@ -618,14 +618,14 @@
   },
   {
     "pal_id": "013",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/013.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/013.png",
     "name": "Gumoss",
     "wiki": "https://palworld.fandom.com/wiki/Gumoss",
-    "types": ["grass", "ground"],
+    "types": ["grass-ground"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       }
     ],
@@ -659,19 +659,19 @@
   },
   {
     "pal_id": "014",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/014.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/014.png",
     "name": "Vixy",
     "wiki": "https://palworld.fandom.com/wiki/Vixy",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -705,14 +705,14 @@
   },
   {
     "pal_id": "015",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/015.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/015.png",
     "name": "Hoocrates",
     "wiki": "https://palworld.fandom.com/wiki/Hoocrates",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -746,14 +746,14 @@
   },
   {
     "pal_id": "016",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/016.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/016.png",
     "name": "Teafant",
     "wiki": "https://palworld.fandom.com/wiki/Teafant",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 1
       }
     ],
@@ -787,24 +787,24 @@
   },
   {
     "pal_id": "017",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/017.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/017.png",
     "name": "Depresso",
     "wiki": "https://palworld.fandom.com/wiki/Depresso",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -838,19 +838,19 @@
   },
   {
     "pal_id": "018",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/018.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/018.png",
     "name": "Cremis",
     "wiki": "https://palworld.fandom.com/wiki/Cremis",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -884,24 +884,24 @@
   },
   {
     "pal_id": "019",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/019.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/019.png",
     "name": "Daedream",
     "wiki": "https://palworld.fandom.com/wiki/Daedream",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -935,14 +935,14 @@
   },
   {
     "pal_id": "020",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/020.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/020.png",
     "name": "Rushoar",
     "wiki": "https://palworld.fandom.com/wiki/Rushoar",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -976,14 +976,14 @@
   },
   {
     "pal_id": "021",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/021.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/021.png",
     "name": "Nox",
     "wiki": "https://palworld.fandom.com/wiki/Nox",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1017,24 +1017,24 @@
   },
   {
     "pal_id": "022",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/022.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/022.png",
     "name": "Fuddler",
     "wiki": "https://palworld.fandom.com/wiki/Fuddler",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -1068,19 +1068,19 @@
   },
   {
     "pal_id": "023",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/023.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/023.png",
     "name": "Killamari",
     "wiki": "https://palworld.fandom.com/wiki/Killamari",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1114,14 +1114,14 @@
   },
   {
     "pal_id": "024",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/024.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/024.png",
     "name": "Mau",
     "wiki": "https://palworld.fandom.com/wiki/Mau",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -1155,19 +1155,19 @@
   },
   {
     "pal_id": "025",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/025.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/025.png",
     "name": "Celaray",
     "wiki": "https://palworld.fandom.com/wiki/Celaray",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 1
       }
     ],
@@ -1201,14 +1201,14 @@
   },
   {
     "pal_id": "026",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/026.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/026.png",
     "name": "Direhowl",
     "wiki": "https://palworld.fandom.com/wiki/Direhowl",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1242,14 +1242,14 @@
   },
   {
     "pal_id": "027",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/027.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/027.png",
     "name": "Tocotoco",
     "wiki": "https://palworld.fandom.com/wiki/Tocotoco",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1283,34 +1283,34 @@
   },
   {
     "pal_id": "028",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/028.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/028.png",
     "name": "Flopie",
     "wiki": "https://palworld.fandom.com/wiki/Flopie",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -1344,14 +1344,14 @@
   },
   {
     "pal_id": "029",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/029.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/029.png",
     "name": "Mozzarina",
     "wiki": "https://palworld.fandom.com/wiki/Mozzarina",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -1385,34 +1385,34 @@
   },
   {
     "pal_id": "030",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/030.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/030.png",
     "name": "Bristla",
     "wiki": "https://palworld.fandom.com/wiki/Bristla",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1446,24 +1446,24 @@
   },
   {
     "pal_id": "031",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/031.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/031.png",
     "name": "Gobfin",
     "wiki": "https://palworld.fandom.com/wiki/Gobfin",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 2
       }
     ],
@@ -1497,24 +1497,24 @@
   },
   {
     "pal_id": "032",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/032.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/032.png",
     "name": "Hangyu",
     "wiki": "https://palworld.fandom.com/wiki/Hangyu",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1548,29 +1548,29 @@
   },
   {
     "pal_id": "033",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/033.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/033.png",
     "name": "Mossanda",
     "wiki": "https://palworld.fandom.com/wiki/Mossanda",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -1604,14 +1604,14 @@
   },
   {
     "pal_id": "034",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/034.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/034.png",
     "name": "Woolipop",
     "wiki": "https://palworld.fandom.com/wiki/Woolipop",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -1645,19 +1645,19 @@
   },
   {
     "pal_id": "035",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/035.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/035.png",
     "name": "Caprity",
     "wiki": "https://palworld.fandom.com/wiki/Caprity",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -1691,14 +1691,14 @@
   },
   {
     "pal_id": "036",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/036.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/036.png",
     "name": "Melpaca",
     "wiki": "https://palworld.fandom.com/wiki/Melpaca",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -1733,14 +1733,14 @@
   {
     "paldexid": 37,
     "pal_id": "037",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/037.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/037.png",
     "name": "Eikthyrdeer",
     "wiki": "https://palworld.fandom.com/wiki/Eikthyrdeer",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -1775,14 +1775,14 @@
   {
     "paldexid": 38,
     "pal_id": "038",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/038.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/038.png",
     "name": "Nitewing",
     "wiki": "https://palworld.fandom.com/wiki/Nitewing",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -1817,24 +1817,24 @@
   {
     "paldexid": 39,
     "pal_id": "039",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/039.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/039.png",
     "name": "Ribbuny",
     "wiki": "https://palworld.fandom.com/wiki/Ribbuny",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -1869,29 +1869,29 @@
   {
     "paldexid": 40,
     "pal_id": "040",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/040.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/040.png",
     "name": "Incineram",
     "wiki": "https://palworld.fandom.com/wiki/Incineram",
-    "types": ["fire", "dark"],
+    "types": ["fire-dark"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -1926,19 +1926,19 @@
   {
     "paldexid": 41,
     "pal_id": "041",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/041.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/041.png",
     "name": "Cinnamoth",
     "wiki": "https://palworld.fandom.com/wiki/Cinnamoth",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 1
       }
     ],
@@ -1973,19 +1973,19 @@
   {
     "paldexid": 42,
     "pal_id": "042",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/042.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/042.png",
     "name": "Arsox",
     "wiki": "https://palworld.fandom.com/wiki/Arsox",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       }
     ],
@@ -2020,24 +2020,24 @@
   {
     "paldexid": 43,
     "pal_id": "043",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/043.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/043.png",
     "name": "Dumud",
     "wiki": "https://palworld.fandom.com/wiki/Dumud",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 1
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -2072,14 +2072,14 @@
   {
     "paldexid": 44,
     "pal_id": "044",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/044.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/044.png",
     "name": "Cawgnito",
     "wiki": "https://palworld.fandom.com/wiki/Cawgnito",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       }
     ],
@@ -2114,24 +2114,24 @@
   {
     "paldexid": 45,
     "pal_id": "045",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/045.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/045.png",
     "name": "Leezpunk",
     "wiki": "https://palworld.fandom.com/wiki/Leezpunk",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -2166,14 +2166,14 @@
   {
     "paldexid": 46,
     "pal_id": "046",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/046.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/046.png",
     "name": "Loupmoon",
     "wiki": "https://palworld.fandom.com/wiki/Loupmoon",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       }
     ],
@@ -2208,14 +2208,14 @@
   {
     "paldexid": 47,
     "pal_id": "047",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/047.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/047.png",
     "name": "Galeclaw",
     "wiki": "https://palworld.fandom.com/wiki/Galeclaw",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -2250,39 +2250,39 @@
   {
     "paldexid": 48,
     "pal_id": "048",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/048.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/048.png",
     "name": "Robinquill",
     "wiki": "https://palworld.fandom.com/wiki/Robinquill",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -2317,24 +2317,24 @@
   {
     "paldexid": 49,
     "pal_id": "049",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/049.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/049.png",
     "name": "Gorirat",
     "wiki": "https://palworld.fandom.com/wiki/Gorirat",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -2369,44 +2369,44 @@
   {
     "paldexid": 50,
     "pal_id": "050",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/050.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/050.png",
     "name": "Beegarde",
     "wiki": "https://palworld.fandom.com/wiki/Beegarde",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -2441,34 +2441,34 @@
   {
     "paldexid": 51,
     "pal_id": "051",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/051.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/051.png",
     "name": "Elizabee",
     "wiki": "https://palworld.fandom.com/wiki/Elizabee",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 2
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -2503,14 +2503,14 @@
   {
     "paldexid": 52,
     "pal_id": "052",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/052.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/052.png",
     "name": "Grintale",
     "wiki": "https://palworld.fandom.com/wiki/Grintale",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -2545,19 +2545,19 @@
   {
     "paldexid": 53,
     "pal_id": "053",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/053.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/053.png",
     "name": "Swee",
     "wiki": "https://palworld.fandom.com/wiki/Swee",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 1
       }
     ],
@@ -2591,19 +2591,19 @@
   },
   {
     "pal_id": "054",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/054.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/054.png",
     "name": "Sweepa",
     "wiki": "https://palworld.fandom.com/wiki/Sweepa",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       }
     ],
@@ -2637,19 +2637,19 @@
   },
   {
     "pal_id": "055",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/055.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/055.png",
     "name": "Chillet",
     "wiki": "https://palworld.fandom.com/wiki/Chillet",
-    "types": ["ice", "dragon"],
+    "types": ["ice-dragon"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 1
       }
     ],
@@ -2683,19 +2683,19 @@
   },
   {
     "pal_id": "056",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/056.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/056.png",
     "name": "Univolt",
     "wiki": "https://palworld.fandom.com/wiki/Univolt",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       }
     ],
@@ -2729,14 +2729,14 @@
   },
   {
     "pal_id": "057",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/057.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/057.png",
     "name": "Foxcicle",
     "wiki": "https://palworld.fandom.com/wiki/Foxcicle",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       }
     ],
@@ -2770,19 +2770,19 @@
   },
   {
     "pal_id": "058",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/058.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/058.png",
     "name": "Pyrin",
     "wiki": "https://palworld.fandom.com/wiki/Pyrin",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       }
     ],
@@ -2816,19 +2816,19 @@
   },
   {
     "pal_id": "059",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/059.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/059.png",
     "name": "Reindrix",
     "wiki": "https://palworld.fandom.com/wiki/Reindrix",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       }
     ],
@@ -2862,14 +2862,14 @@
   },
   {
     "pal_id": "060",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/060.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/060.png",
     "name": "Rayhound",
     "wiki": "https://palworld.fandom.com/wiki/Rayhound",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 2
       }
     ],
@@ -2903,14 +2903,14 @@
   },
   {
     "pal_id": "061",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/061.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/061.png",
     "name": "Kitsun",
     "wiki": "https://palworld.fandom.com/wiki/Kitsun",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       }
     ],
@@ -2944,24 +2944,24 @@
   },
   {
     "pal_id": "062",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/062.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/062.png",
     "name": "Dazzi",
     "wiki": "https://palworld.fandom.com/wiki/Dazzi",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -2995,24 +2995,24 @@
   },
   {
     "pal_id": "063",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/063.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/063.png",
     "name": "Lunaris",
     "wiki": "https://palworld.fandom.com/wiki/Lunaris",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 3
       }
     ],
@@ -3046,19 +3046,19 @@
   },
   {
     "pal_id": "064",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/064.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/064.png",
     "name": "Dinossom",
     "wiki": "https://palworld.fandom.com/wiki/Dinossom",
-    "types": ["grass", "dragon"],
+    "types": ["grass-dragon"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -3092,14 +3092,14 @@
   },
   {
     "pal_id": "065",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/065.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/065.png",
     "name": "Surfent",
     "wiki": "https://palworld.fandom.com/wiki/Surfent",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 2
       }
     ],
@@ -3133,19 +3133,19 @@
   },
   {
     "pal_id": "066",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/066.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/066.png",
     "name": "Maraith",
     "wiki": "https://palworld.fandom.com/wiki/Maraith",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -3179,14 +3179,14 @@
   },
   {
     "pal_id": "067",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/067.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/067.png",
     "name": "Digtoise",
     "wiki": "https://palworld.fandom.com/wiki/Digtoise",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 3
       }
     ],
@@ -3220,24 +3220,24 @@
   },
   {
     "pal_id": "068",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/068.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/068.png",
     "name": "Tombat",
     "wiki": "https://palworld.fandom.com/wiki/Tombat",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -3271,29 +3271,29 @@
   },
   {
     "pal_id": "069",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/069.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/069.png",
     "name": "Lovander",
     "wiki": "https://palworld.fandom.com/wiki/Lovander",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       }
     ],
@@ -3327,29 +3327,29 @@
   },
   {
     "pal_id": "070",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/070.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/070.png",
     "name": "Flambelle",
     "wiki": "https://palworld.fandom.com/wiki/Flambelle",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -3383,19 +3383,19 @@
   },
   {
     "pal_id": "071",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/071.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/071.png",
     "name": "Vanwyrm",
     "wiki": "https://palworld.fandom.com/wiki/Vanwyrm",
-    "types": ["fire", "dark"],
+    "types": ["fire-dark"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -3429,34 +3429,34 @@
   },
   {
     "pal_id": "072",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/072.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/072.png",
     "name": "Bushi",
     "wiki": "https://palworld.fandom.com/wiki/Bushi",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 3
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -3490,24 +3490,24 @@
   },
   {
     "pal_id": "073",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/073.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/073.png",
     "name": "Beakon",
     "wiki": "https://palworld.fandom.com/wiki/Beakon",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -3541,19 +3541,19 @@
   },
   {
     "pal_id": "074",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/074.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/074.png",
     "name": "Ragnahawk",
     "wiki": "https://palworld.fandom.com/wiki/Ragnahawk",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -3587,24 +3587,24 @@
   },
   {
     "pal_id": "075",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/075.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/075.png",
     "name": "Katress",
     "wiki": "https://palworld.fandom.com/wiki/Katress",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -3638,24 +3638,24 @@
   },
   {
     "pal_id": "076",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/076.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/076.png",
     "name": "Wixen",
     "wiki": "https://palworld.fandom.com/wiki/Wixen",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 3
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -3689,34 +3689,34 @@
   },
   {
     "pal_id": "077",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/077.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/077.png",
     "name": "Verdash",
     "wiki": "https://palworld.fandom.com/wiki/Verdash",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 3
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 3
       },
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -3750,34 +3750,34 @@
   },
   {
     "pal_id": "078",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/078.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/078.png",
     "name": "Vaelet",
     "wiki": "https://palworld.fandom.com/wiki/Vaelet",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 3
       },
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -3811,24 +3811,24 @@
   },
   {
     "pal_id": "079",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/079.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/079.png",
     "name": "Sibelyx",
     "wiki": "https://palworld.fandom.com/wiki/Sibelyx",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 2
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -3862,14 +3862,14 @@
   },
   {
     "pal_id": "080",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/080.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/080.png",
     "name": "Elphidran",
     "wiki": "https://palworld.fandom.com/wiki/Elphidran",
     "types": ["dragon"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -3903,14 +3903,14 @@
   },
   {
     "pal_id": "081",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/081.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/081.png",
     "name": "Kelpsea",
     "wiki": "https://palworld.fandom.com/wiki/Kelpsea",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 1
       }
     ],
@@ -3944,14 +3944,14 @@
   },
   {
     "pal_id": "082",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/082.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/082.png",
     "name": "Azurobe",
     "wiki": "https://palworld.fandom.com/wiki/Azurobe",
-    "types": ["water", "dragon"],
+    "types": ["water-dragon"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 3
       }
     ],
@@ -3985,24 +3985,24 @@
   },
   {
     "pal_id": "083",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/083.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/083.png",
     "name": "Cryolinx",
     "wiki": "https://palworld.fandom.com/wiki/Cryolinx",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 3
       }
     ],
@@ -4036,19 +4036,19 @@
   },
   {
     "pal_id": "084",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/084.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/084.png",
     "name": "Blazehowl",
     "wiki": "https://palworld.fandom.com/wiki/Blazehowl",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -4082,19 +4082,19 @@
   },
   {
     "pal_id": "085",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/085.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/085.png",
     "name": "Relaxaurus",
     "wiki": "https://palworld.fandom.com/wiki/Relaxaurus",
-    "types": ["dragon", "water"],
+    "types": ["dragon-water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -4128,14 +4128,14 @@
   },
   {
     "pal_id": "086",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/086.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/086.png",
     "name": "Broncherry",
     "wiki": "https://palworld.fandom.com/wiki/Broncherry",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 3
       }
     ],
@@ -4169,34 +4169,34 @@
   },
   {
     "pal_id": "087",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/087.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/087.png",
     "name": "Petallia",
     "wiki": "https://palworld.fandom.com/wiki/Petallia",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 3
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -4230,19 +4230,19 @@
   },
   {
     "pal_id": "088",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/088.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/088.png",
     "name": "Reptyro",
     "wiki": "https://palworld.fandom.com/wiki/Reptyro",
-    "types": ["fire", "ground"],
+    "types": ["fire-ground"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 3
       }
     ],
@@ -4276,14 +4276,14 @@
   },
   {
     "pal_id": "089",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/089.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/089.png",
     "name": "Kingpaca",
     "wiki": "https://palworld.fandom.com/wiki/Kingpaca",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -4317,24 +4317,24 @@
   },
   {
     "pal_id": "090",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/090.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/090.png",
     "name": "Mammorest",
     "wiki": "https://palworld.fandom.com/wiki/Mammorest",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       }
     ],
@@ -4368,29 +4368,29 @@
   },
   {
     "pal_id": "091",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/091.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/091.png",
     "name": "Wumpo",
     "wiki": "https://palworld.fandom.com/wiki/Wumpo",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 3
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 4
       }
     ],
@@ -4424,29 +4424,29 @@
   },
   {
     "pal_id": "092",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/092.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/092.png",
     "name": "Warsect",
     "wiki": "https://palworld.fandom.com/wiki/Warsect",
-    "types": ["grass", "ground"],
+    "types": ["grass-ground"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 3
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -4480,14 +4480,14 @@
   },
   {
     "pal_id": "093",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/093.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/093.png",
     "name": "Fenglope",
     "wiki": "https://palworld.fandom.com/wiki/Fenglope",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -4521,14 +4521,14 @@
   },
   {
     "pal_id": "094",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/094.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/094.png",
     "name": "Felbat",
     "wiki": "https://palworld.fandom.com/wiki/Felbat",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 3
       }
     ],
@@ -4562,29 +4562,29 @@
   },
   {
     "pal_id": "095",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/095.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/095.png",
     "name": "Quivern",
     "wiki": "https://palworld.fandom.com/wiki/Quivern",
     "types": ["dragon"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       }
     ],
@@ -4618,19 +4618,19 @@
   },
   {
     "pal_id": "096",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/096.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/096.png",
     "name": "Blazamut",
     "wiki": "https://palworld.fandom.com/wiki/Blazamut",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 4
       }
     ],
@@ -4664,14 +4664,14 @@
   },
   {
     "pal_id": "097",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/097.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/097.png",
     "name": "Helzephyr",
     "wiki": "https://palworld.fandom.com/wiki/Helzephyr",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -4705,19 +4705,19 @@
   },
   {
     "pal_id": "098",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/098.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/098.png",
     "name": "Astegon",
     "wiki": "https://palworld.fandom.com/wiki/Astegon",
     "types": ["dragon", "dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 4
       }
     ],
@@ -4751,19 +4751,19 @@
   },
   {
     "pal_id": "099",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/099.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/099.png",
     "name": "Menasting",
     "wiki": "https://palworld.fandom.com/wiki/Menasting",
-    "types": ["dark", "ground"],
+    "types": ["dark-ground"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 3
       }
     ],
@@ -4797,24 +4797,24 @@
   },
   {
     "pal_id": "100",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/100.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/100.png",
     "name": "Anubis",
     "wiki": "https://palworld.fandom.com/wiki/Anubis",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 4
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 3
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -4848,14 +4848,14 @@
   },
   {
     "pal_id": "101",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/101.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/101.png",
     "name": "Jormuntide",
     "wiki": "https://palworld.fandom.com/wiki/Jormuntide",
-    "types": ["dragon", "water"],
+    "types": ["dragon-water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 4
       }
     ],
@@ -4889,14 +4889,14 @@
   },
   {
     "pal_id": "102",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/102.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/102.png",
     "name": "Suzaku",
     "wiki": "https://palworld.fandom.com/wiki/Suzaku",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       }
     ],
@@ -4930,29 +4930,29 @@
   },
   {
     "pal_id": "103",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/103.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/103.png",
     "name": "Grizzbolt",
     "wiki": "https://palworld.fandom.com/wiki/Grizzbolt",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 3
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -4986,29 +4986,29 @@
   },
   {
     "pal_id": "104",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/104.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/104.png",
     "name": "Lyleen",
     "wiki": "https://palworld.fandom.com/wiki/Lyleen",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 4
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 3
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 3
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -5046,19 +5046,19 @@
   },
   {
     "pal_id": "105",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/105.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/105.png",
     "name": "Faleris",
     "wiki": "https://palworld.fandom.com/wiki/Faleris",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -5092,24 +5092,24 @@
   },
   {
     "pal_id": "106",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/106.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/106.png",
     "name": "Orserk",
     "wiki": "https://palworld.fandom.com/wiki/Orserk",
-    "types": ["dragon", "electric"],
+    "types": ["dragon-electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 4
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -5143,14 +5143,14 @@
   },
   {
     "pal_id": "107",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/107.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/107.png",
     "name": "Shadowbeak",
     "wiki": "https://palworld.fandom.com/wiki/Shadowbeak",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -5184,19 +5184,19 @@
   },
   {
     "pal_id": "108",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/108.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/108.png",
     "name": "Paladius",
     "wiki": "https://palworld.fandom.com/wiki/Paladius",
     "types": ["neutral"],
     "suitability": [
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -5230,19 +5230,19 @@
   },
   {
     "pal_id": "109",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/109.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/109.png",
     "name": "Necromus",
     "wiki": "https://palworld.fandom.com/wiki/Necromus",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -5276,14 +5276,14 @@
   },
   {
     "pal_id": "110",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/110.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/110.png",
     "name": "Frostallion",
     "wiki": "https://palworld.fandom.com/wiki/Frostallion",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 4
       }
     ],
@@ -5317,14 +5317,14 @@
   },
   {
     "pal_id": "111",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/111.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/111.png",
     "name": "Jetragon",
     "wiki": "https://palworld.fandom.com/wiki/Jetragon",
     "types": ["dragon"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 3
       }
     ],
@@ -5358,14 +5358,14 @@
   },
   {
     "pal_id": "012B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/012B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/012B.png",
     "name": "Jolthog Cryst",
     "wiki": "https://palworld.fandom.com/wiki/Jolthog_Cryst",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 1
       }
     ],
@@ -5399,19 +5399,19 @@
   },
   {
     "pal_id": "024B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/024B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/024B.png",
     "name": "Mau Cryst",
     "wiki": "https://palworld.fandom.com/wiki/Mau_Cryst",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 1
       },
       {
         "type": "pw_farming",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/farming.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/farming.png",
         "level": 1
       }
     ],
@@ -5445,24 +5445,24 @@
   },
   {
     "pal_id": "031B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/031B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/031B.png",
     "name": "Gobfin Ignis",
     "wiki": "https://palworld.fandom.com/wiki/Gobfin_Ignis",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       }
     ],
@@ -5496,29 +5496,29 @@
   },
   {
     "pal_id": "032B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/032B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/032B.png",
     "name": "Hangyu Cryst",
     "wiki": "https://palworld.fandom.com/wiki/Hangyu_Cryst",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -5552,29 +5552,29 @@
   },
   {
     "pal_id": "033B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/033B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/033B.png",
     "name": "Mossanda Lux",
     "wiki": "https://palworld.fandom.com/wiki/Mossanda_Lux",
     "types": ["electric"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 2
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -5608,14 +5608,14 @@
   },
   {
     "pal_id": "037B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/037B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/037B.png",
     "name": "Eikthyrdeer Terra",
     "wiki": "https://palworld.fandom.com/wiki/Eikthyrdeer_Terra",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -5649,24 +5649,24 @@
   },
   {
     "pal_id": "040B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/040B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/040B.png",
     "name": "Incineram Noct",
     "wiki": "https://palworld.fandom.com/wiki/Incineram_Noct",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -5700,29 +5700,29 @@
   },
   {
     "pal_id": "045B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/045B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/045B.png",
     "name": "Leezpunk Ignis",
     "wiki": "https://palworld.fandom.com/wiki/Leezpunk_Ignis",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -5756,34 +5756,34 @@
   },
   {
     "pal_id": "048B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/048B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/048B.png",
     "name": "Robinquill Terra",
     "wiki": "https://palworld.fandom.com/wiki/Robinquill_Terra",
-    "types": ["grass", "ground"],
+    "types": ["grass-ground"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 1
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 2
       }
     ],
@@ -5817,19 +5817,19 @@
   },
   {
     "pal_id": "058B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/058B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/058B.png",
     "name": "Pyrin Noct",
     "wiki": "https://palworld.fandom.com/wiki/Pyrin_Noct",
-    "types": ["fire", "dark"],
+    "types": ["fire-dark"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 1
       }
     ],
@@ -5863,19 +5863,19 @@
   },
   {
     "pal_id": "064B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/064B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/064B.png",
     "name": "Dinossom Lux",
     "wiki": "https://palworld.fandom.com/wiki/Dinossom_Lux",
-    "types": ["electric", "dragon"],
+    "types": ["electric-dragon"],
     "suitability": [
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -5909,14 +5909,14 @@
   },
   {
     "pal_id": "065B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/065B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/065B.png",
     "name": "Surfent Terra",
     "wiki": "https://palworld.fandom.com/wiki/Surfent_Terra",
     "types": ["ground"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       }
     ],
@@ -5950,19 +5950,19 @@
   },
   {
     "pal_id": "071B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/071B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/071B.png",
     "name": "Vanwyrm Cryst",
     "wiki": "https://palworld.fandom.com/wiki/Vanwyrm_Cryst",
-    "types": ["ice", "dark"],
+    "types": ["ice-dark"],
     "suitability": [
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 3
       }
     ],
@@ -5996,19 +5996,19 @@
   },
   {
     "pal_id": "080B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/080B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/080B.png",
     "name": "Elphidran Aqua",
     "wiki": "https://palworld.fandom.com/wiki/Elphidran_Aqua",
-    "types": ["dragon", "water"],
+    "types": ["dragon-water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 3
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -6042,14 +6042,14 @@
   },
   {
     "pal_id": "081B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/081B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/081B.png",
     "name": "Kelpsea Ignis",
     "wiki": "https://palworld.fandom.com/wiki/Kelpsea_Ignis",
     "types": ["fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 1
       }
     ],
@@ -6083,19 +6083,19 @@
   },
   {
     "pal_id": "084B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/084B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/084B.png",
     "name": "Blazehowl Noct",
     "wiki": "https://palworld.fandom.com/wiki/Blazehowl_Noct",
-    "types": ["fire", "dark"],
+    "types": ["fire-dark"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 3
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       }
     ],
@@ -6129,19 +6129,19 @@
   },
   {
     "pal_id": "085B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/085B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/085B.png",
     "name": "Relaxaurus Lux",
     "wiki": "https://palworld.fandom.com/wiki/Relaxaurus_Lux",
-    "types": ["dragon", "electric"],
+    "types": ["dragon-electric"],
     "suitability": [
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 1
       },
       {
         "type": "pw_gen_electricity",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/generating_electricity.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/generating_electricity.png",
         "level": 3
       }
     ],
@@ -6175,14 +6175,14 @@
   },
   {
     "pal_id": "086B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/086B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/086B.png",
     "name": "Broncherry Aqua",
     "wiki": "https://palworld.fandom.com/wiki/Broncherry_Aqua",
-    "types": ["grass", "water"],
+    "types": ["grass-water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 3
       }
     ],
@@ -6216,19 +6216,19 @@
   },
   {
     "pal_id": "088B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/088B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/088B.png",
     "name": "Ice Reptyro",
     "wiki": "https://palworld.fandom.com/wiki/Ice_Reptyro",
-    "types": ["ice", "ground"],
+    "types": ["ice-ground"],
     "suitability": [
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 3
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 3
       }
     ],
@@ -6262,19 +6262,19 @@
   },
   {
     "pal_id": "089B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/089B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/089B.png",
     "name": "Kingpaca Cryst",
     "wiki": "https://palworld.fandom.com/wiki/Kingpaca_Cryst",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 1
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 3
       }
     ],
@@ -6308,24 +6308,24 @@
   },
   {
     "pal_id": "090B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/090B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/090B.png",
     "name": "Mammorest Cryst",
     "wiki": "https://palworld.fandom.com/wiki/Mammorest_Cryst",
     "types": ["ice"],
     "suitability": [
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 2
       },
       {
         "type": "pw_mining",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/mining.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/mining.png",
         "level": 2
       },
       {
         "type": "pw_cooling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/cooling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/cooling.png",
         "level": 2
       }
     ],
@@ -6359,29 +6359,29 @@
   },
   {
     "pal_id": "091B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/091B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/091B.png",
     "name": "Wumpo Botan",
     "wiki": "https://palworld.fandom.com/wiki/Wumpo_Botan",
     "types": ["grass"],
     "suitability": [
       {
         "type": "pw_planting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/planting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/planting.png",
         "level": 1
       },
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 2
       },
       {
         "type": "pw_lumbering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/lumbering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/lumbering.png",
         "level": 3
       },
       {
         "type": "pw_transporting",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/transporting.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/transporting.png",
         "level": 4
       }
     ],
@@ -6415,14 +6415,14 @@
   },
   {
     "pal_id": "101B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/101B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/101B.png",
     "name": "Jormuntide Ignis",
     "wiki": "https://palworld.fandom.com/wiki/Jormuntide_Ignis",
-    "types": ["dragon", "fire"],
+    "types": ["dragon-fire"],
     "suitability": [
       {
         "type": "pw_kindling",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/kindling.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/kindling.png",
         "level": 4
       }
     ],
@@ -6456,14 +6456,14 @@
   },
   {
     "pal_id": "102B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/102B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/102B.png",
     "name": "Suzaku Aqua",
     "wiki": "https://palworld.fandom.com/wiki/Suzaku_Aqua",
     "types": ["water"],
     "suitability": [
       {
         "type": "pw_watering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/watering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/watering.png",
         "level": 3
       }
     ],
@@ -6497,24 +6497,24 @@
   },
   {
     "pal_id": "104B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/104B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/104B.png",
     "name": "Lyleen Noct",
     "wiki": "https://palworld.fandom.com/wiki/Lyleen_Noct",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_handiwork",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/handiwork.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/handiwork.png",
         "level": 3
       },
       {
         "type": "pw_medicine",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/medicine_production.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/medicine_production.png",
         "level": 3
       },
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 2
       }
     ],
@@ -6552,14 +6552,14 @@
   },
   {
     "pal_id": "110B",
-    "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/pals/110B.png",
+    "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/110B.png",
     "name": "Frostallion Noct",
     "wiki": "https://palworld.fandom.com/wiki/Frostallion_Noct",
     "types": ["dark"],
     "suitability": [
       {
         "type": "pw_gathering",
-        "image": "https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/works/gathering.png",
+        "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Works/gathering.png",
         "level": 4
       }
     ],

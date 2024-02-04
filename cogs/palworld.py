@@ -4,6 +4,7 @@ import json
 import aiohttp
 import io
 import os
+from PIL import Image
 
 class PalworldData(commands.Cog):
   def __init__(self, bot):
@@ -12,48 +13,60 @@ class PalworldData(commands.Cog):
     self.palworld_file = os.path.join(data_folder, 'palworlddex.json')
     with open(self.palworld_file) as f:
       self.palinfo = json.load(f)
+    print(f"Loaded JSON data from {self.palworld_file}")
+    # print(f"Number of pals in the file: {len(self.palinfo)}")
 
   async def create_embed(self, pal_name):
     pal_data = None
     for pal in self.palinfo:
       if pal_name.lower() == pal["name"].strip().lower():
         pal_data = pal
+        print(pal_data)
         break
 
     if pal_data is None:
       return None, None
 
-    embed = discord.Embed(title=pal_data["name"], url=pal_data["wiki"], description=pal_data["description"], color=discord.Color.blue())
+    embed_title = f"{pal_data['name']} #{pal_data['pal_id']}"
+    embed = discord.Embed(title=embed_title, color=discord.Color.blue())
 
     async with aiohttp.ClientSession() as session:
-      async with session.get(pal_data["image"]) as resp:
-          if resp.status != 200:
-              return None, None
-          data = io.BytesIO(await resp.read())
-          image_file = discord.File(data, 'image.png')
+        async with session.get(pal_data["image"]) as resp:
+            # print(resp.status)
+            if resp.status != 200:
+                return None, None
+            data = io.BytesIO(await resp.read())
+            # print(data)
+            try:
+                img = Image.open(data)
+                img = img.resize((256, 256))
+                resized_data = io.BytesIO()
+                img.save(resized_data, format='PNG')
+                resized_data.seek(0)
+                image_file = discord.File(resized_data, 'image.png')
+            except Exception as e:
+                print(f"Error creating discord.File: {e}")
+                return None, None
 
     embed.set_image(url=f"attachment://{image_file.filename}")
 
-    type_emojis = []
-    for type in pal_data["types"]:
-        type_emojis.append(f"{type['type'].capitalize()}: :{type['emoji']}:")
-    embed.add_field(name="Types", value=", ".join(type_emojis))
+    typing_images = []
+    for typing in pal_data["types"]:
+        type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
+        typing_images.append(type_image_url)
 
-    drop_images = []
-    for drop in pal_data["drops"]:
-        drop_image_url = f"https://raw.githubusercontent.com/lgodhatesmel/Palworld-Data/main/images/drops/{drop}.png"
-        drop_images.append(drop_image_url)
-    embed.add_field(name="Drops", value=", ".join(drop_images))
+    if typing_images:
+        embed.set_thumbnail(url=typing_images[0])
 
-    embed.add_field(name="Suitability", value=", ".join([f"{s['type']} ({s['level']})" for s in pal_data["suitability"]]))
-    embed.add_field(name="Aura", value=pal_data["aura"]["name"])
-    embed.add_field(name="Stats", value=f"HP: {pal_data['stats']['hp']}\nMelee: {pal_data['stats']['attack']['melee']}\nRanged: {pal_data['stats']['attack']['ranged']}\nDefense: {pal_data['stats']['defense']}\nRide: {pal_data['stats']['speed']['ride']}\nRun: {pal_data['stats']['speed']['run']}\nWalk: {pal_data['stats']['speed']['walk']}\nStamina: {pal_data['stats']['stamina']}\nSupport: {pal_data['stats']['support']}\nFood: {pal_data['stats']['food']}")
+    embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
+    embed.set_footer(text=pal_data["description"])
+
     return embed, image_file
 
   @commands.command()
   async def palinfo(self, ctx, pal_name):
     embed, image_file = await self.create_embed(pal_name)
-
+    # print(embed, image_file)
     if embed:
       await ctx.reply(embed=embed, file=image_file)
     else:
