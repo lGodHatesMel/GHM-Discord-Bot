@@ -3771,7 +3771,7 @@
       }
     ],
     "drops": ["beautiful_flower"],
-    "description": "A pal that transforms into a massive plant when at the end of its life. Once every ten years, a beautiful flower blooms and a new Petallia is born.",
+    "description": "A pal that transforms into a massive plant when at the end of its life.\n Once every ten years, a beautiful flower blooms and a new Petallia is born.",
     "stats": {
       "hp": 100,
       "attack": {

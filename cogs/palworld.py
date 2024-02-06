@@ -39,6 +39,10 @@ class PalworldData(commands.Cog):
             suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
     embed.add_field(name="Suitability", value=suitability_info, inline=False)
 
+    ## coma back to thius to see how I wanna do it.. Might just have to be text as it too many emojis to use
+    # drops_info = ""
+    # for drop in pal_data["drops"]:
+
     async with aiohttp.ClientSession() as session:
         async with session.get(pal_data["image"]) as resp:
             # print(resp.status)
@@ -80,6 +84,50 @@ class PalworldData(commands.Cog):
       await ctx.reply(embed=embed, file=image_file)
     else:
       await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
+
+  ##########################################################################################
+  ## Use these ones at some point to use with !palstats
+  # @commands.command()
+  # async def palstats(self, ctx, pal_name):
+  #   embed, image_file = await self.create_embed(pal_name)
+  #   if embed:
+  #     await ctx.reply(embed=embed, file=image_file)
+  #   else:
+  #     await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
+  ###############   ###############   ###############   ###############   ###############
+  # {
+  #   "image": "https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Pals/001.png",
+  #   "name": "Lamball",
+  #   "stats": {
+  #     "hp": 70,
+  #     "attack": {
+  #       "melee": 70,
+  #       "ranged": 70
+  #     },
+  #     "defense": 70,
+  #     "speed": {
+  #       "ride": 550,
+  #       "run": 400,
+  #       "walk": 40
+  #     },
+  #     "stamina": 100,
+  #     "support": 100,
+  #     "food": 2
+  #   }
+  # },
+  ##########################################################################################
+
+  ##########################################################################################
+  ## maybe do something for aeras where it can be found aswell
+  ## would need to do something for the maps (Merge day/night into one image??)
+  # @commands.command()
+  # async def findpal(self, ctx, pal_name):
+  #   embed, image_file = await self.create_embed(pal_name)
+  #   if embed:
+  #     await ctx.reply(embed=embed, file=image_file)
+  #   else:
+  #     await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
+  ##########################################################################################
 
 def setup(bot):
   bot.add_cog(PalworldData(bot))
