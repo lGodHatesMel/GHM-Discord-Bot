@@ -37,7 +37,7 @@ class PalworldData(commands.Cog):
         if emoji:
             emoji_with_id = f"<:{emoji.name}:{emoji.id}>"
             suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
-    embed.add_field(name="Suitability", value=suitability_info, inline=False)
+    embed.add_field(name="Suitability", value=suitability_info, inline=True)
 
     drops_info = ""
     for drop in pal_data["drops"]:
