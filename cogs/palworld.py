@@ -30,6 +30,15 @@ class PalworldData(commands.Cog):
     embed_title = f"{pal_data['name']} #{pal_data['pal_id']}"
     embed = discord.Embed(title=embed_title, color=discord.Color.blue())
 
+    suitability_info = ""
+    for suitability in pal_data["suitability"]:
+        emoji_name = suitability['emoji']
+        emoji = discord.utils.get(self.bot.emojis, name=emoji_name)
+        if emoji:
+            emoji_with_id = f"<:{emoji.name}:{emoji.id}>"
+            suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
+    embed.add_field(name="Suitability", value=suitability_info, inline=False)
+
     async with aiohttp.ClientSession() as session:
         async with session.get(pal_data["image"]) as resp:
             # print(resp.status)
