@@ -61,22 +61,22 @@ class PalworldData(commands.Cog):
           image_file = discord.File(resized_data, 'image.png')
         except Exception as e:
           print(f"Error creating discord.File: {e}")
-        return None, None
+          return None, None
 
-    embed.set_image(url=f"attachment://{image_file.filename}")
+        embed.set_image(url=f"attachment://{image_file.filename}")
 
-    typing_images = []
-    for typing in pal_data["types"]:
-      type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
-      typing_images.append(type_image_url)
+        typing_images = []
+        for typing in pal_data["types"]:
+          type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
+          typing_images.append(type_image_url)
 
-    if typing_images:
-      embed.set_thumbnail(url=typing_images[0])
+        if typing_images:
+          embed.set_thumbnail(url=typing_images[0])
 
-    embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
-    embed.set_footer(text=pal_data["description"])
+        embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
+        embed.set_footer(text=pal_data["description"])
 
-    return embed, image_file
+        return embed, image_file
 
   @commands.command()
   async def palinfo(self, ctx, *pal_name):
@@ -86,6 +86,9 @@ class PalworldData(commands.Cog):
       await ctx.reply(embed=embed, file=image_file)
     else:
       await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
+
+def setup(bot):
+  bot.add_cog(PalworldData(bot))
 
   ##########################################################################################
   ## Use these ones at some point to use with !palstats
@@ -130,6 +133,3 @@ class PalworldData(commands.Cog):
   #   else:
   #     await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
   ##########################################################################################
-
-def setup(bot):
-  bot.add_cog(PalworldData(bot))
