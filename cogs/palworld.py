@@ -35,7 +35,8 @@ class PalworldData(commands.Cog):
         if emoji:
           emoji_with_id = f"<:{emoji.name}:{emoji.id}>"
           suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
-    embed.add_field(name="Suitability", value=suitability_info, inline=True)
+        else:
+          suitability_info += f"{suitability['type']} Lvl: {suitability['level']}\n"
 
     drops_info = ""
     for drop in pal_data["drops"]:
@@ -44,36 +45,57 @@ class PalworldData(commands.Cog):
 
     async with aiohttp.ClientSession() as session:
       async with session.get(pal_data["image"]) as resp:
-        if resp.status != 200:
-          return None, None
-        data = io.BytesIO(await resp.read())
-        try:
-          image_file = discord.File(data, 'image.png')
-        except Exception as e:
-          print(f"Error creating discord.File: {e}")
-          return None, None
+        if resp.status == 200:
+          data = io.BytesIO(await resp.read())
+          try:
+            image_file = discord.File(data, 'image.png')
+            embed.set_thumbnail(url=f"attachment://{image_file.filename}")
+          except Exception as e:
+            print(f"Error creating discord.File: {e}")
 
-    embed.set_thumbnail(url=f"attachment://{image_file.filename}")
+      embed.set_thumbnail(url=f"attachment://{image_file.filename}")
 
-    typing_images = []
+    typing_emoji = []
     for typing in pal_data["types"]:
       type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
-      typing_images.append(type_image_url)
+      typing_emoji.append(type_image_url)
 
-    if typing_images:
-      embed.set_author(name=pal_data['name'], icon_url=typing_images[0])
+    if typing_emoji:
+      embed.set_author(name=f"{pal_data['name']} #{pal_data['pal_id']}", icon_url=typing_emoji[0])
+
+    map_image = None
+    if "map" in pal_data:
+      map_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Maps/{pal_data['map'][0]}.png"
+      async with aiohttp.ClientSession() as session:
+        async with session.get(map_url) as resp:
+          if resp.status != 200:
+            return None, None
+          data = io.BytesIO(await resp.read())
+          try:
+            img = Image.open(data)
+            img = img.resize((256, 256))
+            resized_data = io.BytesIO()
+            img.save(resized_data, format='PNG')
+            resized_data.seek(0)
+            map_image = discord.File(resized_data, 'map_image.png')
+          except Exception as e:
+            print(f"Error creating discord.File: {e}")
+            return None, None
+
+    if map_image is not None:
+      embed.set_image(url=f"attachment://{map_image.filename}")
 
     embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
     embed.set_footer(text=pal_data["description"])
 
-    return embed, image_file
+    return embed, image_file, map_image
 
   @commands.command()
   async def palinfo(self, ctx, *pal_name):
     pal_name = ' '.join(pal_name)
-    embed, image_file = await self.create_embed(pal_name)
+    embed, image_file, map_image = await self.create_embed(pal_name)
     if embed:
-      await ctx.reply(embed=embed, file=image_file)
+      await ctx.reply(embed=embed, files=[image_file, map_image])
     else:
       await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
 

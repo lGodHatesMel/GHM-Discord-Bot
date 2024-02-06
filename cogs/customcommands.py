@@ -121,7 +121,6 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def deletecommand(self, ctx, command_name):
         try:
-            # Load existing custom commands from JSON
             with open(self.commands_file, 'r') as file:
                 custom_commands = json.load(file)
             # Convert the command_name to lowercase
@@ -142,12 +141,12 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
             
-    @commands.command(aliases=['modcommands'], help='Display the moderation command list')
+    @commands.command(aliases=['modcommands'], help='Display the staff command list')
     @commands.has_any_role("Moderator", "Admin")
     async def staffcommands(self, ctx):
         embed = discord.Embed(
-            title='**__Moderation Command List__**',
-            description='*Here are the moderation commands:*',
+            title='**__Staff Command List__**',
+            description='*Here are the staff commands:*',
             color=discord.Color.random()
         )
         embed.add_field(
@@ -211,7 +210,8 @@ class CustomCommands(commands.Cog):
                 "`!rekovesticky <channel>` - Remove a sticky note.\n"
                 "`!addcommand <command_name> <respond_message>` - Add's a custom command.\n"
                 "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`\n"
-                "`!efreshcommands` - Refreshes the custom_commands.json"
+                "`!efreshcommands` - Refreshes the custom_commands.json.\n"
+                "`!merge <width> <height> <save_name>` - Merges multiple attached images into one"
             ),
             inline=False
         )

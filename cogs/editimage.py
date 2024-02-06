@@ -46,8 +46,8 @@ class ImageEditor(commands.Cog):
 
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
-    
-    @commands.command(help="<size> <attach image>", hidden=True)
+
+    @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size>")
     @commands.has_any_role("Moderator", "Admin")
     async def resizeimage(self, ctx, size: int):
         if len(ctx.message.attachments) == 0:
@@ -56,6 +56,40 @@ class ImageEditor(commands.Cog):
 
         attachment = ctx.message.attachments[0]
         await self.resizetheimage(ctx, size, attachment)
+
+    def merge_images(self, images):
+        widths, heights = zip(*(i.size for i in images))
+        # Calculate the total width and the maximum height
+        total_width = sum(widths)
+        max_height = max(heights)
+        new_image = Image.new('RGB', (total_width, max_height))
+        x_offset = 0
+        for image in images:
+            new_image.paste(image, (x_offset, 0))
+            x_offset += image.size[0]
+        return new_image
+
+    @commands.command(help="Merges multiple attached images into one. Usage: !merge <width> <height> <save_name>", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def merge(self, ctx, width: int, height: int, save_name: str):
+        # Check if the message has attachments
+        if ctx.message.attachments:
+            images = []
+            for attachment in ctx.message.attachments:
+                if attachment.content_type.startswith('image/'):
+                    image_bytes = await attachment.read()
+                    image = Image.open(image_bytes)
+                    image = image.resize((width, height))
+                    images.append(image)
+            # Check if there are at least two images
+            if len(images) >= 2:
+                merged_image = self.merge_images(images)
+                merged_image.save(save_name + '.png')
+                await ctx.send(file=discord.File(save_name + '.png'))
+            else:
+                await ctx.send('Please attach at least two images to merge.')
+        else:
+            await ctx.send('To use this command, type !merge width height save_name and attach two or more images to your message and I will merge them into one image.')
 
 def setup(bot):
     bot.add_cog(ImageEditor(bot))
