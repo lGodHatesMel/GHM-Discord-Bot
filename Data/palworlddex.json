@@ -5620,7 +5620,7 @@
       },
       {
         "type": "Cooling",
-        "image": "pw_cooling",
+        "emoji": "pw_cooling",
         "level": 3
       }
     ],
@@ -5656,17 +5656,17 @@
     "suitability": [
       {
         "type": "Lumbering",
-        "image": "pw_lumbering",
+        "emoji": "pw_lumbering",
         "level": 2
       },
       {
         "type": "Mining",
-        "image": "pw_mining",
+        "emoji": "pw_mining",
         "level": 2
       },
       {
         "type": "Cooling",
-        "image": "pw_cooling",
+        "emoji": "pw_cooling",
         "level": 2
       }
     ],
@@ -5702,7 +5702,7 @@
     "suitability": [
       {
         "type": "Planting",
-        "image": "pw_planting",
+        "emoji": "pw_planting",
         "level": 1
       },
       {
@@ -5712,7 +5712,7 @@
       },
       {
         "type": "Lumbering",
-        "image": "pw_lumbering",
+        "emoji": "pw_lumbering",
         "level": 3
       },
       {
@@ -5753,7 +5753,7 @@
     "suitability": [
       {
         "type": "Kindling",
-        "image": "pw_kindling",
+        "emoji": "pw_kindling",
         "level": 4
       }
     ],
@@ -5789,7 +5789,7 @@
     "suitability": [
       {
         "type": "Watering",
-        "image": "pw_watering",
+        "emoji": "pw_watering",
         "level": 3
       }
     ],

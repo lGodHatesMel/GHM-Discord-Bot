@@ -32,45 +32,46 @@ class PalworldData(commands.Cog):
 
     suitability_info = ""
     for suitability in pal_data["suitability"]:
+      if 'emoji' in suitability:
         emoji_name = suitability['emoji']
         emoji = discord.utils.get(self.bot.emojis, name=emoji_name)
         if emoji:
-            emoji_with_id = f"<:{emoji.name}:{emoji.id}>"
-            suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
+          emoji_with_id = f"<:{emoji.name}:{emoji.id}>"
+          suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
     embed.add_field(name="Suitability", value=suitability_info, inline=True)
 
     drops_info = ""
     for drop in pal_data["drops"]:
-        drops_info += f"{drop}\n"
+      drops_info += f"{drop}\n"
     embed.add_field(name="Drops", value=drops_info, inline=True)
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(pal_data["image"]) as resp:
-            # print(resp.status)
-            if resp.status != 200:
-                return None, None
-            data = io.BytesIO(await resp.read())
-            # print(data)
-            try:
-                img = Image.open(data)
-                img = img.resize((256, 256))
-                resized_data = io.BytesIO()
-                img.save(resized_data, format='PNG')
-                resized_data.seek(0)
-                image_file = discord.File(resized_data, 'image.png')
-            except Exception as e:
-                print(f"Error creating discord.File: {e}")
-                return None, None
+      async with session.get(pal_data["image"]) as resp:
+        # print(resp.status)
+        if resp.status != 200:
+          return None, None
+        data = io.BytesIO(await resp.read())
+        # print(data)
+        try:
+          img = Image.open(data)
+          img = img.resize((256, 256))
+          resized_data = io.BytesIO()
+          img.save(resized_data, format='PNG')
+          resized_data.seek(0)
+          image_file = discord.File(resized_data, 'image.png')
+        except Exception as e:
+          print(f"Error creating discord.File: {e}")
+        return None, None
 
     embed.set_image(url=f"attachment://{image_file.filename}")
 
     typing_images = []
     for typing in pal_data["types"]:
-        type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
-        typing_images.append(type_image_url)
+      type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
+      typing_images.append(type_image_url)
 
     if typing_images:
-        embed.set_thumbnail(url=typing_images[0])
+      embed.set_thumbnail(url=typing_images[0])
 
     embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
     embed.set_footer(text=pal_data["description"])
@@ -78,9 +79,9 @@ class PalworldData(commands.Cog):
     return embed, image_file
 
   @commands.command()
-  async def palinfo(self, ctx, pal_name):
+  async def palinfo(self, ctx, *pal_name):
+    pal_name = ' '.join(pal_name)
     embed, image_file = await self.create_embed(pal_name)
-    # print(embed, image_file)
     if embed:
       await ctx.reply(embed=embed, file=image_file)
     else:
