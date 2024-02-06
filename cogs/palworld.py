@@ -39,9 +39,10 @@ class PalworldData(commands.Cog):
             suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
     embed.add_field(name="Suitability", value=suitability_info, inline=False)
 
-    ## coma back to thius to see how I wanna do it.. Might just have to be text as it too many emojis to use
-    # drops_info = ""
-    # for drop in pal_data["drops"]:
+    drops_info = ""
+    for drop in pal_data["drops"]:
+        drops_info += f"{drop}\n"
+    embed.add_field(name="Drops", value=drops_info, inline=True)
 
     async with aiohttp.ClientSession() as session:
         async with session.get(pal_data["image"]) as resp:

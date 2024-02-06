@@ -22,7 +22,7 @@
         "level": 1
       }
     ],
-    "drops": ["wool", "lamball_mutton"],
+    "drops": ["Wool", "Lamball Mutton"],
     "description": "A walk up a hill tends to end with this Pal tumbling back down. This causes it to become dizzy and unable to move, making it easy to capture and kill. As a result, this pal has tumbled down to the very bottom of the food chain itself.",
     "stats": {
       "hp": 70,
@@ -73,7 +73,7 @@
         "level": 1
       }
     ],
-    "drops": ["red_berries"],
+    "drops": ["Red Berries"],
     "description": "At a glance it appears full of confidence, but it is in fact weak and cowardly.\nBeing toyed with by a Cattiva is in many ways the greatest of disgraces.",
     "stats": {
       "hp": 70,
@@ -114,7 +114,7 @@
         "level": 1
       }
     ],
-    "drops": ["egg", "chikipi_poultry"],
+    "drops": ["egg", "Chikipi Poultry"],
     "description": "Extremely weak and far too delicious. It is one of the weakest Pal alongside Lamball. No matter how many are hunted, they just keep appearing.",
     "stats": {
       "hp": 60,
@@ -170,7 +170,7 @@
         "level": 1
       }
     ],
-    "drops": ["berry_seeds", "low_grade_medical_supplies"],
+    "drops": ["Berry Seeds", "Low Grade Medical Supplies"],
     "description": "Intelligent as a five to sever-year-old human child. It makes a wonderful partner, but there have been more than a few cases where they've killed their master after learning to use weapons.",
     "stats": {
       "hp": 75,
@@ -206,7 +206,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "flame_organ"],
+    "drops": ["Leather", "Flame Organ"],
     "description": "It is unskilled at controlling fire from the moment it is born and tends to choke on the flames it breathes unintentionally. Foxparks sneezes are one of the leading causes of forest fires.",
     "stats": {
       "hp": 65,
@@ -252,7 +252,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "pal_fluids"],
+    "drops": ["Leather", "Pal Fluids"],
     "description": "Using its own body water, this Pal can create waves anywhere. It body surfs when in a hurry, but the resulting speed often ends in a fatal collision.",
     "stats": {
       "hp": 60,
@@ -298,7 +298,7 @@
         "level": 1
       }
     ],
-    "drops": ["electric_organ"],
+    "drops": ["Electric Organ"],
     "description": "During the dry season, this Pal is always on the verge of blowing a fuse, Sparks can fly with even the slightest provocation even amongst allies.",
     "stats": {
       "hp": 60,
@@ -354,7 +354,7 @@
         "level": 1
       }
     ],
-    "drops": ["mushroom"],
+    "drops": ["Mushroom"],
     "description": "Long ago, this Pal used long objects like tree branches as weapons. After coming into contact with humans, however, it found something much more effective: guns.",
     "stats": {
       "hp": 80,
@@ -390,7 +390,7 @@
         "level": 1
       }
     ],
-    "drops": ["flame_organ", "leather"],
+    "drops": ["Flame Organ", "Leather"],
     "description": "Wild Rooby surprisingly never get sick. Eating one piece of charcoal a day, made by burning a branch, is the secret to its eternal health.",
     "stats": {
       "hp": 75,
@@ -441,7 +441,7 @@
         "level": 1
       }
     ],
-    "drops": ["ice_organ", "pal_fluids"],
+    "drops": ["Ice Organ", "Pal Fluids"],
     "description": "The feathers of this Pal have all but disappeared, but sadly, its desire to fly has remained as strong as ever. Even now, it tries to fly again in any way it can.",
     "stats": {
       "hp": 70,
@@ -497,7 +497,7 @@
         "level": 2
       }
     ],
-    "drops": ["ice_organ", "penking_plume"],
+    "drops": ["Ice Organ", "Penking Plume"],
     "description": "Surprisingly, it is unrelated to Pengullet. Ever wanting to be the center of attention, this Pal will strut its stuff for any onlookers.",
     "stats": {
       "hp": 95,
@@ -533,7 +533,7 @@
         "level": 1
       }
     ],
-    "drops": ["electric_organ"],
+    "drops": ["Electric Organ"],
     "description": "Releases the electricity stored in it's body when under attack, producing a shock that can be over 10 million volts. If thrown, it can even be more lethal than any conventional heavy weaponry.",
     "stats": {
       "hp": 70,
@@ -569,7 +569,7 @@
         "level": 1
       }
     ],
-    "drops": ["berry_seeds", "gumoss_leaf"],
+    "drops": ["Berry Seeds", "gumoss_leaf"],
     "description": "A strange Pal with a body resembling tree sap. It gradually loses strength if it has nothing to cover its body with, eventually rotting away.",
     "stats": {
       "hp": 70,
@@ -610,7 +610,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "bone"],
+    "drops": ["Leather", "Bone"],
     "description": "The idol of Palpagos Island. If you bully a Vixy, you best be prepared to become enemies with the whole world.",
     "stats": {
       "hp": 70,
@@ -646,7 +646,7 @@
         "level": 1
       }
     ],
-    "drops": ["fiber", "high_grade_technical_manual"],
+    "drops": ["Fiber", "HG Tech Manual"],
     "description": "Often lost in thought, it sometimes finds it difficult to sleep. \"I think, therefore I am.\"",
     "stats": {
       "hp": 70,
@@ -682,7 +682,7 @@
         "level": 1
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "Large amounts of water pour from what is thought to be its nose, though some say that it is, in fact, just snot. This has sparked a fierce debate among Pal scholars.",
     "stats": {
       "hp": 70,
@@ -728,7 +728,7 @@
         "level": 1
       }
     ],
-    "drops": ["venom_gland"],
+    "drops": ["Venom Gland"],
     "description": "It has few friends because of the perpetually grouchy look on its face, but it is in fact kindhearted. Some have seen it feeding Vixy who have strayed from their pack.",
     "stats": {
       "hp": 70,
@@ -769,7 +769,7 @@
         "level": 1
       }
     ],
-    "drops": ["wool"],
+    "drops": ["Wool"],
     "description": "Compared to Lamball, it has finer wool and a temperament more suited for domestication. However, it has historically been kept as a pet. Cuteness is considered a virtue.",
     "stats": {
       "hp": 70,
@@ -815,7 +815,7 @@
         "level": 1
       }
     ],
-    "drops": ["venom_gland", "small_pal_soul"],
+    "drops": ["Venom Gland", "S Pal Soul"],
     "description": "It puts those it is interested in to sleep and shows them an endless stream of happy dreams. Those who fall under its spell are never to wake until death takes them.",
     "stats": {
       "hp": 70,
@@ -851,7 +851,7 @@
         "level": 1
       }
     ],
-    "drops": ["rushoar_pork", "leather", "bone"],
+    "drops": ["Rushoar Pork", "Leather", "Bone"],
     "description": "Being extremely aggressive Pal, it often picks fights before gauging its opponent's strength. Though small, its powerful charge can even send boulders flying.",
     "stats": {
       "hp": 80,
@@ -887,7 +887,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "small_pal_soul"],
+    "drops": ["Leather", "S Pal Soul"],
     "description": "If you find Nox hair in your bedding, you should leave it where it lays and leave immediately. Picking it up is a one-way-ticket to a never ending night.",
     "stats": {
       "hp": 75,
@@ -933,7 +933,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather"],
+    "drops": ["Leather"],
     "description": "Its large claws boast of diamond-like hardness. However, sharpening these claws consumes most of its energy, leading it to sometimes spending entire days doing nothing else.",
     "stats": {
       "hp": 65,
@@ -974,7 +974,7 @@
         "level": 1
       }
     ],
-    "drops": ["venom_gland"],
+    "drops": ["Venom Gland"],
     "description": "It wraps itself around an enemy's head, sucking out their insides. Pal mummies are occasionally found, but these are in fact Killamari victims.",
     "stats": {
       "hp": 60,
@@ -1010,7 +1010,7 @@
         "level": 1
       }
     ],
-    "drops": ["gold_coin"],
+    "drops": ["Gold Coin"],
     "description": "Its hard tail does not deteriorate even when cut off. Some believed these severed tails to be good luck, but for the innumerable Mau who were poached as a result, they were anything but.",
     "stats": {
       "hp": 70,
@@ -1051,7 +1051,7 @@
         "level": 1
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "Riding the wind, this Pal travels where it pleases. Should it find a partner along the way, the encounter will mark its journey's end.",
     "stats": {
       "hp": 80,
@@ -1087,7 +1087,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "ruby", "gold_coin"],
+    "drops": ["Leather", "Ruby", "Gold Coin"],
     "description": "Long ago Direhowl would hunt alongside humans but over the years this bond faded.",
     "stats": {
       "hp": 80,
@@ -1123,7 +1123,7 @@
         "level": 1
       }
     ],
-    "drops": ["gunpowder", "tocotoco_feather"],
+    "drops": ["Gun Powder", "Tocotoco Feather"],
     "description": "A frightening Pal that produces exploding eggs. It often fires these eggs from its rear end as a weapon, but when spent the Pal itself explodes.",
     "stats": {
       "hp": 60,
@@ -1179,7 +1179,7 @@
         "level": 1
       }
     ],
-    "drops": ["low_grade_medical_supplies", "wheat_seeds"],
+    "drops": ["Low Grade Medical Supplies", "Wheat Seeds"],
     "description": "It prefers places that have an abundance of vegetation, but hay fever has apparently become a problem for Flopie as of late.",
     "stats": {
       "hp": 75,
@@ -1215,7 +1215,7 @@
         "level": 1
       }
     ],
-    "drops": ["mozzarina_meat", "milk"],
+    "drops": ["Mozzarina Meat", "Milk"],
     "description": "Milk pours from this Pal like water from an open faucet, regardless of its gender. It's truly a mystery of life, although this mystery may be better left unsolved.",
     "stats": {
       "hp": 90,
@@ -1271,7 +1271,7 @@
         "level": 1
       }
     ],
-    "drops": ["wheat_seeds", "lettuce_seeds"],
+    "drops": ["Wheat Seeds", "Lettuce Seeds"],
     "description": "This prickly Pal's thorns are highly poisonous. It is friendly with Cinnamoth and only smiles when Cinnamoth is drinking its nectar.",
     "stats": {
       "hp": 80,
@@ -1317,7 +1317,7 @@
         "level": 2
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "Long ago, it was a large and powerful aquatic Pal.\nAs food became scarce it evolved to live on land.\nSince walking requires much energy, it gradually became smaller and is now a small and puny Pal.",
     "stats": {
       "hp": 90,
@@ -1363,8 +1363,8 @@
         "level": 1
       }
     ],
-    "drops": ["fiber"],
-    "description": "Its gigantic arms can rip apart even iron.\nAs a particularly cruel form of execution, serious criminals would be strung up in a public square, and a Hangyu would rip off the skin from their bones.",
+    "drops": ["Fiber"],
+    "description": "Its gigantic arms can rip apart even iron.\nAs a particularly cruel form of execution, serious criminals would be strung up in a public square, and a Hangyu would rip off the skin from their Bones.",
     "stats": {
       "hp": 80,
       "attack": {
@@ -1414,7 +1414,7 @@
         "level": 3
       }
     ],
-    "drops": ["mushroom", "leather", "tomato_seeds"],
+    "drops": ["Mushroom", "Leather", "Tomato Seeds"],
     "description": "A Pal so powerful it's hard to believe. In one experiment, this Pal tore through 3,000 sheets of paper at once! It's only by some miracle that this Pal isn't a meat-eater.",
     "stats": {
       "hp": 100,
@@ -1450,7 +1450,7 @@
         "level": 1
       }
     ],
-    "drops": ["cotton_candy", "high_quality_pal_oil"],
+    "drops": ["Cotton Candy", "High Quality Pal Oil"],
     "description": "Its entire body is 18,000 times sweeter than sugar.\nCarnivorous Pals lured by its scent will find themselves overwhelmed by sweetness and even pass out should they take a bite of this Pal.",
     "stats": {
       "hp": 70,
@@ -1491,7 +1491,7 @@
         "level": 1
       }
     ],
-    "drops": ["caprity_meat", "red_berries", "horn"],
+    "drops": ["Caprity Meat", "Red Berries", "Horn"],
     "description": "The shrub on this pal's back produces berries as long as it is properly fed. It offers these berries to potential mates, and if the flavor is to their liking, romance blossoms.",
     "stats": {
       "hp": 100,
@@ -1527,7 +1527,7 @@
         "level": 1
       }
     ],
-    "drops": ["wool", "leather"],
+    "drops": ["Wool", "Leather"],
     "description": "Don't be fooled by its fluffy appearance. A hypersonic kick from one of its long legs may send you flying to the other side of the world.",
     "stats": {
       "hp": 90,
@@ -1564,7 +1564,7 @@
         "level": 2
       }
     ],
-    "drops": ["eikthyrdeer_venison", "leather", "horn"],
+    "drops": ["Eikthyrdeer Venison", "Leather", "Horn"],
     "description": "The one who possesses the most impressive antlers becomes the leader of the herd. If their antlers are broken, they become depressed and leave the herd never to be seen again.",
     "stats": {
       "hp": 95,
@@ -1601,7 +1601,7 @@
         "level": 2
       }
     ],
-    "drops": ["leather"],
+    "drops": ["Leather"],
     "description": "It carries newborn Pals to its nest and raises them as a surrogate parent. \nOnce the baby Pal has fattened up, it hunts them.",
     "stats": {
       "hp": 100,
@@ -1648,7 +1648,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "beautiful_flower"],
+    "drops": ["Leather", "Beautiful Flower"],
     "description": "A Pal who's never without a bright smile. Occasionally, it gets its tentacles tied up in knots by Cattiva's pranks. During those moments, its expression changes into something altogether demonic.",
     "stats": {
       "hp": 75,
@@ -1700,7 +1700,7 @@
         "level": 1
       }
     ],
-    "drops": ["horn", "leather"],
+    "drops": ["Horn", "Leather"],
     "description": "In the dark of night, this Pal snatches prey to bring back ot its territory.\nWhat happens to those poor souls afterwards isn't too hard to imagine.",
     "stats": {
       "hp": 95,
@@ -1742,7 +1742,7 @@
         "level": 1
       }
     ],
-    "drops": ["honey", "lettuce_seeds", "wheat_seeds"],
+    "drops": ["Honey", "Lettuce Seeds", "Wheat Seeds"],
     "description": "Sniffing its scales produces a feeling of unparalleled euphoria.\nThere was some effort to further regulate this byproduct, but the Free Pal Alliance have vehemently opposed these measures, putting a stop to them.",
     "stats": {
       "hp": 70,
@@ -1784,7 +1784,7 @@
         "level": 1
       }
     ],
-    "drops": ["horn", "flame_organ"],
+    "drops": ["Horn", "Flame Organ"],
     "description": "In ancient times, carnivorous Pals pursued them relentlessly.\nThe Arsox's irrational rage transformed into a raging inferno, which has been passed on to this day.",
     "stats": {
       "hp": 85,
@@ -1831,7 +1831,7 @@
         "level": 1
       }
     ],
-    "drops": ["raw_dumud", "high_quality_pal_oil"],
+    "drops": ["Raw Dumud", "High Quality Pal Oil"],
     "description": "When too relaxed, its reaction time drastically declines.\nEven if it were sliced from head to tail, it probably wouldn't even realize that it should be dead until the next morning.",
     "stats": {
       "hp": 100,
@@ -1868,7 +1868,7 @@
         "level": 1
       }
     ],
-    "drops": ["bone", "venom_gland", "small_pal_soul"],
+    "drops": ["Bone", "Venom Gland", "S Pal Soul"],
     "description": "Long ago it freely soared the skies. After losing a contest with Galeclaw, it abandoned the skies and now lives a quiet nocturnal life.",
     "stats": {
       "hp": 75,
@@ -1915,7 +1915,7 @@
         "level": 1
       }
     ],
-    "drops": ["copper_key", "silver_key"],
+    "drops": ["Copper Key", "Silver Key"],
     "description": "A Pal that always takes great care to maintain a stylish stance. Always on the hunt for the coolest poses, if given a mirror it will spend all day posing in front of it.",
     "stats": {
       "hp": 80,
@@ -1952,7 +1952,7 @@
         "level": 2
       }
     ],
-    "drops": ["bone"],
+    "drops": ["Bone"],
     "description": "The horns on its head grow under the moonlight. It doesn't hate the sun, but its horns itch when sunlight hits them.",
     "stats": {
       "hp": 80,
@@ -1989,7 +1989,7 @@
         "level": 2
       }
     ],
-    "drops": ["galeclaw_poultry", "leather"],
+    "drops": ["Galeclaw Poultry", "Leather"],
     "description": "A Pal that can easily take flight even while grasping a human.\n It is, however, prone to letting go when tired, which has led to the sudden demise of more than a few souls.",
     "stats": {
       "hp": 75,
@@ -2051,7 +2051,7 @@
         "level": 2
       }
     ],
-    "drops": ["wheat_seeds", "arrow"],
+    "drops": ["Wheat Seeds", "Arrow"],
     "description": "A pal that is very similar to humans who hunt and live in the forests. It may prove to be a key for understanding what Pals are and how they diverged from humans so long ago.",
     "stats": {
       "hp": 90,
@@ -2098,7 +2098,7 @@
         "level": 3
       }
     ],
-    "drops": ["leather", "bone"],
+    "drops": ["Leather", "Bone"],
     "description": "It beats the ground rhythmically to communicate with its comrades. The meaning of each rhythm differs by troop, but the distinction between them is still largely unknown.",
     "stats": {
       "hp": 90,
@@ -2165,7 +2165,7 @@
         "level": 1
       }
     ],
-    "drops": ["honey"],
+    "drops": ["Honey"],
     "description": "A servant that pledges loyalty to Elizabee.\nAny that cause harm to the queen are immediately expelled from the hive.\nIt will gladly give its life to protect its queen.",
     "stats": {
       "hp": 80,
@@ -2222,7 +2222,7 @@
         "level": 2
       }
     ],
-    "drops": ["honey", "elizabee's_staff"],
+    "drops": ["Honey", "Elizabee's Staff"],
     "description": "A chosen queen to rule over Beegardes.\nThere is a never ending stream of servants willing to work themselves to death for the pleasure of serving their queen.",
     "stats": {
       "hp": 90,
@@ -2259,7 +2259,7 @@
         "level": 2
       }
     ],
-    "drops": ["high_quality_pal_oil"],
+    "drops": ["High Quality Pal Oil"],
     "description": "Grintale's eyes light up the moment anyone enters its territory.\nThis is no figure of speech-its eyes literally light up.",
     "stats": {
       "hp": 110,
@@ -2301,7 +2301,7 @@
         "level": 1
       }
     ],
-    "drops": ["wool"],
+    "drops": ["Wool"],
     "description": "Crawling along the ground, it eats microscopic organic matter.\nAfter a while, it discharges any substances that provide no nutrition.\nBy using it as a mop for cleaning, everyone wins!",
     "stats": {
       "hp": 60,
@@ -2342,7 +2342,7 @@
         "level": 2
       }
     ],
-    "drops": ["wool"],
+    "drops": ["Wool"],
     "description": "While hibernating, a large number of Swee hide within its voluminous body hair.\nThe most ever recorded is 101.",
     "stats": {
       "hp": 100,
@@ -2383,8 +2383,8 @@
         "level": 1
       }
     ],
-    "drops": ["leather"],
-    "description": "It can curl up its body and roll around at extremely high speeds.\nLong ago, people would tie bags of milk to domesticated Chillet as they grazed to produce butter using this spinning force.",
+    "drops": ["Leather"],
+    "description": "It can curl up its body and roll around at extremely high speeds.\nLong ago, people would tie bags of Milk to domesticated Chillet as they grazed to produce butter using this spinning force.",
     "stats": {
       "hp": 90,
       "attack": {
@@ -2424,7 +2424,7 @@
         "level": 1
       }
     ],
-    "drops": ["leather", "electric_organ", "horn"],
+    "drops": ["Leather", "Electric Organ", "Horn"],
     "description": "It used to be considered an emissary of the Thunder God, and thus was not hunted by people.\nHowever, after witnesses osberved one die from a lightning strike, its reverence faded, and it quite literally fell into the role of a workhorse.",
     "stats": {
       "hp": 80,
@@ -2460,7 +2460,7 @@
         "level": 2
       }
     ],
-    "drops": ["leather", "ice_organ"],
+    "drops": ["Leather", "Ice Organ"],
     "description": "On nights when the aurora is visible, it looks up towards the sky and begins to howl a beautiful song. This does, however, leave it vulnerable to attacks from enemies.",
     "stats": {
       "hp": 90,
@@ -2501,7 +2501,7 @@
         "level": 1
       }
     ],
-    "drops": ["flame_organ", "leather"],
+    "drops": ["Flame Organ", "Leather"],
     "description": "It's entire body has evolved into a highly efficient radiator, gifting it with astounding stamina.\nWhen someone has mounted it, this Pal takes caution not to burn them.",
     "stats": {
       "hp": 100,
@@ -2542,7 +2542,7 @@
         "level": 2
       }
     ],
-    "drops": ["reindrix_venison", "leather", "horn", "ice_organ"],
+    "drops": ["Reindrix Venison", "Leather", "Horn", "Ice Organ"],
     "description": "Its transparent cerulean antlers glow with the cold of absolute zero. Any who touch them with their bare hands are instantly frozen over and smashed into pieces.",
     "stats": {
       "hp": 100,
@@ -2578,7 +2578,7 @@
         "level": 2
       }
     ],
-    "drops": ["electric_organ"],
+    "drops": ["Electric Organ"],
     "description": "At full speed, it could be mistaken for a bolt of lightning. If two Rayhounds collide, the sound is like that of a powerful thunderclap.",
     "stats": {
       "hp": 90,
@@ -2614,7 +2614,7 @@
         "level": 2
       }
     ],
-    "drops": ["flame_organ", "leather"],
+    "drops": ["Flame Organ", "Leather"],
     "description": "Despite its appearance, Kitsun is extremely sensitive and will flee into a cave when spooked. Long ago, it was considered and ill omen if one were found nearby.",
     "stats": {
       "hp": 100,
@@ -2660,7 +2660,7 @@
         "level": 1
       }
     ],
-    "drops": ["electric_organ"],
+    "drops": ["Electric Organ"],
     "description": "Often kind to lonely pals.\nHowever, the moment a Pal mistakes this for actual companionship, it seizes the opportunity to blast them with a thunderbolt.",
     "stats": {
       "hp": 70,
@@ -2706,7 +2706,7 @@
         "level": 3
       }
     ],
-    "drops": ["paldium_fragment"],
+    "drops": ["Paldium Fragment"],
     "description": "It can control those who carelessly stare into its eyes. Those seen with a Lunaris are in its mind, simply under its control.",
     "stats": {
       "hp": 90,
@@ -2747,7 +2747,7 @@
         "level": 2
       }
     ],
-    "drops": ["wheat_seeds"],
+    "drops": ["Wheat Seeds"],
     "description": "A Pal who once angered cannot be pacified. It rages on and on like an inferno. The prahse \"step on a Dinossom's tail\" has come to mean enraging someone.",
     "stats": {
       "hp": 110,
@@ -2783,7 +2783,7 @@
         "level": 2
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "Its hydrodynamic form is well suited to life in water.\nPoachers often catch them and use them in place of surfboards.",
     "stats": {
       "hp": 90,
@@ -2824,7 +2824,7 @@
         "level": 1
       }
     ],
-    "drops": ["bone", "small_pal_soul"],
+    "drops": ["Bone", "S Pal Soul"],
     "description": "It relishes the peculiar scent living things give off when they are near death. If a Mariath has taken a liking to you. It is safe to assume that is why.",
     "stats": {
       "hp": 75,
@@ -2860,7 +2860,7 @@
         "level": 3
       }
     ],
-    "drops": ["ore", "high_quality_pal_oil"],
+    "drops": ["ore", "High Quality Pal Oil"],
     "description": "A walking contradiction, possessing the strongest shell and the only drill capable of piercing it. \"Digtoise's Fable\" is a popular children's tale.",
     "stats": {
       "hp": 80,
@@ -2906,7 +2906,7 @@
         "level": 2
       }
     ],
-    "drops": ["leather", "small_pal_soul"],
+    "drops": ["Leather", "S Pal Soul"],
     "description": "Often appears out of the blue to flaunt its prized wings in front of other Pals.\nAlthough it seems to be an intimidation tactic, the Pal seems to derive some kind of pleasure from the display.",
     "stats": {
       "hp": 95,
@@ -2957,7 +2957,7 @@
         "level": 1
       }
     ],
-    "drops": ["mushroom", "cake", "suspicious_juice", "strange_juice"],
+    "drops": ["Mushroom", "Cake", "Suspicious Juice", "Strange Juice"],
     "description": "Seeking a night of love, it is always chasing someone around. At first, it only showed interest in other Pals, but in recent years even humans have become the target of its debauchery.",
     "stats": {
       "hp": 120,
@@ -3008,7 +3008,7 @@
         "level": 1
       }
     ],
-    "drops": ["flame_organ", "high_quality_pal_oil"],
+    "drops": ["Flame Organ", "High Quality Pal Oil"],
     "description": "When it starts crying, this Pal produces magma in place of tears. The magma that pours out is absorbed back into its body, causing it to get hotter and hotter. The more it cries, the stronger it becomes.",
     "stats": {
       "hp": 60,
@@ -3049,7 +3049,7 @@
         "level": 3
       }
     ],
-    "drops": ["bone", "ruby", "gold_coin"],
+    "drops": ["Bone", "Ruby", "Gold Coin"],
     "description": "The melodies of a flute made from the exoskeleton of a Vanwyrm are said to cross the whole mountain ranges.\nIn ages past, such flutes were used to signal an attack.",
     "stats": {
       "hp": 90,
@@ -3105,7 +3105,7 @@
         "level": 1
       }
     ],
-    "drops": ["bone", "ingot"],
+    "drops": ["Bone", "Ingot"],
     "description": "Its body becomes a blade upon death, to be taken up by the next generation. If someone other than a Bushi wields this blade, the soul within torments them until they are driven mad.",
     "stats": {
       "hp": 80,
@@ -3151,7 +3151,7 @@
         "level": 3
       }
     ],
-    "drops": ["electric_organ"],
+    "drops": ["Electric Organ"],
     "description": "Some think it is a related species to Ragnahawk, but there is in fact no connection. Using its sharp beak, it descends on its prey in a quick motion that resembles a bolt of lightning.",
     "stats": {
       "hp": 105,
@@ -3192,7 +3192,7 @@
         "level": 3
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "Some think it is a related species to Beakon, but there is in fact no connection. It mainly eats rocks, and after many long years its beak and head have hardened to accommodate this diet.",
     "stats": {
       "hp": 95,
@@ -3238,7 +3238,7 @@
         "level": 2
       }
     ],
-    "drops": ["leather", "katress_hair", "high_grade_technical_manual"],
+    "drops": ["Leather", "Katress Hair", "HG Tech Manual"],
     "description": "With the power of shadows it produces arcane phenomena. It prefers to eat food raw and is particularly hostile towards Wixen",
     "stats": {
       "hp": 90,
@@ -3284,7 +3284,7 @@
         "level": 2
       }
     ],
-    "drops": ["flame_organ", "high_grade_technical_manual"],
+    "drops": ["Flame Organ", "HG Tech Manual"],
     "description": "With the power of light, it produces arcane phenomena. It prefers to eat food well-done and is particularly hostile towards Katress.",
     "stats": {
       "hp": 90,
@@ -3340,7 +3340,7 @@
         "level": 2
       }
     ],
-    "drops": ["leather", "bone"],
+    "drops": ["Leather", "Bone"],
     "description": "Land that Verdash has run across becomes extremely fertile, with thick vegetation growing there soon after. It will not run anywhere that herbicide has been used.",
     "stats": {
       "hp": 90,
@@ -3396,7 +3396,7 @@
         "level": 1
       }
     ],
-    "drops": ["low_grade_medical_supplies", "tomato_seeds"],
+    "drops": ["Low Grade Medical Supplies", "Tomato Seeds"],
     "description": "The castle was filled with the king's favorite flowers. A great battle ensued, and flames approached the castle. Amidst the chaos, the spirit of a flower appeared.\n- From the fairy tale, The King's Flower.",
     "stats": {
       "hp": 100,
@@ -3442,7 +3442,7 @@
         "level": 1
       }
     ],
-    "drops": ["high_quality_cloth", "ice_organ"],
+    "drops": ["High Quality Cloth", "Ice Organ"],
     "description": "A Pal that likes the rain,and will often bask in rain showers until the weather clears up. On rainy days, Foxparks can often be found taking shelter beneath it.",
     "stats": {
       "hp": 110,
@@ -3478,7 +3478,7 @@
         "level": 2
       }
     ],
-    "drops": ["high_quality_pal_oil"],
+    "drops": ["High Quality Pal Oil"],
     "description": "It possesses a demeanor as pure as its appearance suggests. Perhaps because of this, it is sometimes unable to discern good from evil, often allowing wrongdoers to take advantage of it.",
     "stats": {
       "hp": 110,
@@ -3514,7 +3514,7 @@
         "level": 1
       }
     ],
-    "drops": ["raw_kelpsea", "pal_fluids"],
+    "drops": ["Raw Kelpsea", "Pal Fluids"],
     "description": "Its personality changes depending on the quality of the water it was born into. Kelpsea born into polluted waters are generally ill-tempered and quickly become delinquents.",
     "stats": {
       "hp": 70,
@@ -3550,7 +3550,7 @@
         "level": 3
       }
     ],
-    "drops": ["cloth", "precious_dragon_stone"],
+    "drops": ["Cloth", "Precious Dragon Stone"],
     "description": "This Pal's white ribbon turns black if doused with impure water. Given its usefulness in detecting poison, this Pal was once overhunted. This past has left them bitter towards humanity.",
     "stats": {
       "hp": 110,
@@ -3596,7 +3596,7 @@
         "level": 3
       }
     ],
-    "drops": ["ice_organ"],
+    "drops": ["Ice Organ"],
     "description": "It can easily climb steep mountains with its hard claws. However, its short legs make it difficult to descend, often leaving it stranded in high places.",
     "stats": {
       "hp": 100,
@@ -3637,7 +3637,7 @@
         "level": 2
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "While it prefers raw meat, it always ends up eating well-done meat. This is due to its blistering claws, which it uses as its weapon—it simply doesn't realize its prey gets burned to a crisp.",
     "stats": {
       "hp": 105,
@@ -3678,7 +3678,7 @@
         "level": 1
       }
     ],
-    "drops": ["high_quality_pal_oil", "ruby"],
+    "drops": ["High Quality Pal Oil", "Ruby"],
     "description": "Contrary to its blasé appearance, it's quite ferocious.\nIt perceives everything in its sight as prey and will stop at nothing to devour it.",
     "stats": {
       "hp": 110,
@@ -3714,7 +3714,7 @@
         "level": 3
       }
     ],
-    "drops": ["broncherry_meat", "tomato_seeds"],
+    "drops": ["Broncherry Meat", "Tomato Seeds"],
     "description": "Its scent drastically changes before and after pairing.\nIt exudes a pleasing aroma after finding a partner, which is called the \"fragrance of first love.\"",
     "stats": {
       "hp": 120,
@@ -3770,7 +3770,7 @@
         "level": 1
       }
     ],
-    "drops": ["beautiful_flower"],
+    "drops": ["Beautiful Flower"],
     "description": "A pal that transforms into a massive plant when at the end of its life.\n Once every ten years, a beautiful flower blooms and a new Petallia is born.",
     "stats": {
       "hp": 100,
@@ -3811,7 +3811,7 @@
         "level": 3
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "Magma-like blood runs throughout its body. If a large amount of water is thrown on it, this water rapidly heats, causing an immense vapor explosion.",
     "stats": {
       "hp": 110,
@@ -3847,7 +3847,7 @@
         "level": 1
       }
     ],
-    "drops": ["wool"],
+    "drops": ["Wool"],
     "description": "Melpaca serve this Pal.\nContests between Kingpaca offer up their vassals as a wager. Those seen alone are losers of such contests.",
     "stats": {
       "hp": 120,
@@ -3893,7 +3893,7 @@
         "level": 2
       }
     ],
-    "drops": ["high_quality_pal_oil", "leather", "mammorest_meat"],
+    "drops": ["High Quality Pal Oil", "Leather", "Mammorest Meat"],
     "description": "The vegetation on its back varies between individuals. There is a long history of appreciating this veritable garden of a Pal, and there are even Mammorest pruning specialists.",
     "stats": {
       "hp": 150,
@@ -3944,7 +3944,7 @@
         "level": 4
       }
     ],
-    "drops": ["ice_organ", "beautiful_flower"],
+    "drops": ["Ice Organ", "Beautiful Flower"],
     "description": "Researchers once tried to shave off its hair to reveal its true form. In the end, only hair was left, as if that was all there was to begin with.",
     "stats": {
       "hp": 140,
@@ -3995,7 +3995,7 @@
         "level": 3
       }
     ],
-    "drops": ["honey"],
+    "drops": ["Honey"],
     "description": "The ultra-hard armor surrounding its body is extremely strong and heat resistant.\nEven a napalm blast would hardly leave a scratch.",
     "stats": {
       "hp": 120,
@@ -4031,7 +4031,7 @@
         "level": 2
       }
     ],
-    "drops": ["leather", "horn"],
+    "drops": ["Leather", "Horn"],
     "description": "In ancient times, it was a familiar subject for painting because of its beautiful and majestic appearance. Fenglope is an endangered species, the Fenglope whose beautiful fur and horns are much sought after by poachers!",
     "stats": {
       "hp": 110,
@@ -4067,7 +4067,7 @@
         "level": 3
       }
     ],
-    "drops": ["cloth", "small_pal_soul"],
+    "drops": ["Cloth", "S Pal Soul"],
     "description": "Attacking from the shadows, this Pal traps its prey within its cloak-like wings. It's probably best not to know what happens within them, or why the inside of its wings are stained red.",
     "stats": {
       "hp": 100,
@@ -4118,7 +4118,7 @@
         "level": 2
       }
     ],
-    "drops": ["high_quality_pal_oil"],
+    "drops": ["High Quality Pal Oil"],
     "description": "Sleeping while cuddling a Quivern is said to be a heavenly experience, but there are some who have been crushed and sent to heaven by ones that toss and turn in their sleep.",
     "stats": {
       "hp": 105,
@@ -4159,7 +4159,7 @@
         "level": 4
       }
     ],
-    "drops": ["coal", "flame_organ"],
+    "drops": ["Coal", "Flame Organ"],
     "description": "Legends say it was born during a volcanic eruption. A strange group even claims that this continent is laid upon the back of a giant Blazamut.",
     "stats": {
       "hp": 100,
@@ -4195,7 +4195,7 @@
         "level": 3
       }
     ],
-    "drops": ["venom_gland", "medium_pal_soul"],
+    "drops": ["Venom Gland", "M Pal Soul"],
     "description": "It calls forth lightning from the depths of hell. One who dies from Helzephyr's inferno is sure to be sent to the underworld.",
     "stats": {
       "hp": 100,
@@ -4236,7 +4236,7 @@
         "level": 4
       }
     ],
-    "drops": ["pal_metal_ingot", "pure_quartz"],
+    "drops": ["Pal Metal Ingot", "Pure Quartz"],
     "description": "A savage beast born of the abyss. Thou shall not stand before the beast. Thou shall not heed the beast.",
     "stats": {
       "hp": 100,
@@ -4277,7 +4277,7 @@
         "level": 3
       }
     ],
-    "drops": ["coal", "venom_gland"],
+    "drops": ["Coal", "Venom Gland"],
     "description": "Being made of pure energy, its insides are completely hollow. This Pal crams still-living prey into its hollow body, where it absorbs them. Hellish screams of pain can often be heard coming from inside this Pal.",
     "stats": {
       "hp": 100,
@@ -4323,7 +4323,7 @@
         "level": 2
       }
     ],
-    "drops": ["bone", "large_pal_soul", "innovative_technical_manual"],
+    "drops": ["Bone", "L Pal Soul", "Innovative Tech Manual"],
     "description": "Once seen as a symbol of nobility, and an idol for those who shunned wealth and power. Yet over time, this Pal became a token of death.",
     "stats": {
       "hp": 120,
@@ -4359,7 +4359,7 @@
         "level": 4
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "Legends says the Jormuntide was once a wise man, who after being wrongly convicted and cast into a whirlpool, returned as this Pal to destroy those who wronged him.",
     "stats": {
       "hp": 130,
@@ -4395,7 +4395,7 @@
         "level": 3
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "It was once believed to usher in the dry season. Whenever there was a drought in the previous year, people would relentlessly seek to cull it's numbers, hoping to bring a plentiful harvest in the next year.",
     "stats": {
       "hp": 120,
@@ -4446,7 +4446,7 @@
         "level": 2
       }
     ],
-    "drops": ["electric_organ", "leather"],
+    "drops": ["Electric Organ", "Leather"],
     "description": "With a friendly smile and a hardy physique, it is docile towards one it recognizes as a partner. For reasons unexplained, its personality undergoes a drastic change when wielding a minigun.",
     "stats": {
       "hp": 105,
@@ -4497,7 +4497,7 @@
         "level": 2
       }
     ],
-    "drops": [ "low_grade_medical_supplies", "beautiful_flower", "innovative_technical_manual" ],
+    "drops": [ "Low Grade Medical Supplies", "Beautiful Flower", "Innovative Tech Manual" ],
     "description": "A docile Pal full of love.\nIt watches over small Pals who have lost their parents. It uses a full-power Solar Blast to discipline naughty Pals.",
     "stats": {
       "hp": 110,
@@ -4538,7 +4538,7 @@
         "level": 3
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "When it finds its prey it unleashes a whirlwind of flames, burning the entire area to ash. Faleris breath is known for its pleasing scent.",
     "stats": {
       "hp": 100,
@@ -4584,7 +4584,7 @@
         "level": 3
       }
     ],
-    "drops": ["electric_organ"],
+    "drops": ["Electric Organ"],
     "description": "It sends electricity into its foes' wounds, roasting them from the inside out. Fights between Orserk end in the blink of an eye.",
     "stats": {
       "hp": 100,
@@ -4620,7 +4620,7 @@
         "level": 1
       }
     ],
-    "drops": ["pal_metal_ingot", "carbon_fiber", "innovative_technical_manual"],
+    "drops": ["Pal Metal Ingot", "Carbon Fiber", "Innovative Tech Manual"],
     "description": "Forbidden existence born of madness.\nAs he lost his genetic relationship with the other Pals, he may no longer be considered one of them.",
     "stats": {
       "hp": 120,
@@ -4661,7 +4661,7 @@
         "level": 2
       }
     ],
-    "drops": ["pal_metal_ingot", "diamond"],
+    "drops": ["Pal Metal Ingot", "Diamond"],
     "description": "In the past, he and Necromus were a single species.\nThey say that they are an existence that has freed themselves from all negative feelings, but the depths of their eyes harbor traces of resentment.",
     "stats": {
       "hp": 130,
@@ -4702,7 +4702,7 @@
         "level": 2
       }
     ],
-    "drops": ["pal_metal_ingot", "large_pal_soul"],
+    "drops": ["Pal Metal Ingot", "L Pal Soul"],
     "description": "Once he and Paladius were a single species.\nThey say it is the manifestation of negative feelings, but the depths of their eyes contain traces of compassion.",
     "stats": {
       "hp": 130,
@@ -4738,7 +4738,7 @@
         "level": 4
       }
     ],
-    "drops": ["ice_organ", "diamond"],
+    "drops": ["Ice Organ", "Diamond"],
     "description": "Guardian deity of Palpagos Island, known as the Winter Caller. In the past, when a calamity struck the land, it soared into the sky and sealed away the threat by casting the island into an eternal winter.",
     "stats": {
       "hp": 140,
@@ -4774,7 +4774,7 @@
         "level": 3
       }
     ],
-    "drops": ["pure_quartz", "polymer", "carbon_fiber", "diamond"],
+    "drops": ["Pure Quartz", "Polymer", "Carbon Fiber", "Diamond"],
     "description": "Looks over the island of Palpagos from the ends of the sky.\nWhen the calamity awakens again, splitting the earth and setting the heavens on fire, he will destroy it with a glare of complete obliteration.",
     "stats": {
       "hp": 110,
@@ -4810,7 +4810,7 @@
         "level": 1
       }
     ],
-    "drops": ["ice_organ"],
+    "drops": ["Ice Organ"],
     "description": "It releases cold air stored in its body when under attack. The frigid blast it radiates is cold enough to freeze the surrounding air and easily pierces through any attacker's body.",
     "stats": {
       "hp": 70,
@@ -4851,7 +4851,7 @@
         "level": 1
       }
     ],
-    "drops": ["ice_organ", "sapphire"],
+    "drops": ["Ice Organ", "sapphire"],
     "description": "Its crystalline tail is beautiful, but shatters when this Pal dies. Some believe it is good luck to raise one, so Mau Cryst in captivity are treated with great care.",
     "stats": {
       "hp": 70,
@@ -4897,7 +4897,7 @@
         "level": 1
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "Once upon a time, it was a giant and powerful aquatic Pal. However, with the dwindling availability of food, it ventured onto land. As a consequence of burning many calories to walk, it astonishingly awakened its power to control fire!",
     "stats": {
       "hp": 90,
@@ -4948,7 +4948,7 @@
         "level": 2
       }
     ],
-    "drops": ["fiber", "ice_organ"],
+    "drops": ["Fiber", "Ice Organ"],
     "description": "Its gigantic arms can tear through blocks of ice. There were times when great sinners were tied in the town square and had their hair torn out by as a brutal form of public humiliation.",
     "stats": {
       "hp": 80,
@@ -4999,7 +4999,7 @@
         "level": 3
       }
     ],
-    "drops": ["mushroom", "electric_organ", "leather"],
+    "drops": ["Mushroom", "Electric Organ", "Leather"],
     "description": "A Pal whose power is truly shocking. By altering the electrical currents in its body, this Pal's been able to overload its own strength. When it comes to sheer power, this Pal may be top of the list.",
     "stats": {
       "hp": 100,
@@ -5035,7 +5035,7 @@
         "level": 2
       }
     ],
-    "drops": ["eikthyrdeer_venison", "leather", "horn"],
+    "drops": ["Eikthyrdeer Venison", "Leather", "Horn"],
     "description": "The individual with the hardest horns becomes the leader. Once the horns are lost, so too is the leadership status. It leaves the herd admist farewell glances and quietly returns to the earth.",
     "stats": {
       "hp": 95,
@@ -5081,7 +5081,7 @@
         "level": 2
       }
     ],
-    "drops": ["horn", "leather"],
+    "drops": ["Horn", "Leather"],
     "description": "It specifically targets baby pals, taking them back to its territory. One can only imagine the profound despair of the parent Pal, whose child has been taken away.",
     "stats": {
       "hp": 95,
@@ -5132,7 +5132,7 @@
         "level": 1
       }
     ],
-    "drops": ["flame_organ", "silver_key"],
+    "drops": ["Flame Organ", "Silver Key"],
     "description": "A Pal that has an unusual obsession with their standing posture.\nAlways in search of the hottest pose, this Pal's owner is constantly presented with fervent stances.",
     "stats": {
       "hp": 80,
@@ -5188,8 +5188,8 @@
         "level": 2
       }
     ],
-    "drops": ["wheat_seeds", "arrow"],
-    "description": "A Pal that lives a hunting life in rocky areas and is very close to humans. When bones are found in ruins, there are always human bones found nearby as well.",
+    "drops": ["Wheat Seeds", "Arrow"],
+    "description": "A Pal that lives a hunting life in rocky areas and is very close to humans. When Bones are found in ruins, there are always human Bones found nearby as well.",
     "stats": {
       "hp": 90,
       "attack": {
@@ -5229,7 +5229,7 @@
         "level": 1
       }
     ],
-    "drops": ["flame_organ", "leather"],
+    "drops": ["Flame Organ", "Leather"],
     "description": "It burns mysterious dark matter as energy and expels the remaining particles from its body.\nIf someone rides it, they should take care so as not to gallop down the path of darkness.",
     "stats": {
       "hp": 100,
@@ -5270,7 +5270,7 @@
         "level": 2
       }
     ],
-    "drops": ["tomato_seeds"],
+    "drops": ["Tomato Seeds"],
     "description": "Though struck by lightning, it lives on. The phrase \"struck by a Dinossom Lux's bolt\" has come to mean narrowly escaping death.",
     "stats": {
       "hp": 110,
@@ -5306,7 +5306,7 @@
         "level": 1
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "Its aerodynamic form is well suited to life on the sand. Poachers often catch them and use them in place of surfboards",
     "stats": {
       "hp": 90,
@@ -5347,7 +5347,7 @@
         "level": 3
       }
     ],
-    "drops": ["bone", "ice_organ", "sapphire"],
+    "drops": ["Bone", "Ice Organ", "sapphire"],
     "description": "The Melodies of a flute made from the exoskeleton of a Vanwyrm Cryst are said to cross whole mountain ranges. In ages past, such flutes were used to signal victory in a battle.",
     "stats": {
       "hp": 90,
@@ -5388,7 +5388,7 @@
         "level": 2
       }
     ],
-    "drops": ["high_quality_pal_oil"],
+    "drops": ["High Quality Pal Oil"],
     "description": "It possesses a demeanor as pure as its appearance suggests. Perhaps because of this, it harbors no ill will in any of its actions and is indifferent even after killing someone.",
     "stats": {
       "hp": 115,
@@ -5424,7 +5424,7 @@
         "level": 1
       }
     ],
-    "drops": ["raw_kelpsea", "flame_organ"],
+    "drops": ["Raw Kelpsea", "Flame Organ"],
     "description": "Their personalities change depending on the temperature of the water where they were born. Kelpsea born in warm waters generally have a passionate, motivated personality.",
     "stats": {
       "hp": 70,
@@ -5465,7 +5465,7 @@
         "level": 2
       }
     ],
-    "drops": ["flame_organ"],
+    "drops": ["Flame Organ"],
     "description": "While it prefers raw meat, it always ends up eating tainted meat. This is due to its dark claws, which it uses as its weapon—it simply doesn't realize its prey got cursed.",
     "stats": {
       "hp": 105,
@@ -5506,7 +5506,7 @@
         "level": 3
       }
     ],
-    "drops": ["high_quality_pal_oil", "electric_organ", "sapphire"],
+    "drops": ["High Quality Pal Oil", "Electric Organ", "sapphire"],
     "description": "One day, Relaxaurus had an idea. Maybe it was about time for a change. Just then, an electric shock raced through its body!",
     "stats": {
       "hp": 110,
@@ -5542,7 +5542,7 @@
         "level": 3
       }
     ],
-    "drops": ["broncherry_meat", "lettuce_seeds"],
+    "drops": ["Broncherry Meat", "Lettuce Seeds"],
     "description": "Its scent drastically changes before and after pairing. It exudes a pleasing aroma before finding a partner, which is called the \"perfume of purity.\"",
     "stats": {
       "hp": 120,
@@ -5583,7 +5583,7 @@
         "level": 3
       }
     ],
-    "drops": ["ice_organ"],
+    "drops": ["Ice Organ"],
     "description": "Ice cold blood runs throughout its body. If heated rapidly, its blood evaporates, causing an immense vapor explosion.",
     "stats": {
       "hp": 110,
@@ -5624,7 +5624,7 @@
         "level": 3
       }
     ],
-    "drops": ["wool", "ice_organ"],
+    "drops": ["Wool", "Ice Organ"],
     "description": "With a heart of ice, this Pal is terrible at expressing its emotions. A solitary individual is pitiable, seen as too clumsy in the eyes of Melpaca.",
     "stats": {
       "hp": 120,
@@ -5670,7 +5670,7 @@
         "level": 2
       }
     ],
-    "drops": ["high_quality_pal_oil", "leather", "mammorest_meat"],
+    "drops": ["High Quality Pal Oil", "Leather", "Mammorest Meat"],
     "description": "The vegetation on its back varies from individual to individual. There was a time when seeds of presumed extinct plants were found still frozen on the back of a Mammorest Cryst.",
     "stats": {
       "hp": 150,
@@ -5721,7 +5721,7 @@
         "level": 4
       }
     ],
-    "drops": ["lettuce_seeds", "tomato_seeds", "beautiful_flower"],
+    "drops": ["Lettuce Seeds", "Tomato Seeds", "Beautiful Flower"],
     "description": "researchers once tried to cut the grass off its body to reveal its true form. In the end, only grass was left, as if that was all there was to begin with.",
     "stats": {
       "hp": 140,
@@ -5757,7 +5757,7 @@
         "level": 4
       }
     ],
-    "drops": ["high_quality_pal_oil", "flame_organ"],
+    "drops": ["High Quality Pal Oil", "Flame Organ"],
     "description": "Legend says the Jormuntide Ignis was once a warrior who, after being wrongly convicted and cast into a volcano, returned as this Pal to destroy those who wronged him.",
     "stats": {
       "hp": 130,
@@ -5793,7 +5793,7 @@
         "level": 3
       }
     ],
-    "drops": ["pal_fluids"],
+    "drops": ["Pal Fluids"],
     "description": "It was once believed to usher in the rainy season. If there was a flood the previous year, people would relentlessly seek to cull its numbers, hoping to avert disaster in the coming year.",
     "stats": {
       "hp": 125,
@@ -5839,7 +5839,7 @@
         "level": 2
       }
     ],
-    "drops": ["low_grade_medical_supplies", "beautiful_flower", "innovative_technical_manual"],
+    "drops": ["Low Grade Medical Supplies", "Beautiful Flower", "Innovative Tech Manual"],
     "description": "An elegant Pal full of grace. It admonishes any who are disrespectful with a painful slap. Some Pals actively seek out this punishment.",
     "stats": {
       "hp": 110,
@@ -5875,7 +5875,7 @@
         "level": 4
       }
     ],
-    "drops": ["pure_quartz", "large_pal_soul"],
+    "drops": ["Pure Quartz", "L Pal Soul"],
     "description": "Guardian deity of Palpagos Island known as the Night Caller. In the past, when a calamity struck the land, it soared into the sky and sealed away the threat by casting the island into eternal darkness.",
     "stats": {
       "hp": 140,
