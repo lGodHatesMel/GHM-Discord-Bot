@@ -25,8 +25,7 @@ class PalworldData(commands.Cog):
     if pal_data is None:
       return None, None
 
-    embed_title = f"{pal_data['name']} #{pal_data['pal_id']}"
-    embed = discord.Embed(title=embed_title, color=discord.Color.blue())
+    embed = discord.Embed(color=discord.Color.random())
 
     suitability_info = ""
     for suitability in pal_data["suitability"]:
