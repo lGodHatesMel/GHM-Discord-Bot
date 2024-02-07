@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from PIL import Image
 import io
+from io import BytesIO
 
 class ImageEditor(commands.Cog):
     def __init__(self, bot):
@@ -78,7 +79,7 @@ class ImageEditor(commands.Cog):
             for attachment in ctx.message.attachments:
                 if attachment.content_type.startswith('image/'):
                     image_bytes = await attachment.read()
-                    image = Image.open(image_bytes)
+                    image = Image.open(BytesIO(image_bytes))
                     image = image.resize((width, height))
                     images.append(image)
             # Check if there are at least two images
