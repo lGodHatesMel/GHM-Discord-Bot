@@ -38,9 +38,7 @@ class ModerationLogger(commands.Cog):
             return
 
         try:
-            # Delete the command message
             await ctx.message.delete()
-            # Delete the specified number of messages
             deleted_messages = await ctx.channel.purge(limit=amount)
 
             await ctx.send(f"Cleared {len(deleted_messages)} messages.", delete_after=5)
@@ -60,10 +58,8 @@ class ModerationLogger(commands.Cog):
         embed.add_field(name=f"{action} Message", value=reason, inline=False)
         embed.set_footer(text=f"UID: {user_id} • {timestamp}")
 
-        # Send the embed to the specified channel
         await channel.send(embed=embed)
 
-        # Send a separate message indicating that the message has been removed
         removed_message = f"**Message Removed:** This message contained a blacklisted word/trigger and has been removed."
         await channel.send(removed_message)
 
@@ -127,9 +123,17 @@ class ModerationLogger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        # Check if the edited message is from a user and not a bot
         if before.author.bot:
             return
+
+        # Check if the edited message or its embeds contain a link
+        if 'http://' in after.content or 'https://' in after.content or any('http://' in e.url or 'https://' in e.url for e in after.embeds):
+            await after.delete()
+            user_id = after.author.id
+            reason = "Edited message to include a link"
+            await self.log_mod_action(after.guild, "Deletion", after.author, reason, user_id)
+            await self.LogBlacklistedWords(after.channel, "Deletion", after.author, reason, user_id)
+            return  # Return early to prevent logging the edit
 
         with open('config.json', 'r') as config_file:
             config = json.load(config_file)
@@ -142,7 +146,6 @@ class ModerationLogger(commands.Cog):
         logging_channel = self.bot.get_channel(message_logger_channel_id)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        # Truncate the message content to fit within the character limit
         original_message = self.truncate_text(before.content, 1024)
         edited_message = self.truncate_text(after.content, 1024)
 

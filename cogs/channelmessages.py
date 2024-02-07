@@ -27,7 +27,6 @@ class StickyNotes(commands.Cog):
                 message = data.get("message")
 
                 if message is None:
-                    # Skip messages with None as message
                     continue
 
                 channel = self.bot.get_channel(int(channel_id))
@@ -38,7 +37,6 @@ class StickyNotes(commands.Cog):
                         color=discord.Color.random()
                     )
 
-                    # Send the sticky note to the channel
                     sticky_msg = await channel.send(embed=embed)
                     self.sticky_messages[int(channel_id)] = {
                         "message": sticky_msg,
@@ -74,41 +72,31 @@ class StickyNotes(commands.Cog):
     async def on_message(self, message):
         if not message.author.bot:
             try:
-                # Check if the message is in a channel with a sticky note
                 if message.channel.id in self.sticky_messages:
-                    # Get the original sticky message data
                     original_sticky_data = self.sticky_messages[message.channel.id]
                     original_sticky_msg_id = original_sticky_data["message"].id
                     original_sticky_msg_author_id = original_sticky_data["author_id"]
 
-                    # Check if the original sticky message is not the same as the new message
                     if original_sticky_msg_id != message.id:
-                        # Verify that the author of the old sticky note matches the bot's user ID
                         if original_sticky_msg_author_id == self.bot.user.id:
-                            # Attempt to fetch the old sticky note
                             channel = message.channel
                             try:
                                 old_sticky_msg = await channel.fetch_message(original_sticky_msg_id)
                             except discord.NotFound:
-                                # Message not found, it might have been deleted
                                 old_sticky_msg = None
 
                             await asyncio.sleep(2.5)
 
-                            # Delete the old sticky note if it exists
                             if old_sticky_msg:
                                 await old_sticky_msg.delete()
 
-                            # Create a new embedded sticky note with the original content
                             new_embed = discord.Embed(
                                 title="**STICKY NOTE**",
                                 description=original_sticky_data["content"],
                                 color=discord.Color.random()
                             )
 
-                            # Send the new embedded sticky note
                             new_sticky_msg = await message.channel.send(embed=new_embed)
-                            # Update the reference to the sticky message
                             self.sticky_messages[message.channel.id]["message"] = new_sticky_msg
 
             except Exception as e:
@@ -125,10 +113,9 @@ class StickyNotes(commands.Cog):
             color=discord.Color.random()
         )
 
-        # Check if there's an existing sticky in the channel
         if channel.id in self.sticky_messages:
             prev_sticky_msg = self.sticky_messages[channel.id]["message"]
-            await prev_sticky_msg.delete()  # Delete the old sticky message
+            await prev_sticky_msg.delete()
 
         sticky_msg = await channel.send(embed=embed)
         self.sticky_messages[channel.id] = {
@@ -136,7 +123,7 @@ class StickyNotes(commands.Cog):
             "author_id": self.bot.user.id,
             "content": formatted_message
         }
-        await self.save_sticky_notes()  # Await the save_sticky_notes coroutine
+        await self.save_sticky_notes()
 
         await ctx.send(f"Sticky note added to {channel.mention}.")
 
@@ -147,7 +134,6 @@ class StickyNotes(commands.Cog):
         if channel.id in self.sticky_messages:
             sticky_msg = self.sticky_messages.pop(channel.id)["message"]
             await sticky_msg.delete()
-            # Remove the sticky note entry from the database
             await self.save_sticky_notes()
             await ctx.send(f"Sticky note removed from {channel.mention}.")
         else:
@@ -161,7 +147,6 @@ class StickyNotes(commands.Cog):
 
         original_sticky_msg_data = self.sticky_messages[channel.id]
 
-        # Edit the existing sticky message's description
         original_sticky_msg_content = original_sticky_msg_data["content"]
         original_sticky_msg_embed = discord.Embed(
             title="**STICKY NOTE**",
@@ -169,13 +154,10 @@ class StickyNotes(commands.Cog):
             color=discord.Color.random()
         )
 
-        # Send the new embedded sticky note
         new_sticky_msg = await channel.send(embed=original_sticky_msg_embed)
-        # Update the reference to the sticky message
         self.sticky_messages[channel.id]["message"] = new_sticky_msg
         self.sticky_messages[channel.id]["content"] = new_message
 
-        # Save the updated sticky notes to the database
         await self.save_sticky_notes()
 
         await ctx.send(f"Sticky note in {channel.mention} has been edited.")
