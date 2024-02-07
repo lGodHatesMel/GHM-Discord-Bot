@@ -37,6 +37,7 @@ class PalworldData(commands.Cog):
           suitability_info += f"{suitability['type']} {emoji_with_id} Lvl: {suitability['level']}\n"
         else:
           suitability_info += f"{suitability['type']} Lvl: {suitability['level']}\n"
+    embed.add_field(name="Suitability", value=suitability_info, inline=True)
 
     drops_info = ""
     for drop in pal_data["drops"]:
@@ -65,22 +66,16 @@ class PalworldData(commands.Cog):
 
     map_image = None
     if "pal_id" in pal_data:
-      map_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Maps/{pal_data['pal_id'][0]}.png"
+      map_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Maps/{pal_data['pal_id']}.png"
       async with aiohttp.ClientSession() as session:
         async with session.get(map_url) as resp:
-          if resp.status != 200:
-            return None, None
-          data = io.BytesIO(await resp.read())
-          try:
-            img = Image.open(data)
-            img = img.resize((256, 256))
-            resized_data = io.BytesIO()
-            img.save(resized_data, format='PNG')
-            resized_data.seek(0)
-            map_image = discord.File(resized_data, 'map_image.png')
-          except Exception as e:
-            print(f"Error creating discord.File: {e}")
-            return None, None
+          if resp.status == 200:
+            data = io.BytesIO(await resp.read())
+            try:
+              map_image = discord.File(data, 'map_image.png')
+            except Exception as e:
+              print(f"Error creating discord.File: {e}")
+              map_image = None
 
     if map_image is not None:
       embed.set_image(url=f"attachment://{map_image.filename}")
@@ -95,7 +90,8 @@ class PalworldData(commands.Cog):
     pal_name = ' '.join(pal_name)
     embed, image_file, map_image = await self.create_embed(pal_name)
     if embed:
-      await ctx.reply(embed=embed, files=[image_file, map_image])
+      files = [f for f in [image_file, map_image] if f is not None]
+      await ctx.reply(embed=embed, files=files)
     else:
       await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
 
