@@ -64,8 +64,8 @@ class PalworldData(commands.Cog):
       embed.set_author(name=f"{pal_data['name']} #{pal_data['pal_id']}", icon_url=typing_emoji[0])
 
     map_image = None
-    if "map" in pal_data:
-      map_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Maps/{pal_data['map'][0]}.png"
+    if "pal_id" in pal_data:
+      map_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Maps/{pal_data['pal_id'][0]}.png"
       async with aiohttp.ClientSession() as session:
         async with session.get(map_url) as resp:
           if resp.status != 200:
