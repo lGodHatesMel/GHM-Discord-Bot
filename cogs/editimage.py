@@ -8,7 +8,7 @@ class ImageEditor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def resizetheimage(self, ctx, size: int, attachment):
+    async def resizetheimage(self, ctx, size, attachment, save_name):
         try:
             image = Image.open(io.BytesIO(await attachment.read()))
 
@@ -21,14 +21,14 @@ class ImageEditor(commands.Cog):
             resized_image.save(resized_image_data, format='PNG')
             resized_image_data.seek(0)
 
-            await ctx.send(f'Resized image to {size}px:', file=discord.File(resized_image_data, filename='resized_image.png'))
+            await ctx.send(f'Resized image to {size}px:', file=discord.File(resized_image_data, filename=f'{save_name}.png'))
 
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="<size> <image url>", hidden=True)
+    @commands.command(help="<size> <image url> <save_name>", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def resizeurlimage(self, ctx, size: int, url: str):
+    async def resizeurlimage(self, ctx, size: int, url: str, save_name: str):
         try:
             response = await self.bot.session.get(url)
             img_data = await response.read()
@@ -43,20 +43,20 @@ class ImageEditor(commands.Cog):
             resized_image.save(resized_image_data, format='PNG')
             resized_image_data.seek(0)
 
-            await ctx.send(file=discord.File(resized_image_data, filename='resized_image.png'))
+            await ctx.send(file=discord.File(resized_image_data, filename=f'{save_name}.png'))
 
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size>")
+    @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size> <save_name>")
     @commands.has_any_role("Moderator", "Admin")
-    async def resizeimage(self, ctx, size: int):
+    async def resizeimage(self, ctx, size: int, save_name: str):
         if len(ctx.message.attachments) == 0:
             await ctx.send('No image attached to the message.')
             return
 
         attachment = ctx.message.attachments[0]
-        await self.resizetheimage(ctx, size, attachment)
+        await self.resizetheimage(ctx, size, attachment, save_name)
 
     def merge_images(self, images):
         widths, heights = zip(*(i.size for i in images))
