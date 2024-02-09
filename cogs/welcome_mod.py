@@ -201,6 +201,59 @@ class WelcomeMod(commands.Cog):
         self.save_user_info()
 
         await ctx.send("Database updated with all server members!")
+    
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
+
+        self.goodbye_channel_id = await self.get_goodbye_channel_id()
+
+        if self.goodbye_channel_id:
+            channel = self.bot.get_channel(self.goodbye_channel_id)
+            if channel:
+                server = member.guild
+                member_count = sum(1 for member in server.members if not member.bot)
+                member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
+                random_color = random.randint(0, 0xFFFFFF)
+
+                goodbye = {
+                    "title": "Goodbye!",
+                    "description": f"We are sad to see you go, {member.mention}. You were our {member_number}.\n\n"
+                                f"We hope you enjoyed your stay at GodHatesMe Pokemon Centre!",
+                    "color": random_color,
+                }
+
+                embed = discord.Embed(**goodbye)
+                embed.set_thumbnail(url=member.avatar_url)
+                embed.set_footer(text=member.name)
+
+                await channel.send(embed=embed)
+                print(f"{member.name} left the server as the {member_number}.")
+
+                uid = str(member.id)
+
+                # Check if the user exists in the database
+                if uid in self.user_info:
+                    self.user_info[uid]["info"]["Left"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    # If the user doesn't exist, create a new entry in the database
+                    self.user_info[uid] = {
+                        "info": {
+                            "Joined": None,
+                            "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                            "Left": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            "username": member.name,
+                            "roles": [role.name for role in member.roles],
+                            "total_messages": 0,
+                            "warns": [],
+                            "notes": [],
+                            "banned": [],
+                            "kick_reason": [],
+                            "kicks_amount": 0,
+                            "avatar_url": str(member.avatar_url),
+                        }
+                    }
+                self.save_user_info()
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)  # Only allow administrators to use this command
