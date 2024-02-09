@@ -5,15 +5,14 @@ class Others(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='poll', help='Creates a poll. Usage: !poll option1 option2 option3 option4 "Poll Title"', hidden=True)
+    @commands.command(help='Creates a poll. Usage: !poll "Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def poll(self, ctx, option1, option2, option3, option4, *, pollTitle):
-        emojiOptions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣']
+    async def poll(self, ctx, pollTitle, *options: str):
+        emojiOptions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
 
-        optionsDescription = f"{emojiOptions[0]} {option1}\n" \
-                            f"{emojiOptions[1]} {option2}\n" \
-                            f"{emojiOptions[2]} {option3}\n" \
-                            f"{emojiOptions[3]} {option4}"
+        optionsDescription = ""
+        for i, option in enumerate(options[:-1]):
+            optionsDescription += f"{emojiOptions[i]} {option}\n"
 
         embed = discord.Embed(
             title=pollTitle,
@@ -21,10 +20,14 @@ class Others(commands.Cog):
             color=discord.Color.red()
         )
 
+        message = options[-1]
+        if message is not None:
+            await ctx.send(message)
+
         pollMessage = await ctx.send(embed=embed)
 
-        for emoji in emojiOptions:
-            await pollMessage.add_reaction(emoji)
+        for i in range(len(options) - 1):
+            await pollMessage.add_reaction(emojiOptions[i])
 
 def setup(bot):
     bot.add_cog(Others(bot))

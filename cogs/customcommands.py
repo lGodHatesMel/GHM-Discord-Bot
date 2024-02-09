@@ -205,7 +205,7 @@ class CustomCommands(commands.Cog):
                 "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`\n"
                 "`!efreshcommands` - Refreshes the custom_commands.json.\n"
                 "`!merge <width> <height> <save_name>` - Merges multiple attached images into one.\n"
-                "`!poll <option1> <option2> <option3> <option4> <PollTitle>' - Creates a poll.\n"
+                "`!poll \"Poll Title\" \"option1\" \"option2\" <add_more_if_needed> \"Your Message Here\"` - Creates a poll.\n"
             ),
             inline=False
         )
