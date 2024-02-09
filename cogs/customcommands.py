@@ -2,24 +2,41 @@ import discord
 from discord.ext import commands
 import json
 import os
+import sqlite3
 
 class CustomCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.database_folder = 'Database'
-        self.commands_file = os.path.join(self.database_folder, 'custom_commands.json')
+        self.database_file = os.path.join(self.database_folder, 'custom_commands.db')
+        self.table_name = 'custom_commands'
 
-        if not os.path.exists(self.commands_file):
-            with open(self.commands_file, 'w') as file:
-                json.dump({}, file)
+        # Create the database and table if they do not exist
+        conn = sqlite3.connect(self.database_file)
+        c = conn.cursor()
+        c.execute(f'''create table if not exists {self.table_name}
+                    (command_name text primary key,
+                    command_response text)''')
+        conn.commit()
+        conn.close()
+
         self.LoadCustomCommands()
 
     def LoadCustomCommands(self):
         try:
-            with open(self.commands_file, 'r') as file:
-                CustomName = json.load(file)
+            # Open the database connection
+            conn = sqlite3.connect(self.database_file)
+            c = conn.cursor()
 
-            for CommandName, command_response in CustomName.items():
+            # Query all the custom commands from the table
+            c.execute(f'select * from {self.table_name}')
+            CustomName = c.fetchall()
+
+            # Close the database connection
+            conn.close()
+
+            # Register the custom commands to the bot
+            for CommandName, command_response in CustomName:
                 async def custom_command(ctx, response=command_response):
                     await ctx.send(response)
 
@@ -29,8 +46,16 @@ class CustomCommands(commands.Cog):
             print(f'An error occurred while loading custom commands: {str(e)}')
 
     def RefreshCustomCommands(self):
-        with open(self.commands_file, 'r') as file:
-            CustomName = json.load(file)
+        # Open the database connection
+        conn = sqlite3.connect(self.database_file)
+        c = conn.cursor()
+
+        # Query all the custom commands from the table
+        c.execute(f'select * from {self.table_name}')
+        CustomName = c.fetchall()
+
+        # Close the database connection
+        conn.close()
 
         # Remove existing custom commands from the bot
         for command in self.bot.commands:
@@ -38,14 +63,14 @@ class CustomCommands(commands.Cog):
                 self.bot.remove_command(command.name)
 
         # Register updated custom commands
-        for CommandName, command_response in CustomName.items():
+        for CommandName, command_response in CustomName:
             # Dynamically create a function for each custom command
             async def custom_command(ctx, response=command_response):
                 await ctx.send(response)
 
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
-    @commands.command(help='Refresh custom commands from the JSON file', hidden=True)
+    @commands.command(help='Refresh custom commands from the SQLite database', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def refreshcommands(self, ctx):
         try:
@@ -58,22 +83,31 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def addcommand(self, ctx, CommandName, *, command_response):
         try:
-            with open(self.commands_file, 'r') as file:
-                CustomName = json.load(file)
+            # Open the database connection
+            conn = sqlite3.connect(self.database_file)
+            c = conn.cursor()
 
             CommandName = CommandName.lower()
 
-            if CommandName in CustomName:
+            # Check if the command already exists in the table
+            c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
+            result = c.fetchone()
+
+            if result is not None:
                 await ctx.send(f'Command "{CommandName}" already exists.')
                 return
 
             # Replace '/n' with '\n' to correctly interpret newlines
             command_response = command_response.replace('/n', '\n')
-            CustomName[CommandName] = command_response
 
-            with open(self.commands_file, 'w') as file:
-                json.dump(CustomName, file, indent=4)
+            # Insert the new command into the table
+            c.execute(f'insert into {self.table_name} values (?, ?)', (CommandName, command_response))
+            conn.commit()
 
+            # Close the database connection
+            conn.close()
+
+            # Register the new command to the bot
             async def custom_command(ctx):
                 await ctx.send(command_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
@@ -86,27 +120,35 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def editcommand(self, ctx, CommandName, *, new_response):
         try:
-            with open(self.commands_file, 'r') as file:
-                CustomName = json.load(file)
-
+            # Open the database connection
+            conn = sqlite3.connect(self.database_file)
+            c = conn.cursor()
+    
             CommandName = CommandName.lower()
-
-            if CommandName not in CustomName:
+    
+            # Check if the command exists in the table
+            c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
+            result = c.fetchone()
+    
+            if result is None:
                 await ctx.send(f'Command "{CommandName}" does not exist.')
                 return
-
+    
             # Replace '/n' with '\n' to correctly interpret newlines
             new_response = new_response.replace('/n', '\n')
-            CustomName[CommandName] = new_response
-
-            with open(self.commands_file, 'w') as file:
-                json.dump(CustomName, file, indent=4)
-
+    
+            # Update the command response in the table
+            c.execute(f'update {self.table_name} set command_response = ? where command_name = ?', (new_response, CommandName))
+            conn.commit()
+    
+            # Close the database connection
+            conn.close()
+    
             # Update the existing command with the new response
             async def custom_command(ctx):
                 await ctx.send(new_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
-
+    
             await ctx.send(f'Command "{CommandName}" updated successfully.')
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
@@ -115,25 +157,33 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def deletecommand(self, ctx, CommandName):
         try:
-            with open(self.commands_file, 'r') as file:
-                CustomName = json.load(file)
+            # Open the database connection
+            conn = sqlite3.connect(self.database_file)
+            c = conn.cursor()
             CommandName = CommandName.lower()
-            # Check if the command name exists
-            if CommandName not in CustomName:
+            # Check if the command name exists in the table
+            c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
+            result = c.fetchone()
+    
+            if result is None:
                 await ctx.send(f'Command "{CommandName}" does not exist.')
                 return
-
-            del CustomName[CommandName]
-
-            with open(self.commands_file, 'w') as file:
-                json.dump(CustomName, file, indent=4)
-
+    
+            # Delete the command from the table
+            c.execute(f'delete from {self.table_name} where command_name = ?', (CommandName,))
+            conn.commit()
+    
+            # Close the database connection
+            conn.close()
+    
+            # Remove the command from the bot
             self.bot.remove_command(CommandName)
-
+    
             await ctx.send(f'Command "{CommandName}" deleted successfully.')
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
-            
+
+
     @commands.command(aliases=['modcommands'], help='Display the staff command list')
     @commands.has_any_role("Moderator", "Admin")
     async def staffcommands(self, ctx):

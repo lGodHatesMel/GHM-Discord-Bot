@@ -1,5 +1,5 @@
 import os
-import json
+import sqlite3
 import discord
 from pathlib import Path
 from discord.ext import commands
@@ -7,12 +7,12 @@ import asyncio
 import utils
 import logging
 
-class StickyNotes(commands.Cog):
+class ChannelMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.StickyMsg = {}
         self.database_folder = 'Database'
-        self.database_file = os.path.join(self.database_folder, 'sticky_notes.json')
+        self.database_file = os.path.join(self.database_folder, 'sticky_notes.db')
 
     async def load_sticky_notes(self):
         file = Path(self.database_file)
@@ -20,42 +20,39 @@ class StickyNotes(commands.Cog):
         if not file.exists():
             return
 
-        with file.open() as f:
-            sticky_data = json.load(f)
-            for channel_id, data in sticky_data.items():
-                author_id = data.get("author_id")
-                content = data.get("content")
-                message = data.get("message")
+        conn = sqlite3.connect(self.database_file)
+        c = conn.cursor()
+        c.execute("SELECT * FROM sticky_notes")
+        sticky_data = c.fetchall()
+        for channel_id, author_id, content, message in sticky_data:
+            if message is None:
+                continue
 
-                if message is None:
-                    continue
+            channel = self.bot.get_channel(int(channel_id))
+            if channel:
+                embed = discord.Embed(
+                    title="**STICKY NOTE**",
+                    description=content,
+                    color=discord.Color.random()
+                )
 
-                channel = self.bot.get_channel(int(channel_id))
-                if channel:
-                    embed = discord.Embed(
-                        title="**STICKY NOTE**",
-                        description=content,
-                        color=discord.Color.random()
-                    )
-
-                    StickyMsg = await channel.send(embed=embed)
-                    self.StickyMsg[int(channel_id)] = {
-                        "message": StickyMsg,
-                        "author_id": int(author_id),
-                        "content": content
-                    }
+                StickyMsg = await channel.send(embed=embed)
+                self.StickyMsg[int(channel_id)] = {
+                    "message": StickyMsg,
+                    "author_id": int(author_id),
+                    "content": content
+                }
+        conn.close()
 
     async def save_sticky_notes(self):
-        sticky_data = {}
+        conn = sqlite3.connect(self.database_file)
+        c = conn.cursor()
+        c.execute("CREATE TABLE IF NOT EXISTS sticky_notes (channel_id INTEGER, author_id INTEGER, content TEXT, message INTEGER)")
+        c.execute("DELETE FROM sticky_notes")
         for channel_id, data in self.StickyMsg.items():
-            sticky_data[channel_id] = {
-                "message": data["message"].id,
-                "author_id": data["author_id"],
-                "content": data["content"]
-            }
-
-        with open(self.database_file, 'w') as file:
-            json.dump(sticky_data, file, indent=4)
+            c.execute("INSERT INTO sticky_notes VALUES (?,?,?,?)", (channel_id, data["author_id"], data["content"], data["message"].id))
+        conn.commit()
+        conn.close()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -191,4 +188,4 @@ class StickyNotes(commands.Cog):
         await ctx.send(f"Announcement sent to {channel.mention}.")
 
 def setup(bot):
-    bot.add_cog(StickyNotes(bot))
+    bot.add_cog(ChannelMessages(bot))

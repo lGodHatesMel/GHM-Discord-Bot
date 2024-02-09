@@ -16,5 +16,7 @@ Database/rules.json
 Database/DBInfo.json
 token-config.json
 Database/coins.json
+*.pyc
 Database/sticky_notes.json
-Database/sticky_notes.json
+Database/sticky_notes.db
+Database/custom_commands.db

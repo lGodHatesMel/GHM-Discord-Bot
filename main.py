@@ -64,7 +64,7 @@ def load_or_create_config():
 
 config = load_or_create_config()
 
-bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
+bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
 bot.config = config
 
 for filename in os.listdir('cogs'):
