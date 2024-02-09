@@ -28,6 +28,12 @@ def load_or_create_config():
             "member_logs_channel_id": None,
             "server_logs_channel_id": None,
             "owner_id": 123456789012345678,
+            "twitch_username": "YOUR_TWITCH_USERNAME",
+            "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
+            "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
+            "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
+            "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
+            "stream_channel_id": "YOUR_DISCORD_CHANNEL_ID",
             # "trivia_channel_id": "YOUR_CHANNEL_ID",
             # "min_question_interval_minutes": 30,
             # "max_question_interval_minutes": 60
