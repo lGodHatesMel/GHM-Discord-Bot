@@ -5,11 +5,12 @@ from pathlib import Path
 from discord.ext import commands
 import asyncio
 import utils
+import logging
 
 class StickyNotes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.sticky_messages = {}
+        self.StickyMsg = {}
         self.database_folder = 'Database'
         self.database_file = os.path.join(self.database_folder, 'sticky_notes.json')
 
@@ -37,16 +38,16 @@ class StickyNotes(commands.Cog):
                         color=discord.Color.random()
                     )
 
-                    sticky_msg = await channel.send(embed=embed)
-                    self.sticky_messages[int(channel_id)] = {
-                        "message": sticky_msg,
+                    StickyMsg = await channel.send(embed=embed)
+                    self.StickyMsg[int(channel_id)] = {
+                        "message": StickyMsg,
                         "author_id": int(author_id),
                         "content": content
                     }
 
     async def save_sticky_notes(self):
         sticky_data = {}
-        for channel_id, data in self.sticky_messages.items():
+        for channel_id, data in self.StickyMsg.items():
             sticky_data[channel_id] = {
                 "message": data["message"].id,
                 "author_id": data["author_id"],
@@ -62,7 +63,7 @@ class StickyNotes(commands.Cog):
         self.cleanup()
         
     def cleanup(self):
-        for channel_id, data in self.sticky_messages.items():
+        for channel_id, data in self.StickyMsg.items():
             asyncio.run_coroutine_threadsafe(
                 data["message"].delete(),
                 self.bot.loop
@@ -72,35 +73,43 @@ class StickyNotes(commands.Cog):
     async def on_message(self, message):
         if not message.author.bot:
             try:
-                if message.channel.id in self.sticky_messages:
-                    original_sticky_data = self.sticky_messages[message.channel.id]
-                    original_sticky_msg_id = original_sticky_data["message"].id
-                    original_sticky_msg_author_id = original_sticky_data["author_id"]
-
-                    if original_sticky_msg_id != message.id:
-                        if original_sticky_msg_author_id == self.bot.user.id:
-                            channel = message.channel
-                            try:
-                                old_sticky_msg = await channel.fetch_message(original_sticky_msg_id)
-                            except discord.NotFound:
-                                old_sticky_msg = None
-
-                            await asyncio.sleep(2.5)
-
-                            if old_sticky_msg:
-                                await old_sticky_msg.delete()
-
-                            new_embed = discord.Embed(
-                                title="**STICKY NOTE**",
-                                description=original_sticky_data["content"],
-                                color=discord.Color.random()
-                            )
-
-                            new_sticky_msg = await message.channel.send(embed=new_embed)
-                            self.sticky_messages[message.channel.id]["message"] = new_sticky_msg
-
+                await self.StickyMessages(message)
+                await self.GreetingMessage(message)
             except Exception as e:
-                print(f"An error occurred in on_message: {e}")
+                logging.error(f"An error occurred in on_message: {e}")
+
+    async def StickyMessages(self, message):
+        if message.channel.id in self.StickyMsg:
+            OriginalStickyData = self.StickyMsg[message.channel.id]
+            OriginalStickyMsgID = OriginalStickyData["message"].id
+            OriginalStickyMsgAuthorID = OriginalStickyData["author_id"]
+
+            if OriginalStickyMsgID != message.id:
+                if OriginalStickyMsgAuthorID == self.bot.user.id:
+                    channel = message.channel
+                    try:
+                        OldStickyMsg = await channel.fetch_message(OriginalStickyMsgID)
+                    except discord.NotFound:
+                        OldStickyMsg = None
+
+                    await asyncio.sleep(2.5)
+
+                    if OldStickyMsg:
+                        await OldStickyMsg.delete()
+
+                    new_embed = discord.Embed(
+                        title="**STICKY NOTE**",
+                        description=OriginalStickyData["content"],
+                        color=discord.Color.random()
+                    )
+
+                    NewStickyMsg = await message.channel.send(embed=new_embed)
+                    self.StickyMsg[message.channel.id]["message"] = NewStickyMsg
+
+    async def GreetingMessage(self, message):
+        words = message.content.lower().split()
+        if "hello" in words or "hey" in words:
+            await message.reply(f"Hello, {message.author.mention}!")
 
     @commands.command(help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -113,13 +122,13 @@ class StickyNotes(commands.Cog):
             color=discord.Color.random()
         )
 
-        if channel.id in self.sticky_messages:
-            prev_sticky_msg = self.sticky_messages[channel.id]["message"]
-            await prev_sticky_msg.delete()
+        if channel.id in self.StickyMsg:
+            PrevStickyMsg = self.StickyMsg[channel.id]["message"]
+            await PrevStickyMsg.delete()
 
-        sticky_msg = await channel.send(embed=embed)
-        self.sticky_messages[channel.id] = {
-            "message": sticky_msg,
+        StickyMsg = await channel.send(embed=embed)
+        self.StickyMsg[channel.id] = {
+            "message": StickyMsg,
             "author_id": self.bot.user.id,
             "content": formatted_message
         }
@@ -131,9 +140,9 @@ class StickyNotes(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def removesticky(self, ctx, channel: discord.TextChannel):
 
-        if channel.id in self.sticky_messages:
-            sticky_msg = self.sticky_messages.pop(channel.id)["message"]
-            await sticky_msg.delete()
+        if channel.id in self.StickyMsg:
+            StickyMsg = self.StickyMsg.pop(channel.id)["message"]
+            await StickyMsg.delete()
             await self.save_sticky_notes()
             await ctx.send(f"Sticky note removed from {channel.mention}.")
         else:
@@ -142,21 +151,21 @@ class StickyNotes(commands.Cog):
     @commands.command(help='<#Channel> <New Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def editsticky(self, ctx, channel: discord.TextChannel, *, new_message):
-        if channel.id not in self.sticky_messages:
+        if channel.id not in self.StickyMsg:
             return await ctx.send(f"No sticky note found in {channel.mention}.")
 
-        original_sticky_msg_data = self.sticky_messages[channel.id]
+        OriginaStickyMsgData = self.StickyMsg[channel.id]
 
-        original_sticky_msg_content = original_sticky_msg_data["content"]
-        original_sticky_msg_embed = discord.Embed(
+        OriginalStickyMsgContent = OriginaStickyMsgData["content"]
+        OriginalStickyMsgEmbed = discord.Embed(
             title="**STICKY NOTE**",
             description=new_message,
             color=discord.Color.random()
         )
 
-        new_sticky_msg = await channel.send(embed=original_sticky_msg_embed)
-        self.sticky_messages[channel.id]["message"] = new_sticky_msg
-        self.sticky_messages[channel.id]["content"] = new_message
+        NewStickyMsg = await channel.send(embed=OriginalStickyMsgEmbed)
+        self.StickyMsg[channel.id]["message"] = NewStickyMsg
+        self.StickyMsg[channel.id]["content"] = new_message
 
         await self.save_sticky_notes()
 
@@ -169,7 +178,7 @@ class StickyNotes(commands.Cog):
         await channel.send(f"**Bot Down:**\n{message}")
         await ctx.send(f"Bot Down message sent to {channel.mention}.")
 
-        current_time = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+        current_time = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
         author = ctx.message.author
         command = ctx.command.name
         print(f"{current_time} - {author.name} used the *{command}* command.")

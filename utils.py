@@ -4,35 +4,36 @@ from datetime import datetime
 import pytz
 import random
 
-def get_local_time():
+def GetLocalTime():
     utc_now = datetime.utcnow()
     target_timezone = pytz.timezone('US/Eastern')
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
+# Not used 
 # Function to customize command visibility based on roles
-def is_visible(allowed_roles):
-    def predicate(ctx):
-        async def check(ctx):
-            if ctx.author.id == ctx.guild.owner_id:
-                return True
+# def is_visible(allowed_roles):
+#     def predicate(ctx):
+#         async def check(ctx):
+#             if ctx.author.id == ctx.guild.owner_id:
+#                 return True
 
-            user_roles = ctx.author.roles
-            for role_name in allowed_roles:
-                required_role = discord.utils.get(ctx.guild.roles, name=role_name)
-                if required_role and required_role in user_roles:
-                    return True
+#             user_roles = ctx.author.roles
+#             for role_name in allowed_roles:
+#                 required_role = discord.utils.get(ctx.guild.roles, name=role_name)
+#                 if required_role and required_role in user_roles:
+#                     return True
 
-            await ctx.send(f"You don't have the required roles ({', '.join(allowed_roles)}) or higher to use this command.")
-            return False
+#             await ctx.send(f"You don't have the required roles ({', '.join(allowed_roles)}) or higher to use this command.")
+#             return False
 
-        return commands.check(check)
+#         return commands.check(check)
 
-    return predicate
+#     return predicate
 
-async def log_mod_action(guild, action, target, reason, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
+async def LogModAction(guild, action, target, reason, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
     if not config:
-        raise ValueError("config is required for log_mod_action")
+        raise ValueError("config is required for LogModAction")
 
     mod_logs_channel_id = config.get('mod_logs_channel_id')
 
@@ -46,7 +47,7 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, iss
 
     embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
 
-    timestamp = get_local_time()
+    timestamp = GetLocalTime()
 
     embed = discord.Embed(
         title=f"{action} Log",
@@ -81,7 +82,7 @@ async def log_mod_action(guild, action, target, reason, warning_number=None, iss
     await mod_logs_channel.send(embed=embed)
 
 # Function to format set details with line breaks
-def format_set_details(set_details):
+def FormatedSetDetails(SetDetails):
     splittables = [
         "Ability:", "EVs:", "IVs:", "Shiny:", "Gigantamax:", "Ball:", "- ", "Level:",
         "Happiness:", "Language:", "OT:", "OTGender:", "TID:", "SID:", "Alpha:", "Tera Type:",
@@ -94,13 +95,13 @@ def format_set_details(set_details):
     ]
 
     for i in splittables:
-        if i in set_details:
-            set_details = set_details.replace(i, f"\n{i}")
+        if i in SetDetails:
+            SetDetails = SetDetails.replace(i, f"\n{i}")
 
-    return set_details
+    return SetDetails
 
-def get_random_pokemon_fact():
-    pokemon_facts = [
+def RandomPKMFacts():
+    PKMFacts = [
         "Jigglypuff's singing can put anyone to sleep, even in real life!",
         "Magikarp's 'Splash' move is secretly a powerful technique that no one understands.",
         "MissingNo. is the only Pokemon that can crash a Game Boy game.",
@@ -206,4 +207,4 @@ def get_random_pokemon_fact():
         "The Pokémon Gengar is believed to be the shadow of Clefable, another Pokémon, according to its Pokédex entry.",
     ]
 
-    return random.choice(pokemon_facts)
+    return random.choice(PKMFacts)

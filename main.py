@@ -72,7 +72,7 @@ for filename in os.listdir('cogs'):
 
 @bot.event
 async def on_ready():
-    joined_time = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+    joined_time = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
     print(f'=======================================================')
     print(f'===   Bot Name: {bot.user.name}')
     print(f'===   Discord Server: {bot.guilds[0].name}')

@@ -155,18 +155,18 @@ class WelcomeMod(commands.Cog):
                             "kicks_amount": 0,
                             "avatar_url": str(member.avatar_url),
                         },
-                        "coindata": {
-                            "right_count": 0, 
-                            "wrong_count": 0, 
-                            "total_coins": 0
-                        }
+                        # "coindata": {
+                        #     "right_count": 0, 
+                        #     "wrong_count": 0, 
+                        #     "total_coins": 0
+                        # }
                     }
                 self.save_user_info()
 
                 if uid in self.user_info and self.user_info[uid]["info"]["banned"]:
                     for ban_info in self.user_info[uid]["info"]["banned"]:
                         if ban_info.get("lifted") is None:
-                            await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
+                            await utils.LogModAction(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
 
     # Good to use if you are using this after already having alot of members in your server
     @commands.command(hidden=True)
@@ -195,7 +195,7 @@ class WelcomeMod(commands.Cog):
                         "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
                     },
-                    "coindata": {"right_count": 0, "wrong_count": 0, "total_coins": 0},
+                    # "coindata": {"right_count": 0, "wrong_count": 0, "total_coins": 0},
                 }
 
         self.save_user_info()
@@ -213,7 +213,7 @@ class WelcomeMod(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        leave_time = utils.get_local_time()
+        leave_time = utils.GetLocalTime()
         leave_time_str = leave_time.strftime('%Y-%m-%d %H:%M:%S')
 
         uid = str(member.id)
@@ -305,7 +305,7 @@ class WelcomeMod(commands.Cog):
                 self.save_user_info()
                 await ctx.send(f"User with ID `{uid}` (username: `{member.name}`) added to the database.")
 
-                await utils.log_mod_action(ctx.guild, 'Database', member, f"User added to the database by {ctx.author.name}", config=config)
+                await utils.LogModAction(ctx.guild, 'Database', member, f"User added to the database by {ctx.author.name}", config=config)
             else:
                 await ctx.send("User not found in the server.")
         else:
@@ -344,7 +344,7 @@ class WelcomeMod(commands.Cog):
         # Continue with adding the note
         user_data = self.user_info[uid]
         notes = user_data["info"]["notes"]
-        timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
         # Check if there are existing notes
         note_number = 1
         for note in notes:
@@ -362,7 +362,7 @@ class WelcomeMod(commands.Cog):
         self.save_user_info()
         await ctx.send(f"📝 **Note Added**: {ctx.author.name} added a note for {user.mention} (#{note_number})")
         
-        await utils.log_mod_action(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
+        await utils.LogModAction(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
     @commands.command(aliases=["removenote", "deletenote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
@@ -384,7 +384,7 @@ class WelcomeMod(commands.Cog):
                 notes.remove(found_note)
                 self.save_user_info()
                 await ctx.send(f"🗑 **Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}")
-                await utils.log_mod_action(ctx.guild, 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}", config=config)
+                await utils.LogModAction(ctx.guild, 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}", config=config)
             else:
                 await ctx.send(f"Note #{note_number} not found for this user.")
         else:
@@ -427,7 +427,7 @@ class WelcomeMod(commands.Cog):
             user_data = self.user_info[uid]
             warnings = user_data["info"].get("warns", [])
             warning_number = len(warnings) + 1
-            timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
             author = ctx.author.name
 
             # Customize the message based on other conditions, for example:
@@ -448,7 +448,7 @@ class WelcomeMod(commands.Cog):
 
             warnings.append(new_warning)
 
-            await utils.log_mod_action(ctx.guild, 'Warning', member, warning, warning_number, ctx.author.name, config=config)
+            await utils.LogModAction(ctx.guild, 'Warning', member, warning, warning_number, ctx.author.name, config=config)
 
             # Check if this is the 3rd warning
             if warning_number == 3:
@@ -456,7 +456,7 @@ class WelcomeMod(commands.Cog):
                 await member.send("You were kicked because of this warning. You can join again right away. Reaching 5 warnings will result in an automatic ban. Permanent invite link: https://discord.gg/SrREp2BbkS.")
                 await member.kick(reason="3rd Warning")
                 await ctx.send(f"{member.mention} has been kicked due to their 3rd warning.")
-                await utils.log_mod_action(ctx.guild, 'Kick', member, f"3rd Warning: {warning}", warning_number, ctx.author.name, config=config)
+                await utils.LogModAction(ctx.guild, 'Kick', member, f"3rd Warning: {warning}", warning_number, ctx.author.name, config=config)
 
                 user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
 
@@ -479,7 +479,7 @@ class WelcomeMod(commands.Cog):
                 await ctx.guild.ban(member, reason="5th Warning")
                 await ctx.send(f"{member.mention} has been banned due to their 5th warning.")
 
-                await utils.log_mod_action(ctx.guild, 'Ban', member, f"5th Warning: {warning}", warning_number, ctx.author.name, config=config)
+                await utils.LogModAction(ctx.guild, 'Ban', member, f"5th Warning: {warning}", warning_number, ctx.author.name, config=config)
 
             user_data["info"]["warns"] = warnings
 
@@ -547,7 +547,7 @@ class WelcomeMod(commands.Cog):
                 self.save_user_info()
                 await ctx.send(f"Deleted warning #{warning_number} for {user.mention}: {deleted_content}")
 
-                await utils.log_mod_action(ctx.guild, 'Warning', user, warning, warning_number, ctx.author, config=config)
+                await utils.LogModAction(ctx.guild, 'Warning', user, warning, warning_number, ctx.author, config=config)
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
         else:
@@ -574,7 +574,7 @@ class WelcomeMod(commands.Cog):
             # Increment the kicks_amount count
             user_data["info"]["kicks_amount"] = user_data["info"].get("kicks_amount", 0) + 1
 
-            timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
 
             kick_info = {
                 "number": 1,
@@ -614,7 +614,7 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
 
                 # Log the action in the mod logs, including the kick reason
-                await utils.log_mod_action(ctx.guild, 'Kick', member, reason, issuer=ctx.author, config=config)
+                await utils.LogModAction(ctx.guild, 'Kick', member, reason, issuer=ctx.author, config=config)
             except discord.Forbidden:
                 # The bot doesn't have permission to kick members
                 await ctx.send(f"Failed to kick {member.mention} due to permission settings.")
@@ -649,7 +649,7 @@ class WelcomeMod(commands.Cog):
                 await ctx.send(f"An error occurred while sending a ban message to {user_with_uid}: {e}")
                 return
 
-            timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
 
             ban_info = {
                 "timestamp": timestamp,
@@ -679,7 +679,7 @@ class WelcomeMod(commands.Cog):
             embed.add_field(name="Reason", value=reason, inline=False)
             embed.add_field(name="Timestamp", value=datetime.datetime.now(), inline=True)
 
-            await utils.log_mod_action(ctx.guild, 'Ban', user, reason, ctx.author, user_data=user_data, config=config, embed=embed)
+            await utils.LogModAction(ctx.guild, 'Ban', user, reason, ctx.author, user_data=user_data, config=config, embed=embed)
 
             await ctx.send(f"{user_with_uid} has been banned for the following reason: {reason}")
         else:
@@ -732,7 +732,7 @@ class WelcomeMod(commands.Cog):
 
             for ban_info in bans:
                 if not ban_info.get("lifted"):
-                    ban_info["lifted"] = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+                    ban_info["lifted"] = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
                     ban_info["unban_reason"] = unban_reason
 
                     self.save_user_info()
@@ -748,7 +748,7 @@ class WelcomeMod(commands.Cog):
                     embed.add_field(name="Unban Reason", value=unban_reason or "N/A", inline=False)
                     embed.add_field(name="Timestamp", value=datetime.datetime.now(), inline=False)
 
-                    await utils.log_mod_action(ctx.guild, 'Unban', user, unban_reason, ctx.author, config=config, embed=embed)
+                    await utils.LogModAction(ctx.guild, 'Unban', user, unban_reason, ctx.author, config=config, embed=embed)
 
                     await ctx.send(f"{user.mention} has been unbanned.")
                     return
@@ -783,7 +783,7 @@ class WelcomeMod(commands.Cog):
                 # Unban the member
                 await member.unban(reason="Soft ban")
 
-                timestamp = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+                timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
 
                 ban_info = {
                     "timestamp": timestamp,
@@ -796,7 +796,7 @@ class WelcomeMod(commands.Cog):
 
                 self.save_user_info()
 
-                await utils.log_mod_action(ctx.guild, 'SoftBanned', member, reason, issuer=ctx.author, config=config)
+                await utils.LogModAction(ctx.guild, 'SoftBanned', member, reason, issuer=ctx.author, config=config)
 
                 await ctx.send(f"{member.mention} has been soft-banned.")
             except discord.Forbidden:

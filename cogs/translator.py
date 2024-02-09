@@ -7,25 +7,24 @@ class Translation(commands.Cog):
         self.bot = bot
         self.translator = Translator()
 
-    @commands.command(help='<target_language> <text_to_translate>')
-    async def translate(self, ctx, target_language, *, text_to_translate):
+    @commands.command(help='<TargetLanguage> <TextToTranslate>')
+    async def translate(self, ctx, TargetLanguage, *, TextToTranslate):
         try:
-            # Detect the source language (optional)
-            detected_language = self.translator.detect(text_to_translate)
-            
+            DetectedLanguage = self.translator.detect(TextToTranslate)
+
             # Translate the text to the target language
-            translated_text = self.translator.translate(text_to_translate, dest=target_language)
-            
+            TranslatedText = self.translator.translate(TextToTranslate, dest=TargetLanguage)
+
             # Create and send an embed with the translation result
             embed = discord.Embed(
                 title='Translation Result',
                 color=discord.Color.blue()
             )
-            embed.add_field(name='Source Language', value=detected_language.lang, inline=True)
-            embed.add_field(name='Target Language', value=target_language, inline=True)
-            embed.add_field(name='Original Text', value=text_to_translate, inline=False)
-            embed.add_field(name='Translation', value=translated_text.text, inline=False)
-            
+            embed.add_field(name='Source Language', value=DetectedLanguage.lang, inline=True)
+            embed.add_field(name='Target Language', value=TargetLanguage, inline=True)
+            embed.add_field(name='Original Text', value=TextToTranslate, inline=False)
+            embed.add_field(name='Translation', value=TranslatedText.text, inline=False)
+
             await ctx.send(embed=embed)
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
@@ -145,4 +144,3 @@ def setup(bot):
 # - `yi`: Yiddish
 # - `yo`: Yoruba
 # - `zu`: Zulu
-   
