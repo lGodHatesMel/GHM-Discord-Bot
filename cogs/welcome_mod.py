@@ -150,11 +150,6 @@ class WelcomeMod(commands.Cog):
                             "kicks_amount": 0,
                             "avatar_url": str(member.avatar_url),
                         },
-                        # "coindata": {
-                        #     "right_count": 0, 
-                        #     "wrong_count": 0, 
-                        #     "total_coins": 0
-                        # }
                     }
                 self.save_user_info()
 
@@ -190,7 +185,6 @@ class WelcomeMod(commands.Cog):
                         "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
                     },
-                    # "coindata": {"right_count": 0, "wrong_count": 0, "total_coins": 0},
                 }
 
         self.save_user_info()
