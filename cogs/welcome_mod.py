@@ -11,7 +11,7 @@ import sqlite3
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
-class ServerUsers(commands.Cog):
+class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.database_file = 'Database/DBInfo.db'
@@ -21,7 +21,7 @@ class ServerUsers(commands.Cog):
 
     def create_table(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS user_info
-                               (uid text, info text)''')
+                            (uid text, info text)''')
 
     def load_user_info(self, uid):
         self.cursor.execute("SELECT info FROM user_info WHERE uid=?", (uid,))
@@ -33,7 +33,7 @@ class ServerUsers(commands.Cog):
                             (uid, json.dumps(info)))
         self.conn.commit()
 
-    async def get_welcome_channel_id(self):
+    async def WelcomeChannelID(self):
         with open('config.json', 'r') as config_file:
             config_data = json.load(config_file)
         return config_data.get('welcome_channel_id')
@@ -79,9 +79,9 @@ class ServerUsers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
+        # print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
 
-        self.welcome_channel_id = await self.get_welcome_channel_id()
+        self.welcome_channel_id = await self.WelcomeChannelID()
 
         if self.welcome_channel_id:
             channel = self.bot.get_channel(self.welcome_channel_id)
@@ -93,7 +93,7 @@ class ServerUsers(commands.Cog):
 
                 welcome = {
                     "title": "Welcome!",
-                    "description": f"Welcome to GodHatesMe Pokemon Centre {member.mention}, you are our {member_number}!\n\n"
+                    "description": f"Welcome to GodHatesMe Gaming Centre {member.mention}, you are our {member_number}!\n\n"
                                 f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
                     "color": random_color,
                 }
@@ -103,14 +103,13 @@ class ServerUsers(commands.Cog):
                 embed.set_footer(text=member.name)
 
                 await channel.send(embed=embed)
-                print(f"{member.name} joined the server as the {member_number}.")
+                print(f"**{member.name}** joined the server as the {member_number}.")
 
                 uid = str(member.id)
 
                 # Check if the user already exists in the database
                 user_info = self.load_user_info(uid)
                 if user_info:
-                    # Update the "Left" field to None when a user rejoins
                     user_info["Left"] = None
                 else:
                     # If the user doesn't exist, create a new entry in the database
@@ -166,9 +165,9 @@ class ServerUsers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
+        # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
 
-        self.goodbye_channel_id = await self.get_goodbye_channel_id()
+        self.goodbye_channel_id = await self.WelcomeChannelID()
 
         if self.goodbye_channel_id:
             channel = self.bot.get_channel(self.goodbye_channel_id)
@@ -181,7 +180,7 @@ class ServerUsers(commands.Cog):
                 goodbye = {
                     "title": "Goodbye!",
                     "description": f"We are sad to see you go, {member.mention}. You were our {member_number}.\n\n"
-                                f"We hope you enjoyed your stay at GodHatesMe Pokemon Centre!",
+                                f"We hope you enjoyed your stay at GodHatesMe Gaming Centre!",
                     "color": random_color,
                 }
 
@@ -190,46 +189,36 @@ class ServerUsers(commands.Cog):
                 embed.set_footer(text=member.name)
 
                 await channel.send(embed=embed)
-                print(f"{member.name} left the server as the {member_number}.")
+                print(f"**{member.name}** left the server as the {member_number}.")
 
-                uid = str(member.id)
-
-                user_info = self.load_user_info(uid)
-                if user_info:
-                    user_info["Left"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                else:
-                    user_info = {
-                        "Joined": None,
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                        "Left": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        "username": member.name,
-                        "roles": [role.name for role in member.roles],
-                        "total_messages": 0,
-                        "warns": [],
-                        "notes": [],
-                        "banned": [],
-                        "kick_reason": [],
-                        "kicks_amount": 0,
-                        "avatar_url": str(member.avatar_url),
-                    }
-                self.save_user_info(uid, user_info)
+        uid = str(member.id)
+        user_info = self.load_user_info(uid)
+        if user_info:
+            leave_time = utils.GetLocalTime()
+            leave_time_str = leave_time.strftime('%Y-%m-%d %H:%M:%S')
+            user_info["Left"] = leave_time_str
+        else:
+            user_info = {
+                "Joined": None,
+                "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                "Left": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "username": member.name,
+                "roles": [role.name for role in member.roles],
+                "total_messages": 0,
+                "warns": [],
+                "notes": [],
+                "banned": [],
+                "kick_reason": [],
+                "kicks_amount": 0,
+                "avatar_url": str(member.avatar_url),
+            }
+        self.save_user_info(uid, user_info)
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
     async def forcesavedb(self, ctx):
         self.conn.commit()
         await ctx.send("Database saved successfully!")
-
-    @commands.Cog.listener()
-    async def on_member_remove(self, member):
-        leave_time = utils.GetLocalTime()
-        leave_time_str = leave_time.strftime('%Y-%m-%d %H:%M:%S')
-
-        uid = str(member.id)
-        user_info = self.load_user_info(uid)
-        if user_info:
-            user_info["Left"] = leave_time_str
-            self.save_user_info(uid, user_info)
 
     @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -343,7 +332,6 @@ class ServerUsers(commands.Cog):
                 await ctx.send("User not found in the server.")
                 return
 
-        # Continue with adding the note
         notes = user_info.get("notes", [])
         timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
         # Check if there are existing notes
@@ -371,7 +359,6 @@ class ServerUsers(commands.Cog):
         if user_info:
             notes = user_info.get("notes", [])
 
-            # Find the note with the specified number
             found_note = None
             for note in notes:
                 if note.get("number") == note_number:
@@ -499,7 +486,6 @@ class ServerUsers(commands.Cog):
         if user_info:
             warnings = user_info.get("warns", [])
 
-            # Find the warning with the specified number
             found_warning = None
             for warning in warnings:
                 if warning.get("number") == warning_number:
@@ -553,7 +539,6 @@ class ServerUsers(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: Union[discord.Member, int], *, reason: str):
         if isinstance(member, int):
-            # If member is an integer, assume it's a User ID
             try:
                 # Attempt to get the member using the User ID
                 member = await ctx.guild.fetch_member(member)
@@ -565,7 +550,6 @@ class ServerUsers(commands.Cog):
         user_info = self.load_user_info(uid)
 
         if user_info:
-            # Increment the kicks_amount count
             user_info["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
             timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
@@ -587,7 +571,6 @@ class ServerUsers(commands.Cog):
             kicks.append(kick_info)
             user_info["kick_reason"] = kicks
 
-            # Save the updated user data
             self.save_user_info(uid, user_info)
 
             # Send a kick message to the user
@@ -600,18 +583,15 @@ class ServerUsers(commands.Cog):
             except Exception as e:
                 await ctx.send(f"An error occurred while sending a kick message to {member.mention}: {e}")
 
-            # Attempt to kick the user
             try:
                 await member.kick(reason=reason)
                 # Send a reply in the channel confirming the kick
                 await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
-                # Log the action in the mod logs, including the kick reason
                 await utils.LogModAction(ctx.guild, 'Kick', member, reason, issuer=ctx.author, config=config)
             except discord.Forbidden:
                 # The bot doesn't have permission to kick members
                 await ctx.send(f"Failed to kick {member.mention} due to permission settings.")
             except Exception as e:
-                # Handle other exceptions if necessary
                 await ctx.send(f"An error occurred while kicking {member.mention}: {e}")
         else:
             await ctx.send("User not found in the database.")
@@ -678,7 +658,6 @@ class ServerUsers(commands.Cog):
                 "lifted": None,
             }
 
-            # Append the ban info to the list of bans in the user's data
             bans = user_info.get("banned", [])
             bans.append(ban_info)
             user_info["banned"] = bans
@@ -818,5 +797,11 @@ class ServerUsers(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
+    @commands.command(help='<UID>', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def accountage(self, ctx, member: discord.Member = None):
+        member = member or ctx.author
+        await ctx.send(f"{member.name}'s account was created at {member.created_at}")
+
 def setup(bot):
-    bot.add_cog(ServerUsers(bot))
+    bot.add_cog(Moderation(bot))
