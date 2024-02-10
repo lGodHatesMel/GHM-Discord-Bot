@@ -24,15 +24,12 @@ class CustomCommands(commands.Cog):
 
     def LoadCustomCommands(self):
         try:
-            # Open the database connection
             conn = sqlite3.connect(self.database_file)
             c = conn.cursor()
 
-            # Query all the custom commands from the table
             c.execute(f'select * from {self.table_name}')
             CustomName = c.fetchall()
 
-            # Close the database connection
             conn.close()
 
             # Register the custom commands to the bot
@@ -46,15 +43,12 @@ class CustomCommands(commands.Cog):
             print(f'An error occurred while loading custom commands: {str(e)}')
 
     def RefreshCustomCommands(self):
-        # Open the database connection
         conn = sqlite3.connect(self.database_file)
         c = conn.cursor()
 
-        # Query all the custom commands from the table
         c.execute(f'select * from {self.table_name}')
         CustomName = c.fetchall()
 
-        # Close the database connection
         conn.close()
 
         # Remove existing custom commands from the bot
@@ -83,13 +77,11 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def addcommand(self, ctx, CommandName, *, command_response):
         try:
-            # Open the database connection
             conn = sqlite3.connect(self.database_file)
             c = conn.cursor()
 
             CommandName = CommandName.lower()
 
-            # Check if the command already exists in the table
             c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
             result = c.fetchone()
 
@@ -100,11 +92,9 @@ class CustomCommands(commands.Cog):
             # Replace '/n' with '\n' to correctly interpret newlines
             command_response = command_response.replace('/n', '\n')
 
-            # Insert the new command into the table
             c.execute(f'insert into {self.table_name} values (?, ?)', (CommandName, command_response))
             conn.commit()
 
-            # Close the database connection
             conn.close()
 
             # Register the new command to the bot
@@ -120,35 +110,30 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def editcommand(self, ctx, CommandName, *, new_response):
         try:
-            # Open the database connection
             conn = sqlite3.connect(self.database_file)
             c = conn.cursor()
-    
+
             CommandName = CommandName.lower()
-    
-            # Check if the command exists in the table
+
             c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
             result = c.fetchone()
-    
+
             if result is None:
                 await ctx.send(f'Command "{CommandName}" does not exist.')
                 return
-    
+
             # Replace '/n' with '\n' to correctly interpret newlines
             new_response = new_response.replace('/n', '\n')
-    
-            # Update the command response in the table
+
             c.execute(f'update {self.table_name} set command_response = ? where command_name = ?', (new_response, CommandName))
             conn.commit()
-    
-            # Close the database connection
+
             conn.close()
-    
-            # Update the existing command with the new response
+
             async def custom_command(ctx):
                 await ctx.send(new_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
-    
+
             await ctx.send(f'Command "{CommandName}" updated successfully.')
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
@@ -157,28 +142,24 @@ class CustomCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def deletecommand(self, ctx, CommandName):
         try:
-            # Open the database connection
             conn = sqlite3.connect(self.database_file)
             c = conn.cursor()
             CommandName = CommandName.lower()
             # Check if the command name exists in the table
             c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
             result = c.fetchone()
-    
+
             if result is None:
                 await ctx.send(f'Command "{CommandName}" does not exist.')
                 return
-    
-            # Delete the command from the table
+
             c.execute(f'delete from {self.table_name} where command_name = ?', (CommandName,))
             conn.commit()
-    
-            # Close the database connection
+
             conn.close()
-    
-            # Remove the command from the bot
+
             self.bot.remove_command(CommandName)
-    
+
             await ctx.send(f'Command "{CommandName}" deleted successfully.')
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
@@ -256,6 +237,7 @@ class CustomCommands(commands.Cog):
                 "`!efreshcommands` - Refreshes the custom_commands.json.\n"
                 "`!merge <width> <height> <save_name>` - Merges multiple attached images into one.\n"
                 "`!poll \"Poll Title\" \"option1\" \"option2\" <add_more_if_needed> \"Your Message Here\"` - Creates a poll.\n"
+                "`!translate <TargetLanguage> <TextToTranslate>` - Example: !translate fr Hello, how are you?"
             ),
             inline=False
         )

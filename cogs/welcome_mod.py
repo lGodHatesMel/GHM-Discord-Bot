@@ -77,11 +77,6 @@ class WelcomeMod(commands.Cog):
                 self.user_info[uid]["info"]["total_messages"] += 1
                 self.save_user_info()
 
-    @commands.command(help='Replies with Pong if bot is up', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def ping(self, ctx):
-        await ctx.send('Pong')
-
     @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def updateuser(self, ctx, new_username: str):
@@ -856,32 +851,6 @@ class WelcomeMod(commands.Cog):
                 await ctx.send("Failed to send a DM to the user or perform the soft ban due to permission settings.")
         else:
             await ctx.send("User not found in the database.")
-
-    @commands.command(hidden=True)
-    @commands.has_permissions(administrator=True)
-    async def togglechannel(self, ctx, channel: discord.TextChannel, role: discord.Role, permission_name: str):
-        if permission_name not in ('send_messages', 'read_messages'):
-            await ctx.send("Invalid permission name. Use 'send_messages' or 'read_messages'.")
-            return
-
-        permissions = channel.overwrites_for(role)
-
-        if getattr(permissions, permission_name):
-            setattr(permissions, permission_name, False)
-        else:
-            setattr(permissions, permission_name, True)
-
-        await channel.set_permissions(role, overwrite=permissions)
-
-        if getattr(permissions, permission_name):
-            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled.")
-        else:
-            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled.")
-
-    @togglechannel.error
-    async def togglechannel_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have the required permissions to use this command.")
 
 def setup(bot):
     bot.add_cog(WelcomeMod(bot))

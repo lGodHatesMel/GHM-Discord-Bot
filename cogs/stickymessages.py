@@ -4,10 +4,9 @@ import discord
 from pathlib import Path
 from discord.ext import commands
 import asyncio
-import utils
 import logging
 
-class ChannelMessages(commands.Cog):
+class StickyMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.StickyMsg = {}
@@ -71,7 +70,6 @@ class ChannelMessages(commands.Cog):
         if not message.author.bot:
             try:
                 await self.StickyMessages(message)
-                await self.GreetingMessage(message)
             except Exception as e:
                 logging.error(f"An error occurred in on_message: {e}")
 
@@ -102,11 +100,6 @@ class ChannelMessages(commands.Cog):
 
                     NewStickyMsg = await message.channel.send(embed=new_embed)
                     self.StickyMsg[message.channel.id]["message"] = NewStickyMsg
-
-    async def GreetingMessage(self, message):
-        words = message.content.lower().split()
-        if "hello" in words or "hey" in words:
-            await message.reply(f"Hello, {message.author.mention}!")
 
     @commands.command(help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -168,24 +161,5 @@ class ChannelMessages(commands.Cog):
 
         await ctx.send(f"Sticky note in {channel.mention} has been edited.")
 
-    @commands.command(aliases=['bd'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def botdown(self, ctx, channel: discord.TextChannel, *, message):
-
-        await channel.send(f"**Bot Down:**\n{message}")
-        await ctx.send(f"Bot Down message sent to {channel.mention}.")
-
-        current_time = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
-        author = ctx.message.author
-        command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
-
-    @commands.command(aliases=['announce', 'ann'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def announcement(self, ctx, channel: discord.TextChannel, *, message):
-
-        await channel.send(f"**Announcement:**\n{message}")
-        await ctx.send(f"Announcement sent to {channel.mention}.")
-
 def setup(bot):
-    bot.add_cog(ChannelMessages(bot))
+    bot.add_cog(StickyMessages(bot))
