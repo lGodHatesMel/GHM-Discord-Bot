@@ -1,27 +1,27 @@
 import os
-import random
 import asyncio
-import json
 import discord
 from discord.ext import commands
+import sqlite3
 
 class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        with open("config.json", "r") as f:
-            self.config = json.load(f)
+        self.conn = sqlite3.connect('rules.db')
+        self.c = self.conn.cursor()
+        self.c.execute('''CREATE TABLE IF NOT EXISTS rules
+                    (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
 
     async def update_rules(self):
         rules_channel_id = self.config.get("rules_channel_id")
-        with open("Database/rules.json", "r") as f:
-            rules_db = json.load(f)
+        self.c.execute("SELECT * FROM rules")
+        rules_data = self.c.fetchall()
 
         messages = []
-
-        for rule_id, entry in rules_db.items():
+        for rule in rules_data:
             embed = discord.Embed(
-                title=f"Rule {rule_id}",
-                description=entry["description"],
+                title=f"Rule {rule[0]}",
+                description=rule[1],
                 color=discord.Color.green()
             )
             messages.append(embed)
@@ -48,10 +48,12 @@ class Rules(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addrule(self, ctx):
-        with open("Database/rules.json", "r") as f:
-            rules_db = json.load(f)
-    
-        next_rule_id = max(map(int, rules_db.keys()), default=0) + 1
+        self.c.execute("SELECT MAX(id) FROM rules")
+        next_rule_id = self.c.fetchone()[0]
+        if next_rule_id is None:
+            next_rule_id = 1
+        else:
+            next_rule_id += 1
 
         await ctx.send("Type the rule to be added after this message:\n(note: all rules are automatically underlined)")
         try:
@@ -65,13 +67,8 @@ class Rules(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, stopping.")
 
-        rules_db[str(next_rule_id)] = {
-            "rule": question.content,
-            "description": answer.content
-        }
-
-        with open("Database/rules.json", "w") as f:
-            json.dump(rules_db, f, indent=4)
+        self.c.execute("INSERT INTO rules VALUES (?, ?, ?)", (next_rule_id, question.content, answer.content))
+        self.conn.commit()
 
         await ctx.send("✅ Entry added.")
         self.bot.loop.create_task(self.update_rules())
@@ -81,14 +78,10 @@ class Rules(commands.Cog):
     async def deleterule(self, ctx, rules_id: int = 0):
         if rules_id == 0:
             return await ctx.send("⚠ Rule entry ID is required.")
-        with open("Database/rules.json", "r") as f:
-            rules_db = json.load(f)
-        try:
-            del rules_db[str(rules_id)]
-        except KeyError:
+        self.c.execute("DELETE FROM rules WHERE id=?", (rules_id,))
+        self.conn.commit()
+        if self.c.rowcount == 0:
             return await ctx.send("⚠ No such entry exists.")
-        with open("Database/rules.json", "w") as f:
-            json.dump(rules_db, f, indent=4)
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_rules())
 
@@ -99,11 +92,9 @@ class Rules(commands.Cog):
             return await ctx.send("⚠ Rule entry ID is required.")
         if not(edit_type[0] == "r" or edit_type[0] == "d"):
             return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `rule`, `description` (default).")
-        with open("Database/rules.json", "r") as f:
-            rules_db = json.load(f)
-        try:
-            entry = rules_db[str(rules_id)]
-        except KeyError:
+        self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+        entry = self.c.fetchone()
+        if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         await ctx.send("Enter the new {} content:".format(edit_type))
         try:
@@ -111,11 +102,10 @@ class Rules(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, stopping.")
         if edit_type[0] == "r":
-            rules_db[str(rules_id)]["rule"] = new_content.content
+            self.c.execute("UPDATE rules SET rule=? WHERE id=?", (new_content.content, rules_id))
         elif edit_type[0] == "d":
-            rules_db[str(rules_id)]["description"] = new_content.content
-        with open("Database/rules.json", "w") as f:
-            json.dump(rules_db, f, indent=4)
+            self.c.execute("UPDATE rules SET description=? WHERE id=?", (new_content.content, rules_id))
+        self.conn.commit()
         await ctx.send("✅ Entry modified.")
         self.bot.loop.create_task(self.update_rules())
 
@@ -126,33 +116,29 @@ class Rules(commands.Cog):
             return await ctx.send("⚠ Rule entry ID is required.")
         if not(return_type[0] == "r" or return_type[0] == "d" or return_type[0] == "b"):
             return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `rule`, `description`, `both` (default).")
-        with open("Database/rules.json", "r") as f:
-            rules_db = json.load(f)
-        try:
-            entry = rules_db[str(rules_id)]
-        except KeyError:
+        self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+        entry = self.c.fetchone()
+        if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         if return_type[0] == "r":
-            msg = entry["rule"]
+            msg = entry[1]
         elif return_type[0] == "d":
-            msg = entry["description"]
+            msg = entry[2]
         else:
-            msg = "\n\n".join([entry["rule"], entry["description"]])
+            msg = "\n\n".join([entry[1], entry[2]])
         await ctx.send("```\n{}\n```".format(msg))
 
     @commands.command(aliases=['rule', 'showrule'], help='<rules_id>')
     async def viewrule(self, ctx, rules_id: int = 0):
         if rules_id == 0:
             return await ctx.send("⚠ Rule entry ID is required.")
-        with open("Database/rules.json", "r") as f:
-            rules_db = json.load(f)
-        try:
-            entry = rules_db[str(rules_id)]
-        except KeyError:
+        self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+        entry = self.c.fetchone()
+        if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         embed = discord.Embed(color=discord.Color.red())
-        embed.title = "R{}. {}".format(rules_id, entry["rule"])
-        embed.description = entry["description"]
+        embed.title = "R{}. {}".format(rules_id, entry[1])
+        embed.description = entry[2]
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True)
