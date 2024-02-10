@@ -30,7 +30,6 @@ class WelcomeMod(commands.Cog):
                 with open(self.database_file, 'r') as f:
                     self.user_info = json.load(f)
             except json.JSONDecodeError:
-                # Handle JSON decoding error (e.g., if the file is empty or corrupted)
                 self.user_info = {}
 
         return self.user_info
@@ -39,7 +38,6 @@ class WelcomeMod(commands.Cog):
         import json
         import datetime
 
-        # Filter out users with empty data before saving to the database
         filtered_user_info = {uid: data for uid, data in self.user_info.items() if data["info"]}
 
         with open(self.database_file, 'w') as f:
@@ -93,7 +91,7 @@ class WelcomeMod(commands.Cog):
         if before.avatar_url != after.avatar_url:
             # If the user's avatar URL has changed
             uid = str(after.id)
-            # Check if the user exists in the database
+
             if uid in self.user_info:
                 # Update the user's avatar URL in the database
                 self.user_info[uid]["info"]["avatar_url"] = str(after.avatar_url)
@@ -167,9 +165,9 @@ class WelcomeMod(commands.Cog):
         for member in guild.members:
             uid = str(member.id)
 
-            # Check if the user already exists in the database
+            
             if uid not in self.user_info:
-                # If the user doesn't exist, create a new entry in the database
+                
                 self.user_info[uid] = {
                     "info": {
                         "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -221,11 +219,11 @@ class WelcomeMod(commands.Cog):
 
                 uid = str(member.id)
 
-                # Check if the user exists in the database
+                
                 if uid in self.user_info:
                     self.user_info[uid]["info"]["Left"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 else:
-                    # If the user doesn't exist, create a new entry in the database
+                    
                     self.user_info[uid] = {
                         "info": {
                             "Joined": None,
@@ -245,10 +243,8 @@ class WelcomeMod(commands.Cog):
                 self.save_user_info()
 
     @commands.command(hidden=True)
-    @commands.has_permissions(administrator=True)  # Only allow administrators to use this command
+    @commands.has_permissions(administrator=True)
     async def forcesavedb(self, ctx):
-        # Replace the following line with the actual logic to save your database
-        # For example, if your save function is self.save_user_info(), call it here
         self.save_user_info()
 
         await ctx.send("Database saved successfully!")
@@ -358,7 +354,6 @@ class WelcomeMod(commands.Cog):
     async def addnote(self, ctx, user: discord.User, *, note_content: str):
         uid = str(user.id)
 
-        # Check if the user ID exists in the database; if not, add them to the database
         if uid not in self.user_info:
             member = ctx.guild.get_member(user.id)
             if member:
@@ -393,7 +388,6 @@ class WelcomeMod(commands.Cog):
             if note.get("number"):
                 note_number = note["number"] + 1
 
-        # Add the note to the user's data
         notes.append({
             "number": note_number,
             "timestamp": timestamp,
@@ -409,7 +403,7 @@ class WelcomeMod(commands.Cog):
     @commands.command(aliases=["removenote", "deletenote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
     async def delnote(self, ctx, uid: int, note_number: int):
-        # Check if the user ID exists in the database
+        
         if str(uid) in self.user_info:
             user_data = self.user_info[str(uid)]
             notes = user_data["info"]["notes"]
@@ -540,7 +534,7 @@ class WelcomeMod(commands.Cog):
 
         uid = str(user.id)
 
-        # Check if the user ID exists in the database
+        
         if uid in self.user_info:
             user_data = self.user_info[uid]
             warnings = user_data["info"]["warns"]
@@ -571,12 +565,10 @@ class WelcomeMod(commands.Cog):
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
         uid = str(user.id)
 
-        # Check if the user ID exists in the database
         if uid in self.user_info:
             user_data = self.user_info[uid]
             warnings = user_data["info"]["warns"]
 
-            # Find the warning with the specified number
             found_warning = None
             for warning in warnings:
                 if warning.get("number") == warning_number:
@@ -607,7 +599,6 @@ class WelcomeMod(commands.Cog):
                 await ctx.send("User not found in this server.")
                 return
 
-        # Check if the user exists in the database
         uid = str(member.id)
 
         if uid in self.user_info:
@@ -818,11 +809,8 @@ class WelcomeMod(commands.Cog):
                 # Send a DM to the user before banning
                 ban_message = f"You have been Soft-Banned from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
                 await member.send(ban_message)
-                # Ban the member
                 await member.ban(reason=reason)
-                # Wait for a short duration to allow the ban to take effect
                 await asyncio.sleep(2)
-                # Unban the member
                 await member.unban(reason="Soft ban")
 
                 timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
