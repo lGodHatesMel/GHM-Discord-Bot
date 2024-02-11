@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from datetime import datetime, timedelta
 import discord
 from discord.ext import commands
 import random
@@ -23,12 +24,12 @@ class Moderation(commands.Cog):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS user_info
                             (uid text, info text)''')
 
-    def load_user_info(self, uid):
+    def LoadUserInfo(self, uid):
         self.cursor.execute("SELECT info FROM user_info WHERE uid=?", (uid,))
         row = self.cursor.fetchone()
         return json.loads(row[0]) if row else {}
 
-    def save_user_info(self, uid, info):
+    def SaveUserInfo(self, uid, info):
         self.cursor.execute("REPLACE INTO user_info (uid, info) VALUES (?, ?)",
                             (uid, json.dumps(info)))
         self.conn.commit()
@@ -42,28 +43,28 @@ class Moderation(commands.Cog):
     async def on_member_update(self, before, after):
         if before.roles != after.roles:
             uid = str(after.id)
-            user_info = self.load_user_info(uid)
+            user_info = self.LoadUserInfo(uid)
             if user_info:
                 user_info["roles"] = [role.name for role in after.roles]
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
             uid = str(message.author.id)
-            user_info = self.load_user_info(uid)
+            user_info = self.LoadUserInfo(uid)
             if user_info:
                 user_info["total_messages"] += 1
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
 
     @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def updateuser(self, ctx, new_username: str):
         uid = str(ctx.author.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
         if user_info:
             user_info["username"] = new_username
-            self.save_user_info(uid, user_info)
+            self.SaveUserInfo(uid, user_info)
             await ctx.send(f"Updated username to {new_username}.")
         else:
             await ctx.send("User not found in the database.")
@@ -72,10 +73,10 @@ class Moderation(commands.Cog):
     async def on_user_update(self, before, after):
         if before.avatar_url != after.avatar_url:
             uid = str(after.id)
-            user_info = self.load_user_info(uid)
+            user_info = self.LoadUserInfo(uid)
             if user_info:
                 user_info["avatar_url"] = str(after.avatar_url)
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -108,14 +109,14 @@ class Moderation(commands.Cog):
                 uid = str(member.id)
 
                 # Check if the user already exists in the database
-                user_info = self.load_user_info(uid)
+                user_info = self.LoadUserInfo(uid)
                 if user_info:
                     user_info["Left"] = None
                 else:
                     # If the user doesn't exist, create a new entry in the database
                     user_info = {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        "Joined": member.joined_at.strftime('%Y-%m-%d'),
+                        "Account_Created": member.created_at.strftime('%Y-%m-%d'),
                         "Left": None,
                         "username": member.name,
                         "roles": [role.name for role in member.roles],
@@ -127,7 +128,7 @@ class Moderation(commands.Cog):
                         "kicks_amount": 0,
                         "avatar_url": str(member.avatar_url),
                     }
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
 
                 if "banned" in user_info and user_info["banned"]:
                     for ban_info in user_info["banned"]:
@@ -143,11 +144,11 @@ class Moderation(commands.Cog):
         for member in guild.members:
             uid = str(member.id)
 
-            user_info = self.load_user_info(uid)
+            user_info = self.LoadUserInfo(uid)
             if not user_info:
                 user_info = {
-                    "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "Joined": member.joined_at.strftime('%Y-%m-%d'),
+                    "Account_Created": member.created_at.strftime('%Y-%m-%d'),
                     "Left": None,
                     "username": member.name,
                     "roles": [role.name for role in member.roles],
@@ -159,7 +160,7 @@ class Moderation(commands.Cog):
                     "kicks_amount": 0,
                     "avatar_url": str(member.avatar_url),
                 }
-            self.save_user_info(uid, user_info)
+            self.SaveUserInfo(uid, user_info)
 
         await ctx.send("Database updated with all server members!")
 
@@ -167,10 +168,10 @@ class Moderation(commands.Cog):
     async def on_member_remove(self, member):
         # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
 
-        self.goodbye_channel_id = await self.WelcomeChannelID()
+        self.GoodbyeChannel = await self.WelcomeChannelID()
 
-        if self.goodbye_channel_id:
-            channel = self.bot.get_channel(self.goodbye_channel_id)
+        if self.GoodbyeChannel:
+            channel = self.bot.get_channel(self.GoodbyeChannel)
             if channel:
                 server = member.guild
                 member_count = sum(1 for member in server.members if not member.bot)
@@ -180,7 +181,7 @@ class Moderation(commands.Cog):
                 goodbye = {
                     "title": "Goodbye!",
                     "description": f"We are sad to see you go, {member.mention}. You were our {member_number}.\n\n"
-                                f"We hope you enjoyed your stay at GodHatesMe Gaming Centre!",
+                            f"We hope you enjoyed your stay at GodHatesMe Gaming Centre!",
                     "color": random_color,
                 }
 
@@ -192,16 +193,16 @@ class Moderation(commands.Cog):
                 print(f"**{member.name}** left the server as the {member_number}.")
 
         uid = str(member.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
         if user_info:
             leave_time = utils.GetLocalTime()
-            leave_time_str = leave_time.strftime('%Y-%m-%d %H:%M:%S')
+            leave_time_str = leave_time.strftime('%Y-%m-%d')
             user_info["Left"] = leave_time_str
         else:
             user_info = {
                 "Joined": None,
-                "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                "Left": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "Account_Created": member.created_at.strftime('%Y-%m-%d'),
+                "Left": datetime.now().strftime('%Y-%m-%d'),
                 "username": member.name,
                 "roles": [role.name for role in member.roles],
                 "total_messages": 0,
@@ -212,7 +213,7 @@ class Moderation(commands.Cog):
                 "kicks_amount": 0,
                 "avatar_url": str(member.avatar_url),
             }
-        self.save_user_info(uid, user_info)
+        self.SaveUserInfo(uid, user_info)
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
@@ -223,7 +224,7 @@ class Moderation(commands.Cog):
     @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def info(self, ctx, uid: int):
-        user_info = self.load_user_info(str(uid))
+        user_info = self.LoadUserInfo(str(uid))
         if user_info:
             join_date = user_info["Joined"]
             leave_date = user_info["Left"] if "Left" in user_info else "N/A"
@@ -268,10 +269,10 @@ class Moderation(commands.Cog):
     @commands.command(help='<user_id> <key> <value>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def updateinfo(self, ctx, uid: int, key: str, *, value: str):
-        user_info = self.load_user_info(str(uid))
+        user_info = self.LoadUserInfo(str(uid))
         if user_info and key in user_info:
             user_info[key] = value
-            self.save_user_info(str(uid), user_info)
+            self.SaveUserInfo(str(uid), user_info)
             await ctx.send(f"Updated {key} for user {uid} to {value}.")
         else:
             await ctx.send("User not found in the database or key does not exist.")
@@ -279,13 +280,13 @@ class Moderation(commands.Cog):
     @commands.command(aliases=['adduser', 'addtodb'], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addusertodb(self, ctx, uid: int):
-        user_info = self.load_user_info(str(uid))
+        user_info = self.LoadUserInfo(str(uid))
         if not user_info:
             member = ctx.guild.get_member(uid)
             if member:
                 user_info = {
-                    "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "Joined": member.joined_at.strftime('%Y-%m-%d'),
+                    "Account_Created": member.created_at.strftime('%Y-%m-%d'),
                     "Left": None,
                     "username": member.name,
                     "roles": [role.name for role in member.roles],
@@ -297,7 +298,7 @@ class Moderation(commands.Cog):
                     "kicks_amount": 0,
                     "avatar_url": str(member.avatar_url),
                 }
-                self.save_user_info(str(uid), user_info)
+                self.SaveUserInfo(str(uid), user_info)
                 await ctx.send(f"User with ID `{uid}` (username: `{member.name}`) added to the database.")
                 await utils.LogModAction(ctx.guild, 'Database', member, f"User added to the database by {ctx.author.name}", config=config)
             else:
@@ -309,13 +310,13 @@ class Moderation(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def addnote(self, ctx, user: discord.User, *, note_content: str):
         uid = str(user.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
         if not user_info:
             member = ctx.guild.get_member(user.id)
             if member:
                 user_info = {
-                    "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "Joined": member.joined_at.strftime('%Y-%m-%d'),
+                    "Account_Created": member.created_at.strftime('%Y-%m-%d'),
                     "Left": None,
                     "username": member.name,
                     "roles": [role.name for role in member.roles],
@@ -327,13 +328,13 @@ class Moderation(commands.Cog):
                     "kicks_amount": 0,
                     "avatar_url": str(member.avatar_url),
                 }
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
             else:
                 await ctx.send("User not found in the server.")
                 return
 
         notes = user_info.get("notes", [])
-        timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = utils.GetLocalTime().strftime('%Y-%m-%d')
         # Check if there are existing notes
         note_number = 1
         for note in notes:
@@ -348,14 +349,14 @@ class Moderation(commands.Cog):
         })
 
         user_info["notes"] = notes
-        self.save_user_info(uid, user_info)
+        self.SaveUserInfo(uid, user_info)
         await ctx.send(f"📝 **Note Added**: {ctx.author.name} added a note for {user.mention} (#{note_number})")
         await utils.LogModAction(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
     @commands.command(aliases=["removenote", "deletenote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
     async def delnote(self, ctx, uid: int, note_number: int):
-        user_info = self.load_user_info(str(uid))
+        user_info = self.LoadUserInfo(str(uid))
         if user_info:
             notes = user_info.get("notes", [])
 
@@ -369,7 +370,7 @@ class Moderation(commands.Cog):
                 deleted_content = found_note.get("content", "")
                 notes.remove(found_note)
                 user_info["notes"] = notes
-                self.save_user_info(str(uid), user_info)
+                self.SaveUserInfo(str(uid), user_info)
                 await ctx.send(f"🗑 **Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}")
                 await utils.LogModAction(ctx.guild, 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}", config=config)
             else:
@@ -380,7 +381,7 @@ class Moderation(commands.Cog):
     @commands.command(aliases=["notes", "checknotes"], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def listnotes(self, ctx, uid: int):
-        user_info = self.load_user_info(str(uid))
+        user_info = self.LoadUserInfo(str(uid))
         if user_info:
             notes = user_info.get("notes", [])
 
@@ -409,11 +410,11 @@ class Moderation(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def addwarning(self, ctx, member: discord.Member, *, warning: str):
         uid = str(member.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
         if user_info:
             warnings = user_info.get("warns", [])
             warning_number = len(warnings) + 1
-            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d')
             author = ctx.author.name
 
             # Customize the message based on other conditions, for example:
@@ -467,7 +468,7 @@ class Moderation(commands.Cog):
 
             user_info["warns"] = warnings
 
-            self.save_user_info(uid, user_info)
+            self.SaveUserInfo(uid, user_info)
             await ctx.send(f"⚠️ **Warned**: {ctx.author.mention} warned {member.mention} (warn #{warning_number})\n**Warning Message**:\n{warning}")
         else:
             await ctx.send("User not found in the database.")
@@ -481,7 +482,7 @@ class Moderation(commands.Cog):
             return
 
         uid = str(user.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
         
         if user_info:
             warnings = user_info.get("warns", [])
@@ -510,7 +511,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def delwarning(self, ctx, user: discord.User, warning_number: int):
         uid = str(user.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
 
         if user_info:
             warnings = user_info.get("warns", [])
@@ -525,7 +526,7 @@ class Moderation(commands.Cog):
                 deleted_content = found_warning.get("warning", "")
                 warnings.remove(found_warning)
                 user_info["warns"] = warnings
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
                 await ctx.send(f"Deleted warning #{warning_number} for {user.mention}: {deleted_content}")
 
                 await utils.LogModAction(ctx.guild, 'Warning', user, warning, warning_number, ctx.author, config=config)
@@ -547,12 +548,12 @@ class Moderation(commands.Cog):
                 return
 
         uid = str(member.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
 
         if user_info:
             user_info["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
-            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d')
 
             kick_info = {
                 "number": 1,
@@ -571,7 +572,7 @@ class Moderation(commands.Cog):
             kicks.append(kick_info)
             user_info["kick_reason"] = kicks
 
-            self.save_user_info(uid, user_info)
+            self.SaveUserInfo(uid, user_info)
 
             # Send a kick message to the user
             try:
@@ -599,7 +600,7 @@ class Moderation(commands.Cog):
     @commands.command(aliases=["listkicks", "checkkicks"], help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def listkickreasons(self, ctx, uid: int):
-        user_info = self.load_user_info(str(uid))
+        user_info = self.LoadUserInfo(str(uid))
         if user_info:
             kicks = user_info.get("kick_reason", [])
 
@@ -645,11 +646,10 @@ class Moderation(commands.Cog):
                 await ctx.send(f"Failed to send a ban message to {user_with_uid} due to permission or privacy settings.")
                 return
             except Exception as e:
-                # Handle other exceptions if necessary
                 await ctx.send(f"An error occurred while sending a ban message to {user_with_uid}: {e}")
                 return
 
-            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d')
 
             ban_info = {
                 "timestamp": timestamp,
@@ -676,7 +676,7 @@ class Moderation(commands.Cog):
             embed.add_field(name="Reason", value=reason, inline=False)
             embed.add_field(name="Timestamp", value=datetime.datetime.now(), inline=True)
 
-            await utils.LogModAction(ctx.guild, 'Ban', user, reason, ctx.author, user_data=user_data, config=config, embed=embed)
+            await utils.LogModAction(ctx.guild, 'Ban', user, reason, ctx.author, user_data=user_info, config=config, embed=embed)
 
             await ctx.send(f"{user_with_uid} has been banned for the following reason: {reason}")
         else:
@@ -686,7 +686,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def checkbans(self, ctx, user: discord.User):
         uid = str(user.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
 
         if user_info:
             bans = user_info.get("banned", [])
@@ -722,17 +722,17 @@ class Moderation(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def unban(self, ctx, user: discord.User, *, unban_reason: str = None):
         uid = str(user.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
 
         if user_info:
             bans = user_info.get("banned", [])
 
             for ban_info in bans:
                 if not ban_info.get("lifted"):
-                    ban_info["lifted"] = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+                    ban_info["lifted"] = utils.GetLocalTime().strftime('%Y-%m-%d')
                     ban_info["unban_reason"] = unban_reason
 
-                    self.save_user_info(uid, user_info)
+                    self.SaveUserInfo(uid, user_info)
 
                     await ctx.guild.unban(user)
 
@@ -765,7 +765,7 @@ class Moderation(commands.Cog):
                 return
 
         uid = str(member.id)
-        user_info = self.load_user_info(uid)
+        user_info = self.LoadUserInfo(uid)
 
         if user_info:
             try:
@@ -776,7 +776,7 @@ class Moderation(commands.Cog):
                 await asyncio.sleep(2)
                 await member.unban(reason="Soft ban")
 
-                timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+                timestamp = utils.GetLocalTime().strftime('%Y-%m-%d')
 
                 ban_info = {
                     "timestamp": timestamp,
@@ -787,7 +787,7 @@ class Moderation(commands.Cog):
 
                 user_info.setdefault("banned", []).append(ban_info)
 
-                self.save_user_info(uid, user_info)
+                self.SaveUserInfo(uid, user_info)
 
                 await utils.LogModAction(ctx.guild, 'SoftBanned', member, reason, issuer=ctx.author, config=config)
 
@@ -800,8 +800,25 @@ class Moderation(commands.Cog):
     @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def accountage(self, ctx, member: discord.Member = None):
-        member = member or ctx.author
-        await ctx.send(f"{member.name}'s account was created at {member.created_at}")
+        if member is None:
+            member = ctx.author
+        elif not ctx.guild.get_member(member.id):
+            return await ctx.send("⚠ Unable to get user info as they are not in the server.")
+        
+        AccountCreatedDate = member.created_at
+        AccountAge = datetime.utcnow() - AccountCreatedDate
+
+        if AccountAge < timedelta(days=30):
+            color = discord.Color.red()  # Red for less than 1 month old
+        elif AccountAge < timedelta(days=365):
+            color = discord.Color.blue()  # Blue for 1 month to 1 year old
+        else:
+            color = discord.Color.green()  # Green for 1 year or older
+
+        embed = discord.Embed(title=f"{member.name}'s Account Info", color=color)
+        embed.add_field(name="Account Creation Date", value=AccountCreatedDate.strftime('%Y-%m-%d'), inline=False)
+        embed.set_thumbnail(url=member.avatar_url)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

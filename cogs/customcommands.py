@@ -11,7 +11,6 @@ class CustomCommands(commands.Cog):
         self.database_file = os.path.join(self.database_folder, 'custom_commands.db')
         self.table_name = 'custom_commands'
 
-        # Create the database and table if they do not exist
         conn = sqlite3.connect(self.database_file)
         c = conn.cursor()
         c.execute(f'''create table if not exists {self.table_name}
@@ -58,7 +57,6 @@ class CustomCommands(commands.Cog):
 
         # Register updated custom commands
         for CommandName, command_response in CustomName:
-            # Dynamically create a function for each custom command
             async def custom_command(ctx, response=command_response):
                 await ctx.send(response)
 
@@ -97,7 +95,6 @@ class CustomCommands(commands.Cog):
 
             conn.close()
 
-            # Register the new command to the bot
             async def custom_command(ctx):
                 await ctx.send(command_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
@@ -164,7 +161,6 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-
     @commands.command(aliases=['modcommands'], help='Display the staff command list')
     @commands.has_any_role("Moderator", "Admin")
     async def staffcommands(self, ctx):
@@ -183,7 +179,10 @@ class CustomCommands(commands.Cog):
         )
         embed.add_field(
             name='Info:',
-            value='`!info <uid>` - Retrieve user information.',
+            value=(
+                "`!info <uid>` - Retrieve user information.\n"
+                "`!accountage <uid>` - Check's when a user account was created.\n"
+            ),
             inline=False
         )
         embed.add_field(

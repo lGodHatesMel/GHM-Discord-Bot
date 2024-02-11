@@ -22,21 +22,19 @@ def load_or_create_config():
             "welcome_channel_id": None,
             "rules_channel_id": None,
             "faq_channel_id": None,
+            "info_channel_id": None,
             "message_logger_channel_id": None,
             "role_channel_id": None,
             "mod_logs_channel_id": None,
             "member_logs_channel_id": None,
             "server_logs_channel_id": None,
-            "owner_id": 123456789012345678,
+            "owner_id": "YOUR_OWNER_ID",
             "twitch_username": "YOUR_TWITCH_USERNAME",
             "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
             "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
             "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
             "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
             "stream_channel_id": "YOUR_DISCORD_CHANNEL_ID",
-            # "trivia_channel_id": "YOUR_CHANNEL_ID",
-            # "min_question_interval_minutes": 30,
-            # "max_question_interval_minutes": 60
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -60,7 +58,6 @@ def load_or_create_config():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         exit(1)
-    
 
 config = load_or_create_config()
 
@@ -96,9 +93,7 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        # Ignore the error silently when a command is not found
         return
-    # Handle other errors here, for example, you can print the error to the console
     print(f'Error: {error}')
 
 if __name__ == "__main__":
