@@ -16,13 +16,12 @@ class BasicCommands(commands.Cog):
             try:
                 await self.GreetingMessage(message)
             except Exception as e:
-                logging.error(f"An error occurred in on_message: {e}")
+                logging.error(f"An error occurred in on_message (greeting): {e}")
 
     async def GreetingMessage(self, message):
         words = message.content.lower().split()
         if "hello" in words or "hey" in words:
             await message.reply(f"Hello, {message.author.mention}!")
-
 
     @commands.command(help='Replies with Pong if bot is up', hidden=True)
     @commands.has_any_role("Moderator", "Admin")

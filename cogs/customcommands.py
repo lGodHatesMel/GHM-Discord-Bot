@@ -63,7 +63,7 @@ class CustomCommands(commands.Cog):
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
     @commands.command(help='Refresh custom commands from the SQLite database', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def refreshcommands(self, ctx):
         try:
             self.RefreshCustomCommands()
@@ -104,7 +104,7 @@ class CustomCommands(commands.Cog):
             await ctx.send(f'An error occurred: {str(e)}')
 
     @commands.command(help='<command_name> <reply_message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def editcommand(self, ctx, CommandName, *, new_response):
         try:
             conn = sqlite3.connect(self.database_file)

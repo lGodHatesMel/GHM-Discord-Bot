@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import json
 import utils
+import traceback
 
 intents = discord.Intents.default()
 intents.members = True
@@ -64,14 +65,16 @@ config = load_or_create_config()
 bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
 bot.config = config
 
-for filename in os.listdir('cogs'):
-    if filename.endswith('.py'):
-        try:
-            extension = f'cogs.{filename[:-3]}'
-            bot.load_extension(extension)
-            print(f'Loaded extension: {extension}')
-        except Exception as e:
-            print(f'Failed to load extension {extension}: {str(e)}')
+folders = ['cogs']
+for folder in folders:
+    for filename in os.listdir(folder):
+        if filename.endswith('.py'):
+            try:
+                extension = f'{folder}.{filename[:-3]}'
+                bot.load_extension(extension)
+                print(f'Loaded extension: {extension}')
+            except Exception as e:
+                print(f'Failed to load extension {extension}: {str(e)}')
 
 @bot.event
 async def on_ready():
@@ -88,13 +91,22 @@ async def on_ready():
         print(f'{intent}: {"Enabled" if enabled else "Disabled"}')
     print(f'===========================================================')
 
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("OOHHH YEEAAAHHHH!!!"))
-    
+    stream_name = config['stream_name']
+    stream_url = config['stream_url']
+    await bot.change_presence(status=discord.Status.online, activity=discord.Streaming(name=stream_name, url=stream_url))
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
-    print(f'Error: {error}')
+    elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.MissingAnyRole):
+        await ctx.send('You do not have the correct permissions or roles to run this command.')
+    elif isinstance(error, commands.NotOwner):
+        await ctx.send('Only the owner of this bot can run this command.')
+    else:
+        tb_lines = traceback.format_exception(type(error), error, error.__traceback__)
+        tb_text = ''.join(tb_lines)
+        print(f'Error: {error}\n{tb_text}')
 
 if __name__ == "__main__":
     try:

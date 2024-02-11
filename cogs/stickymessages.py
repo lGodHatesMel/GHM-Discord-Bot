@@ -71,7 +71,7 @@ class StickyMessages(commands.Cog):
             try:
                 await self.StickyMessages(message)
             except Exception as e:
-                logging.error(f"An error occurred in on_message: {e}")
+                logging.error(f"An error occurred in on_message (sticky_message): {e}")
 
     async def StickyMessages(self, message):
         if message.channel.id in self.StickyMsg:
