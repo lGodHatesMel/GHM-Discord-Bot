@@ -1,18 +1,17 @@
 import os
-import json
+import sqlite3
 import discord
 from pathlib import Path
 from discord.ext import commands
 import asyncio
-import utils
 import logging
 
-class StickyNotes(commands.Cog):
+class StickyMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.StickyMsg = {}
         self.database_folder = 'Database'
-        self.database_file = os.path.join(self.database_folder, 'sticky_notes.json')
+        self.database_file = os.path.join(self.database_folder, 'sticky_notes.db')
 
     async def load_sticky_notes(self):
         file = Path(self.database_file)
@@ -20,42 +19,39 @@ class StickyNotes(commands.Cog):
         if not file.exists():
             return
 
-        with file.open() as f:
-            sticky_data = json.load(f)
-            for channel_id, data in sticky_data.items():
-                author_id = data.get("author_id")
-                content = data.get("content")
-                message = data.get("message")
+        conn = sqlite3.connect(self.database_file)
+        c = conn.cursor()
+        c.execute("SELECT * FROM sticky_notes")
+        sticky_data = c.fetchall()
+        for channel_id, author_id, content, message in sticky_data:
+            if message is None:
+                continue
 
-                if message is None:
-                    continue
+            channel = self.bot.get_channel(int(channel_id))
+            if channel:
+                embed = discord.Embed(
+                    title="**STICKY NOTE**",
+                    description=content,
+                    color=discord.Color.random()
+                )
 
-                channel = self.bot.get_channel(int(channel_id))
-                if channel:
-                    embed = discord.Embed(
-                        title="**STICKY NOTE**",
-                        description=content,
-                        color=discord.Color.random()
-                    )
-
-                    StickyMsg = await channel.send(embed=embed)
-                    self.StickyMsg[int(channel_id)] = {
-                        "message": StickyMsg,
-                        "author_id": int(author_id),
-                        "content": content
-                    }
+                StickyMsg = await channel.send(embed=embed)
+                self.StickyMsg[int(channel_id)] = {
+                    "message": StickyMsg,
+                    "author_id": int(author_id),
+                    "content": content
+                }
+        conn.close()
 
     async def save_sticky_notes(self):
-        sticky_data = {}
+        conn = sqlite3.connect(self.database_file)
+        c = conn.cursor()
+        c.execute("CREATE TABLE IF NOT EXISTS sticky_notes (channel_id INTEGER, author_id INTEGER, content TEXT, message INTEGER)")
+        c.execute("DELETE FROM sticky_notes")
         for channel_id, data in self.StickyMsg.items():
-            sticky_data[channel_id] = {
-                "message": data["message"].id,
-                "author_id": data["author_id"],
-                "content": data["content"]
-            }
-
-        with open(self.database_file, 'w') as file:
-            json.dump(sticky_data, file, indent=4)
+            c.execute("INSERT INTO sticky_notes VALUES (?,?,?,?)", (channel_id, data["author_id"], data["content"], data["message"].id))
+        conn.commit()
+        conn.close()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -65,18 +61,26 @@ class StickyNotes(commands.Cog):
     def cleanup(self):
         for channel_id, data in self.StickyMsg.items():
             asyncio.run_coroutine_threadsafe(
-                data["message"].delete(),
+                self.DeleteMessage(channel_id, data["message"].id),
                 self.bot.loop
             )
+
+    async def DeleteMessage(self, channel_id, message_id):
+        channel = self.bot.get_channel(channel_id)
+        if channel:
+            try:
+                message = await channel.fetch_message(message_id)
+                await message.delete()
+            except discord.NotFound:
+                pass
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
             try:
                 await self.StickyMessages(message)
-                await self.GreetingMessage(message)
             except Exception as e:
-                logging.error(f"An error occurred in on_message: {e}")
+                logging.error(f"An error occurred in on_message (sticky_message): {e}")
 
     async def StickyMessages(self, message):
         if message.channel.id in self.StickyMsg:
@@ -105,11 +109,6 @@ class StickyNotes(commands.Cog):
 
                     NewStickyMsg = await message.channel.send(embed=new_embed)
                     self.StickyMsg[message.channel.id]["message"] = NewStickyMsg
-
-    async def GreetingMessage(self, message):
-        words = message.content.lower().split()
-        if "hello" in words or "hey" in words:
-            await message.reply(f"Hello, {message.author.mention}!")
 
     @commands.command(help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -171,24 +170,5 @@ class StickyNotes(commands.Cog):
 
         await ctx.send(f"Sticky note in {channel.mention} has been edited.")
 
-    @commands.command(aliases=['bd'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def botdown(self, ctx, channel: discord.TextChannel, *, message):
-
-        await channel.send(f"**Bot Down:**\n{message}")
-        await ctx.send(f"Bot Down message sent to {channel.mention}.")
-
-        current_time = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
-        author = ctx.message.author
-        command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
-
-    @commands.command(aliases=['announce', 'ann'], help='<#Channel> <Message>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def announcement(self, ctx, channel: discord.TextChannel, *, message):
-
-        await channel.send(f"**Announcement:**\n{message}")
-        await ctx.send(f"Announcement sent to {channel.mention}.")
-
 def setup(bot):
-    bot.add_cog(StickyNotes(bot))
+    bot.add_cog(StickyMessages(bot))

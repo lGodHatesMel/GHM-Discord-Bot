@@ -27,7 +27,7 @@ class ImageEditor(commands.Cog):
             await ctx.send(f'An error occurred: {str(e)}')
 
     @commands.command(help="<size> <image url> <save_name>", hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def resizeurlimage(self, ctx, size: int, url: str, save_name: str):
         try:
             response = await self.bot.session.get(url)
@@ -49,7 +49,7 @@ class ImageEditor(commands.Cog):
             await ctx.send(f'An error occurred: {str(e)}')
 
     @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size> <save_name>")
-    @commands.has_any_role("Moderator", "Admin")
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def resizeimage(self, ctx, size: int, save_name: str):
         if len(ctx.message.attachments) == 0:
             await ctx.send('No image attached to the message.')
@@ -71,7 +71,7 @@ class ImageEditor(commands.Cog):
         return new_image
 
     @commands.command(help="Merges multiple attached images into one. Usage: !merge <width> <height> <save_name>", hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def merge(self, ctx, width: int, height: int, save_name: str):
         # Check if the message has attachments
         if ctx.message.attachments:

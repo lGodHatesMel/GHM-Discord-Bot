@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import os
 import json
 import requests
 
@@ -23,23 +24,23 @@ class LiveNotification(commands.Cog):
             data = response.json()
             if data['data']:
                 await self.LiveEmbedNotification(
-                    f'Hey everyone! {self.config["twitch_username"]} is now live on Twitch!',
-                    'https://www.twitch.tv/',
-                    self.twitchIcon
-                )
+                f'Hey everyone! {self.config["twitch_username"]} is now live on Twitch!',
+                f'https://www.twitch.tv/{self.config["twitch_username"]}',
+                self.twitchIcon
+            )
 
-    async def YoutubeLiveNotification(self):
-        youtube_api_url = f'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId={self.config["youtube_channel_id"]}&eventType=live&type=video&key={self.config["youtube_api_key"]}'
-        response = requests.get(youtube_api_url)
+    # async def YoutubeLiveNotification(self):
+    #     youtube_api_url = f'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId={self.config["youtube_channel_id"]}&eventType=live&type=video&key={self.config["youtube_api_key"]}'
+    #     response = requests.get(youtube_api_url)
 
-        if response.status_code == 200:
-            data = response.json()
-            if data.get('items'):
-                await self.LiveEmbedNotification(
-                    f'Hey everyone! {self.config["youtube_channel_name"]} is now live on YouTube!',
-                    f'https://www.youtube.com/channel/{self.config["youtube_channel_id"]}',
-                    self.youtubeIcon
-                )
+    #     if response.status_code == 200:
+    #         data = response.json()
+    #         if data.get('items'):
+    #             await self.LiveEmbedNotification(
+    #                 f'Hey everyone! {self.config["youtube_channel_name"]} is now live on YouTube!',
+    #                 f'https://www.youtube.com/channel/{self.config["youtube_channel_id"]}',
+    #                 self.youtubeIcon
+    #             )
 
     async def LiveEmbedNotification(self, message, link, icon):
         embed = discord.Embed(
@@ -49,13 +50,13 @@ class LiveNotification(commands.Cog):
         )
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
         embed.set_thumbnail(url=f'attachment://{icon}')
-        embed.add_field(name='Watch Now', value=f'[Click Here]({link})')
+        embed.add_field(name='Watch Now', value=f'Click Here')
         await self.bot.get_channel(self.config['stream_channel_id']).send(embed=embed, file=discord.File(icon))
 
     @commands.command()
     async def islive(self, ctx):
         await self.TwitchLiveNotification()
-        await self.YoutubeLiveNotification()
+        # await self.YoutubeLiveNotification()
 
 def setup(bot):
     bot.add_cog(LiveNotification(bot))
