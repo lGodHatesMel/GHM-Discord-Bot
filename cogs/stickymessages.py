@@ -61,9 +61,18 @@ class StickyMessages(commands.Cog):
     def cleanup(self):
         for channel_id, data in self.StickyMsg.items():
             asyncio.run_coroutine_threadsafe(
-                data["message"].delete(),
+                self.DeleteMessage(channel_id, data["message"].id),
                 self.bot.loop
             )
+
+    async def DeleteMessage(self, channel_id, message_id):
+        channel = self.bot.get_channel(channel_id)
+        if channel:
+            try:
+                message = await channel.fetch_message(message_id)
+                await message.delete()
+            except discord.NotFound:
+                pass
 
     @commands.Cog.listener()
     async def on_message(self, message):

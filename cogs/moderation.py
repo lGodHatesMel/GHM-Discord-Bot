@@ -163,8 +163,8 @@ class Moderation(commands.Cog):
             else:
                 user_info = {
                     "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
+                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
@@ -206,8 +206,8 @@ class Moderation(commands.Cog):
             if not user:
                 user_info = {
                     "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
+                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
@@ -259,13 +259,13 @@ class Moderation(commands.Cog):
             user = cursor.fetchone()
             if user:
                 user_info = json.loads(user[1])
-                user_info["info"]["Left"] = datetime.now().strftime('%Y-%m-%d %H:%M')
+                user_info["info"]["Left"] = datetime.now().strftime('%m-%d-%y %H:%M')
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
             else:
                 user_info = {
                     "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
+                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
@@ -364,8 +364,8 @@ class Moderation(commands.Cog):
             if member:
                 user_info = {
                     "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
+                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
@@ -401,8 +401,8 @@ class Moderation(commands.Cog):
             if member:
                 user_info = {
                     "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
+                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
@@ -424,7 +424,7 @@ class Moderation(commands.Cog):
 
         user_info = json.loads(user[1])
         notes = user_info["moderation"]["notes"]
-        timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
         note_number = 1
         for note in notes:
             if note.get("number"):
@@ -512,7 +512,7 @@ class Moderation(commands.Cog):
             user_info = json.loads(user[1])
             warnings = user_info.get("warns", [])
             warning_number = len(warnings) + 1
-            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
             author = ctx.author.name
 
             # Customize the message based on other conditions, for example:
@@ -656,7 +656,7 @@ class Moderation(commands.Cog):
             user_info = json.loads(user[1])
             user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
-            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
 
             kick_info = {
                 "number": 1,
@@ -750,7 +750,7 @@ class Moderation(commands.Cog):
                 await ctx.send(f"An error occurred while sending a ban message to {user_with_uid}: {e}")
                 return
 
-            timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
 
             ban_info = {
                 "timestamp": timestamp,
@@ -767,7 +767,7 @@ class Moderation(commands.Cog):
 
             await ctx.guild.ban(discord_user, reason=reason)
 
-            timestamp - utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp - utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
 
             embed = discord.Embed(
                 title="Ban",
@@ -856,8 +856,8 @@ class Moderation(commands.Cog):
             else:
                 user_info = {
                     "info": {
-                        "Joined": member.joined_at.strftime('%Y-%m-%d %H:%M'),
-                        "Account_Created": member.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
+                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
@@ -910,7 +910,7 @@ class Moderation(commands.Cog):
                 await asyncio.sleep(2)
                 await member.unban(reason="Soft ban")
 
-                timestamp = utils.GetLocalTime().strftime('%Y-%m-%d %H:%M:%S')
+                timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
 
                 ban_info = {
                     "timestamp": timestamp,
