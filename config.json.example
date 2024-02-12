@@ -13,5 +13,11 @@
     "role_channel_id": CHANNEL_ID_HERE,
     "member_logs_channel_id": CHANNEL_ID_HERE,
     "server_logs_channel_id": CHANNEL_ID_HERE,
-    "token_refresher_enabled": false
+    "token_refresher_enabled": false,
+    "twitch_username": "YOUR_TWITCH_USERNAME",
+    "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
+    "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
+    "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
+    "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
+    "stream_channel_id": "YOUR_DISCORD_CHANNEL_ID"
 }

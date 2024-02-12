@@ -6,7 +6,7 @@ import utils
 
 from datetime import datetime, timezone
 
-def get_local_time():
+def GetLocalTime():
     return datetime.now(timezone.utc)
 
 with open('config.json', 'r') as config_file:

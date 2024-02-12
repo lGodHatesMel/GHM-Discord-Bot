@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import json
 import utils
+import traceback
 
 intents = discord.Intents.default()
 intents.members = True
@@ -22,15 +23,19 @@ def load_or_create_config():
             "welcome_channel_id": None,
             "rules_channel_id": None,
             "faq_channel_id": None,
+            "info_channel_id": None,
             "message_logger_channel_id": None,
             "role_channel_id": None,
             "mod_logs_channel_id": None,
             "member_logs_channel_id": None,
             "server_logs_channel_id": None,
-            "owner_id": 123456789012345678,
-            # "trivia_channel_id": "YOUR_CHANNEL_ID",
-            # "min_question_interval_minutes": 30,
-            # "max_question_interval_minutes": 60
+            "owner_id": "YOUR_OWNER_ID",
+            "twitch_username": "YOUR_TWITCH_USERNAME",
+            "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
+            "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
+            "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
+            "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
+            "stream_channel_id": "YOUR_DISCORD_CHANNEL_ID",
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
@@ -54,25 +59,26 @@ def load_or_create_config():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         exit(1)
-    
 
 config = load_or_create_config()
 
-bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
+bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
 bot.config = config
 
-for filename in os.listdir('cogs'):
-    if filename.endswith('.py'):
-        try:
-            extension = f'cogs.{filename[:-3]}'
-            bot.load_extension(extension)
-            print(f'Loaded extension: {extension}')
-        except Exception as e:
-            print(f'Failed to load extension {extension}: {str(e)}')
+folders = ['cogs']
+for folder in folders:
+    for filename in os.listdir(folder):
+        if filename.endswith('.py'):
+            try:
+                extension = f'{folder}.{filename[:-3]}'
+                bot.load_extension(extension)
+                print(f'Loaded extension: {extension}')
+            except Exception as e:
+                print(f'Failed to load extension {extension}: {str(e)}')
 
 @bot.event
 async def on_ready():
-    joined_time = utils.get_local_time().strftime('%Y-%m-%d %H:%M:%S')
+    joined_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
     print(f'=======================================================')
     print(f'===   Bot Name: {bot.user.name}')
     print(f'===   Discord Server: {bot.guilds[0].name}')
@@ -85,15 +91,22 @@ async def on_ready():
         print(f'{intent}: {"Enabled" if enabled else "Disabled"}')
     print(f'===========================================================')
 
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("OOHHH YEEAAAHHHH!!!"))
-    
+    stream_name = config['stream_name']
+    stream_url = config['stream_url']
+    await bot.change_presence(status=discord.Status.online, activity=discord.Streaming(name=stream_name, url=stream_url))
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        # Ignore the error silently when a command is not found
         return
-    # Handle other errors here, for example, you can print the error to the console
-    print(f'Error: {error}')
+    elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.MissingAnyRole):
+        await ctx.send('You do not have the correct permissions or roles to run this command.')
+    elif isinstance(error, commands.NotOwner):
+        await ctx.send('Only the owner of this bot can run this command.')
+    else:
+        tb_lines = traceback.format_exception(type(error), error, error.__traceback__)
+        tb_text = ''.join(tb_lines)
+        print(f'Error: {error}\n{tb_text}')
 
 if __name__ == "__main__":
     try:

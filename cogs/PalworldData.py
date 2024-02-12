@@ -25,7 +25,10 @@ class PalworldData(commands.Cog):
     if pal_data is None:
       return None, None
 
-    embed = discord.Embed(color=discord.Color.random())
+    # embed_title = "Wiki Link: " + pal_data["name"]
+    embed_title = "[Click Here for Wiki Link]"
+    embed_url = pal_data["wiki"]
+    embed = discord.Embed(title=embed_title, url=embed_url, color=discord.Color.random())
 
     suitability_info = ""
     for suitability in pal_data["suitability"]:
@@ -56,13 +59,13 @@ class PalworldData(commands.Cog):
 
       embed.set_thumbnail(url=f"attachment://{image_file.filename}")
 
-    typing_emoji = []
+    typing_icon = []
     for typing in pal_data["types"]:
       type_image_url = f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Typings/{typing}.png"
-      typing_emoji.append(type_image_url)
+      typing_icon.append(type_image_url)
 
-    if typing_emoji:
-      embed.set_author(name=f"{pal_data['name']} #{pal_data['pal_id']}", icon_url=typing_emoji[0])
+    if typing_icon:
+      embed.set_author(name=f"{pal_data['name']} #{pal_data['pal_id']}", icon_url=typing_icon[0])
 
     map_image = None
     if "pal_id" in pal_data:
@@ -80,7 +83,7 @@ class PalworldData(commands.Cog):
     if map_image is not None:
       embed.set_image(url=f"attachment://{map_image.filename}")
 
-    embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
+    # embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
     embed.set_footer(text=pal_data["description"])
 
     return embed, image_file, map_image
