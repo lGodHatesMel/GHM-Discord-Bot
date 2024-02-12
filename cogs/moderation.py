@@ -126,11 +126,9 @@ class Moderation(commands.Cog):
             config_data = json.load(config_file)
         return config_data.get('welcome_channel_id')
 
-
-    ### DOne
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
+        # print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
 
         self.WelcomeChannel = await self.WelcomeChannelID()
         channel = self.bot.get_channel(int(self.WelcomeChannel))
@@ -168,7 +166,6 @@ class Moderation(commands.Cog):
                         "Left": None,
                         "username": member.name,
                         "avatar_url": str(member.avatar_url),
-                        "roles": [role.name for role in member.roles]
                     },
                     "moderation": {
                         "warns": [],
@@ -178,6 +175,8 @@ class Moderation(commands.Cog):
                         "kicks_amount": 0
                     }
                 }
+                if not member.bot:
+                    user_info["info"]["roles"] = [role.name for role in member.roles]
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
 
             self.conn.commit()
@@ -190,7 +189,6 @@ class Moderation(commands.Cog):
                     for ban_info in user_info["moderation"]["banned"]:
                         await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
                 print(f"Added new user {uid}")
-    ### DOne
 
     # Good to use if you are using this after already having alot of members in your server
     @commands.command(hidden=True)
@@ -229,7 +227,7 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
+        # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
 
         self.GoodbyeChannel = await self.WelcomeChannelID()
         channel = self.bot.get_channel(int(self.GoodbyeChannel))
@@ -820,71 +818,6 @@ class Moderation(commands.Cog):
                 await ctx.send(f"No bans found for user {uid}.")
         else:
             await ctx.send("User not found in the database.")
-
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        print(f"DEBUG: on_member_join event triggered for {member.name} ({member.id})")
-
-        self.WelcomeChannel = await self.WelcomeChannelID()
-        channel = self.bot.get_channel(int(self.WelcomeChannel))
-        if channel:
-            server = member.guild
-            member_count = sum(1 for member in server.members if not member.bot)
-            member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-            random_color = random.randint(0, 0xFFFFFF)
-
-            embed = discord.Embed(
-                title="Welcome!",
-                description=f"Welcome to GodHatesMe Gaming Centre {member.mention}, you are our {member_number}!\n\n"
-                            f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
-                color=random_color,
-            )
-
-            embed.set_thumbnail(url=member.avatar_url)
-            embed.set_footer(text=member.name)
-
-            await channel.send(embed=embed)
-
-            uid = str(member.id)
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                user_info = json.loads(user[1])
-                user_info["info"]["Left"] = None
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-            else:
-                user_info = {
-                    "info": {
-                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
-                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
-                        "Left": None,
-                        "username": member.name,
-                        "avatar_url": str(member.avatar_url),
-                    },
-                    "moderation": {
-                        "warns": [],
-                        "notes": [],
-                        "banned": [],
-                        "kick_reason": [],
-                        "kicks_amount": 0
-                    }
-                }
-                if not member.bot:
-                    user_info["info"]["roles"] = [role.name for role in member.roles]
-                cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-
-            self.conn.commit()
-
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                user_info = json.loads(user[1])
-                if user_info["moderation"].get("banned"):
-                    for ban_info in user_info["moderation"]["banned"]:
-                        if ban_info.get("lifted") is None:
-                            await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
-                print(f"Added new user {uid}")
 
     @commands.command(help='<UID> <Reason>', hidden=True)
     @commands.has_permissions(ban_members=True)
