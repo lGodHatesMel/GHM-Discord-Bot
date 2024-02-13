@@ -5,6 +5,8 @@ from datetime import datetime
 import utils
 
 class ModerationLogger(commands.Cog):
+    hidden = True
+
     def __init__(self, bot):
         self.bot = bot
         self.delete_words = [
@@ -94,7 +96,6 @@ class ModerationLogger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        # Check if the message is from a user and not a bot
         if message.author.bot:
             return
 
@@ -112,7 +113,14 @@ class ModerationLogger(commands.Cog):
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{message.author.name}", icon_url=message.author.avatar_url)
         embed.description = f"Message deleted in {message.channel.mention}"
-        embed.add_field(name="Deleted Message", value=message.content, inline=False)
+        
+        # Truncate the message if it's longer than 1024 characters
+        if len(message.content) > 1024:
+            truncated_message = message.content[:1021] + "..."
+        else:
+            truncated_message = message.content
+
+        embed.add_field(name="Deleted Message", value=truncated_message, inline=False)
         embed.set_footer(text=f"UID: {message.author.id} • ID: {message.id} • {timestamp}")
 
         await logging_channel.send(embed=embed)

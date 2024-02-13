@@ -5,6 +5,8 @@ import io
 from io import BytesIO
 
 class ImageEditor(commands.Cog):
+    hidden = True
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -48,7 +50,7 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size> <save_name>")
+    @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size> <save_name>", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def resizeimage(self, ctx, size: int, save_name: str):
         if len(ctx.message.attachments) == 0:

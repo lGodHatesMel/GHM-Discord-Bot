@@ -14,6 +14,8 @@ with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
 class Moderation(commands.Cog):
+    hidden = True
+
     def __init__(self, bot):
         self.bot = bot
         self.database_file = 'Database/DBInfo.db'

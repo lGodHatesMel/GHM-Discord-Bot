@@ -10,10 +10,16 @@ class PalworldData(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     data_folder = 'Data'
+
     self.palworld_file = os.path.join(data_folder, 'palworlddex.json')
     with open(self.palworld_file) as f:
       self.palinfo = json.load(f)
     print(f"Loaded JSON data from {self.palworld_file}")
+
+    self.palitems_file = os.path.join(data_folder, 'PalworldItems.json')
+    with open(self.palitems_file) as f:
+      self.palitems = json.load(f)
+    print(f"Loaded JSON data from {self.palitems_file}")
 
   async def create_embed(self, pal_name):
     pal_data = None
@@ -46,6 +52,18 @@ class PalworldData(commands.Cog):
     for drop in pal_data["drops"]:
       drops_info += f"{drop}\n"
     embed.add_field(name="Drops", value=drops_info, inline=True)
+    
+    if "stats" in pal_data:
+      stats = pal_data["stats"]
+      stats_info = (
+          f"HP: {stats['hp']}  -  Food: {stats['food']}  -  Stamina: {stats['stamina']}\n"
+          f"Defense: {stats['defense']}  -  Support: {stats['support']}\n"
+          f"(Attack)\n"
+          f"Melee: {stats['attack']['melee']}  -  Range: {stats['attack']['ranged']}\n"
+          f"(Speed)\n"
+          f"Ride: {stats['speed']['ride']}  -  Run: {stats['speed']['run']}  -  Walk: {stats['speed']['walk']}"
+      )
+      embed.add_field(name="Stats", value=stats_info, inline=False)
 
     async with aiohttp.ClientSession() as session:
       async with session.get(pal_data["image"]) as resp:
@@ -75,17 +93,19 @@ class PalworldData(commands.Cog):
           if resp.status == 200:
             data = io.BytesIO(await resp.read())
             try:
-              map_image = discord.File(data, 'map_image.png')
+              img = Image.open(data)
+              img = img.resize((298, 200)) # width, Height
+              resized_data = io.BytesIO()
+              img.save(resized_data, format='PNG')
+              resized_data.seek(0)
+              map_image = discord.File(resized_data, 'map_image.png')
             except Exception as e:
               print(f"Error creating discord.File: {e}")
               map_image = None
 
     if map_image is not None:
       embed.set_image(url=f"attachment://{map_image.filename}")
-
-    # embed.add_field(name="Wiki Link", value=pal_data["wiki"], inline=False)
     embed.set_footer(text=pal_data["description"])
-
     return embed, image_file, map_image
 
   @commands.command()
@@ -97,6 +117,29 @@ class PalworldData(commands.Cog):
       await ctx.reply(embed=embed, files=files)
     else:
       await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
+
+  @commands.command()
+  async def palitem(self, ctx, *, item_name: str):
+      for item in self.palitems:
+          if item_name.lower() == item['name'].lower():
+              embed = discord.Embed(title=item['name'], color=discord.Color.random())
+              embed.set_thumbnail(url=f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Items/{item['image']}")
+              embed.add_field(name="Type", value=item['type'], inline=True)
+              embed.add_field(name="Gold", value=item['gold'], inline=True)
+              embed.add_field(name="Weight", value=item['weight'], inline=True)
+              await ctx.send(embed=embed)
+              return
+      await ctx.send(f"Item '{item_name}' not found.")
+
+  @commands.command()
+  async def palitemtype(self, ctx, *, type_name: str):
+      matching_items = [item['name'] for item in self.palitems if type_name.lower() == item['type'].lower()]
+
+      if matching_items:
+          embed = discord.Embed(title=f"Items of type '{type_name}'", description="\n".join(matching_items), color=discord.Color.random())
+          await ctx.send(embed=embed)
+      else:
+          await ctx.send(f"No items of type '{type_name}' found.")
 
 def setup(bot):
   bot.add_cog(PalworldData(bot))

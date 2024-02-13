@@ -5,6 +5,8 @@ import os
 import sqlite3
 
 class CustomCommands(commands.Cog):
+    hidden = True
+
     def __init__(self, bot):
         self.bot = bot
         self.database_folder = 'Database'
