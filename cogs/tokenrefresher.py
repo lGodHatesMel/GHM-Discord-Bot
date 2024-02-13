@@ -1,17 +1,17 @@
 import requests
-import time
 import json
 import discord
 from discord.ext import commands, tasks
+import utils
 
 class TokenRefresher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.token_config = self.LoadTokenConfig()
-        self.refresh_token.start()
+        self.RefreshToken.start()
 
     def cog_unload(self):
-        self.refresh_token.cancel()
+        self.RefreshToken.cancel()
 
     def LoadTokenConfig(self):
         with open('token-config.json', 'r') as file:
@@ -23,7 +23,7 @@ class TokenRefresher(commands.Cog):
         return config.get('token_refresher_enabled', False)
 
     @tasks.loop(hours=3)
-    async def refresh_token(self):
+    async def RefreshToken(self):
         if not self.RunTokenRefresher():
             return
 
@@ -45,13 +45,16 @@ class TokenRefresher(commands.Cog):
         if response.status_code == 200:
             data = response.json()
             access_token = data['access_token']
-            print(f'Access token refreshed: {access_token}')
+            print(f"=====================================================")
+            print(f"======= Access Token Refresh @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')} =======")
+            print(f"==== New Token: ({access_token}) ====")
+            print(f"=====================================================")
         else:
             print(f'Failed to refresh access token. Status code: {response.status_code}')
             print(response.text)
 
-    @refresh_token.before_loop
-    async def before_refresh_token(self):
+    @RefreshToken.before_loop
+    async def BeforeRefreshToken(self):
         await self.bot.wait_until_ready()
 
 def setup(bot):

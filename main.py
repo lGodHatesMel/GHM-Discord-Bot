@@ -118,17 +118,17 @@ for folder in folders:
 @bot.event
 async def on_ready():
     joined_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
-    print(f'=======================================================')
+    print(f'=====================================================')
     print(f'===   Bot Name: {bot.user.name}')
     print(f'===   Discord Server: {bot.guilds[0].name}')
     print(f'===   Bot UID: {bot.user.id}')
     print(f'===   Joined Server at: {joined_time}')
-    print(f'=======================================================')
+    print(f'=====================================================')
 
     print(f'Enabled Intents:')
     for intent, enabled in bot.intents:
         print(f'{intent}: {"Enabled" if enabled else "Disabled"}')
-    print(f'===========================================================')
+    print(f'=====================================================')
 
     stream_name = config['stream_name']
     stream_url = config['stream_url']
