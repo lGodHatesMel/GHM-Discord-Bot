@@ -1,9 +1,44 @@
 import os
 import discord
+from discord import Embed
 from discord.ext import commands
 import json
 import utils
 import traceback
+
+class EmbedHelpCommand(commands.HelpCommand):
+    def __init__(self):
+        super().__init__()
+
+    def get_command_signature(self, command):
+        if command.help:
+            return '`!{} {}`'.format(command.qualified_name, command.help)
+        else:
+            return '`!{}`'.format(command.qualified_name)
+
+    async def send_bot_help(self, mapping):
+        with open('config.json') as f:
+            config = json.load(f)
+
+        embed = Embed(title="Server Bot Commands", color=discord.Color.blue())
+        for cog, commands in mapping.items():
+            if getattr(cog, "hidden", False):
+                continue
+            commands = [c for c in commands if not c.hidden]
+            command_signatures = [self.get_command_signature(c) for c in commands]
+            if command_signatures:
+                cog_name = getattr(cog, "qualified_name", "Other Commands")
+                signatures = "\n".join(command_signatures)
+                # Split signatures into chunks of 1024 characters or less
+                for i in range(0, len(signatures), 1024):
+                    chunk = signatures[i:i+1024]
+                    embed.add_field(name=f"{cog_name}", value=chunk, inline=False)
+
+        logo_url = config['logo_url']
+        embed.set_thumbnail(url=logo_url)
+        channel = self.get_destination()
+        await channel.send(embed=embed)
+
 
 intents = discord.Intents.default()
 intents.members = True
@@ -62,8 +97,12 @@ def load_or_create_config():
 
 config = load_or_create_config()
 
-bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True, intents=intents, owner_ids=[config['owner_id']])
+bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True, intents=intents, owner_ids=[config['owner_id']], help_command=EmbedHelpCommand())
 bot.config = config
+
+@bot.command(name='commands')
+async def _commands(ctx, *args):
+    await bot.get_command('help')(ctx, *args)
 
 folders = ['cogs']
 for folder in folders:

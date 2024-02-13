@@ -7,7 +7,9 @@ import sqlite3
 class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = sqlite3.connect('rules.db')
+        database_folder = 'Database'
+        self.db_file = os.path.join(database_folder, 'rules.db')
+        self.conn = sqlite3.connect(self.db_file)
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS rules
                     (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
@@ -128,8 +130,8 @@ class Rules(commands.Cog):
             msg = "\n\n".join([entry[1], entry[2]])
         await ctx.send("```\n{}\n```".format(msg))
 
-    @commands.command(aliases=['rule', 'showrule'], help='<rules_id>')
-    async def viewrule(self, ctx, rules_id: int = 0):
+    @commands.command(aliases=['veiwrule', 'showrule'], help='<rules id>')
+    async def rule(self, ctx, rules_id: int = 0):
         if rules_id == 0:
             return await ctx.send("⚠ Rule entry ID is required.")
         self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))

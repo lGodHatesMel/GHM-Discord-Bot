@@ -24,7 +24,7 @@ class Games(commands.Cog):
         self.bot = bot
         self.games = {}
 
-    @commands.command(aliases=["dice", "rolldice"], help="<sides> <num_rolls>")
+    @commands.command(aliases=["dice", "rolldice"], help="<sides> <# of rolls>")
     async def roll(self, ctx, sides: int, num_rolls: int):
         if sides < 2 or num_rolls < 1:
             await ctx.send("Invalid input. Please use !roll <sides> <num_rolls>.")
@@ -74,7 +74,7 @@ class Games(commands.Cog):
         await ctx.send(embed=embed, file=discord.File(image_buffer, 'gimmighoul_coin.png'))
 
     ## Hangman
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, hidden=True)
     async def hangman(self, ctx):
         # Check if already playing
         if ctx.author.id in self.games:

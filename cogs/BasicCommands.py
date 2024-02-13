@@ -127,7 +127,7 @@ class BasicCommands(commands.Cog):
             await pollMessage.add_reaction(emojiOptions[i])
 
 
-    @commands.command(help='translate <TargetLanguage> <TextToTranslate>')
+    @commands.command(help='<Target Language> <Text To Translate>')
     async def translate(self, ctx, TargetLanguage, *, TextToTranslate):
         try:
             DetectedLanguage = self.translator.detect(TextToTranslate)

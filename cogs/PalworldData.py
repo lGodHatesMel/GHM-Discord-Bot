@@ -56,12 +56,12 @@ class PalworldData(commands.Cog):
     if "stats" in pal_data:
       stats = pal_data["stats"]
       stats_info = (
-          f"HP: {stats['hp']}  -  Food: {stats['food']}  -  Stamina: {stats['stamina']}\n"
-          f"Defense: {stats['defense']}  -  Support: {stats['support']}\n"
-          f"(Attack)\n"
-          f"Melee: {stats['attack']['melee']}  -  Range: {stats['attack']['ranged']}\n"
-          f"(Speed)\n"
-          f"Ride: {stats['speed']['ride']}  -  Run: {stats['speed']['run']}  -  Walk: {stats['speed']['walk']}"
+        f"HP: {stats['hp']}  -  Food: {stats['food']}  -  Stamina: {stats['stamina']}\n"
+        f"Defense: {stats['defense']}  -  Support: {stats['support']}\n"
+        f"(Attack)\n"
+        f"Melee: {stats['attack']['melee']}  -  Range: {stats['attack']['ranged']}\n"
+        f"(Speed)\n"
+        f"Ride: {stats['speed']['ride']}  -  Run: {stats['speed']['run']}  -  Walk: {stats['speed']['walk']}"
       )
       embed.add_field(name="Stats", value=stats_info, inline=False)
 
@@ -108,7 +108,7 @@ class PalworldData(commands.Cog):
     embed.set_footer(text=pal_data["description"])
     return embed, image_file, map_image
 
-  @commands.command()
+  @commands.command(help="<pal name>")
   async def palinfo(self, ctx, *pal_name):
     pal_name = ' '.join(pal_name)
     embed, image_file, map_image = await self.create_embed(pal_name)
@@ -118,28 +118,32 @@ class PalworldData(commands.Cog):
     else:
       await ctx.reply(f"Sorry, I could not find any information about {pal_name}.")
 
-  @commands.command()
+  @commands.command(help="<item name>")
   async def palitem(self, ctx, *, item_name: str):
-      for item in self.palitems:
-          if item_name.lower() == item['name'].lower():
-              embed = discord.Embed(title=item['name'], color=discord.Color.random())
-              embed.set_thumbnail(url=f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Items/{item['image']}")
-              embed.add_field(name="Type", value=item['type'], inline=True)
-              embed.add_field(name="Gold", value=item['gold'], inline=True)
-              embed.add_field(name="Weight", value=item['weight'], inline=True)
-              await ctx.send(embed=embed)
-              return
-      await ctx.send(f"Item '{item_name}' not found.")
+    for item in self.palitems:
+      if item_name.lower() == item['name'].lower():
+        embed = discord.Embed(title=item['name'], color=discord.Color.random())
+        embed.set_thumbnail(url=f"https://github.com/lGodHatesMel/Palworld-Data/raw/main/Images/Items/{item['image']}")
+        embed.add_field(name="Type", value=item['type'], inline=True)
+        embed.add_field(name="Gold", value=item['gold'], inline=True)
+        embed.add_field(name="Weight", value=item['weight'], inline=True)
+        await ctx.send(embed=embed)
+        return
+    await ctx.send(f"Item '{item_name}' not found.")
 
-  @commands.command()
+  @commands.command(help="<type name>")
   async def palitemtype(self, ctx, *, type_name: str):
-      matching_items = [item['name'] for item in self.palitems if type_name.lower() == item['type'].lower()]
+    MatchItems = [item['name'] for item in self.palitems if type_name.lower() == item['type'].lower()]
 
-      if matching_items:
-          embed = discord.Embed(title=f"Items of type '{type_name}'", description="\n".join(matching_items), color=discord.Color.random())
-          await ctx.send(embed=embed)
-      else:
-          await ctx.send(f"No items of type '{type_name}' found.")
+    if MatchItems:
+      embed = discord.Embed(title=f"Items of type '{type_name}'", color=discord.Color.random())
+      Item_str = "\n".join(MatchItems)
+      for i in range(0, len(Item_str), 1024):
+        chunk = Item_str[i:i+1024]
+        embed.add_field(name=f"Items (part {i//1024 + 1})", value=chunk, inline=False)
+      await ctx.send(embed=embed)
+    else:
+      await ctx.send(f"No items of type '{type_name}' found.")
 
 def setup(bot):
   bot.add_cog(PalworldData(bot))

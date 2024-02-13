@@ -162,8 +162,8 @@ class FactsQuestions(commands.Cog):
         await ctx.send("✅ Alias removed.")
         self.bot.loop.create_task(self.update_faq(ctx))
 
-    @commands.command(aliases=['aliases'], help='<faqname> [This will give you all the aliases to that faq]')
-    async def listaliases(self, ctx, faq_name: str = ""):
+    @commands.command(aliases=['listaliases'], help='<faq aliases name>')
+    async def faqaliases(self, ctx, faq_name: str = ""):
         if not faq_name:
             return await ctx.send("⚠ FAQ entry name is required.")
         aliases = []
@@ -242,7 +242,7 @@ class FactsQuestions(commands.Cog):
             msg = "\n\n".join([entry[1], entry[2]])
         await ctx.send("```\n{}\n```".format(msg))
 
-    @commands.command(aliases=['faqview'], help='<faq_name> or <faq_alias_name>')
+    @commands.command(aliases=['faqview'], help='<faq name> or <faq alias name>')
     async def faq(self, ctx, faq_req: str):
         # Check if faq_req is an alias
         if faq_req in self.faq_aliases:

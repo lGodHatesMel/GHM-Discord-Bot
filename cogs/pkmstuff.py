@@ -38,7 +38,7 @@ class PKMStuff(commands.Cog):
             print(e)
             await ctx.send("An error occurred while fetching Pokémon facts.")
 
-    @commands.command(aliases=['showdownset'], help='Usage: !showdown [Game: sv, swsh, pla, bdsp] <Pokemon Name>')
+    @commands.command(aliases=['showdownset'], help='[Game: sv, swsh, pla, bdsp] <Pokemon Name>')
     async def showdown(self, ctx, game, PokemonName):
         try:
             game = game.lower()
