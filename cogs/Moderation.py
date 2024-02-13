@@ -39,26 +39,6 @@ class Moderation(commands.Cog):
 
         return conn
 
-    # def LoadUserData(self):
-    #     cursor = self.conn.cursor()
-    #     cursor.execute("SELECT * FROM UserInfo")
-    #     rows = cursor.fetchall()
-
-    #     user_info = {}
-    #     for row in rows:
-    #         user_info[row[0]] = json.loads(row[1])
-
-    #     return user_info
-
-    # def SaveUserData(self):
-    #     cursor = self.conn.cursor()
-    #     for uid, data in self.user_info.items():
-    #         data_str = json.dumps(data)
-    #         cursor.execute(f"REPLACE INTO UserInfo VALUES (?, ?)", (uid, data_str))
-
-    #     self.conn.commit()
-    #     print("User info saved successfully.")
-
     async def WelcomeChannelID(self):
         with open('config.json', 'r') as config_file:
             config_data = json.load(config_file)
@@ -68,6 +48,7 @@ class Moderation(commands.Cog):
     async def on_member_update(self, before, after):
         if before.roles != after.roles:
             uid = str(after.id)
+            username = after.name
             cursor = self.conn.cursor()
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
             user = cursor.fetchone()
@@ -76,7 +57,7 @@ class Moderation(commands.Cog):
                 user_info["info"]["roles"] = [role.name for role in after.roles]
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
-            print(f"Updated user {uid}")
+            print(f"Updated user {username} : {uid}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -105,13 +86,14 @@ class Moderation(commands.Cog):
             await ctx.send(f"Updated username to {new_username}.")
         else:
             await ctx.send("User not found in the database.")
-        print(f"Updated user {uid}")
+        print(f"Updated {new_username} : {uid} to the database")
 
     @commands.Cog.listener()
     async def on_user_update(self, before, after):
         if before.avatar_url != after.avatar_url:
             # If the user's avatar URL has changed
             uid = str(after.id)
+            username = after.name
             cursor = self.conn.cursor()
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
             user = cursor.fetchone()
@@ -120,9 +102,8 @@ class Moderation(commands.Cog):
                 user_info["info"]["avatar_url"] = str(after.avatar_url)
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
-            print(f"Updated user {uid}")
-            
-    
+            print(f"Updated user {username} : {uid}")
+
     async def WelcomeChannelID(self):
         with open('config.json', 'r') as config_file:
             config_data = json.load(config_file)
@@ -191,6 +172,7 @@ class Moderation(commands.Cog):
                     for ban_info in user_info["moderation"]["banned"]:
                         await utils.log_mod_action(server, 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
                 print(f"Added new user {uid}")
+                print(f"Added new user ({member.name} : {uid}) to the database")
 
     # Good to use if you are using this after already having alot of members in your server
     @commands.command(hidden=True)
@@ -222,7 +204,7 @@ class Moderation(commands.Cog):
                     }
                 }
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-            print(f"Updated user's: {uid}")
+            print(f"Adding ({member.name} : {uid}) to the database")
 
         self.conn.commit()
         await ctx.send("Database updated with all server members!")
@@ -251,7 +233,7 @@ class Moderation(commands.Cog):
             embed.set_footer(text=member.name)
 
             await channel.send(embed=embed)
-            print(f"{member.name} left the server as the {member_number}.")
+            print(f"({member.name} : {uid}) left the server as the {member_number}.")
 
             uid = str(member.id)
             cursor = self.conn.cursor()
@@ -288,7 +270,7 @@ class Moderation(commands.Cog):
     async def forcesavedb(self, ctx):
         self.conn.commit()
         await ctx.send("Database saved successfully!")
-        print(f"Forced saved DB")
+        print(f"Forced saved database")
 
     @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -387,7 +369,7 @@ class Moderation(commands.Cog):
                 await ctx.send("User not found in the server.")
         else:
             await ctx.send(f"User with ID {uid} already exists in the database.")
-        print(f"Added user {uid}")
+        print(f"Adding ({member.name} : {uid}) to the Database")
 
     @commands.command(help='<UID> <Note>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -422,7 +404,7 @@ class Moderation(commands.Cog):
                 await ctx.send("User not found in the server.")
                 return
 
-        user_info = json.loads(user[1])
+        user_info = json.loads(user_row[1])
         notes = user_info["moderation"]["notes"]
         timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
         note_number = 1
@@ -439,8 +421,8 @@ class Moderation(commands.Cog):
 
         cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
         self.conn.commit()
-        await ctx.send(f"📝 **Note Added**: {ctx.author.name} added a note for {user.mention} (#{note_number})")
-        await utils.LogModAction(ctx.guild, 'Note', user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
+        await ctx.send(f"📝 **Note Added**: {ctx.author.name} added a note for {discord_user.mention} (#{note_number})")
+        await utils.LogModAction(ctx.guild, 'Note', discord_user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
 
     @commands.command(aliases=["removenote", "deletenote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
