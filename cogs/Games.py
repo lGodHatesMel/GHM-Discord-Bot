@@ -7,8 +7,16 @@ import random
 import os
 
 hangmanwords = [
-        "python", "discord", "programming", "hangman", "game", "community", "pokemon", "gamefreak", "palworld",
-        "nintendo", "playstation", "goosebumps"
+    # Random Words
+    "discord","hangman", "games", "community","goosebumps",
+    # Games
+    "minecraft", "fortnite", "zelda", "mario", "cyberpunk", "overwatch", "skyrim", "roblox", "valorant", "amongus",
+    "nintendo", "playstation",  "pokemon", "gamefreak", "palworld",
+    # Sports
+    "football", "basketball", "baseball", "soccer", "tennis", "cricket", "hockey", "golf", "volleyball", "rugby",
+    # Anime
+    "naruto", "onepiece", "bleach", "deathnote", "attackontitan", "dragonball", "myheroacademia", "tokyoghoul",
+    "demonslayer", "hunterxhunter"
 ]
 
 class Games(commands.Cog):
