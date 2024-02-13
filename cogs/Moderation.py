@@ -232,9 +232,10 @@ class Moderation(commands.Cog):
             embed.set_footer(text=member.name)
 
             await channel.send(embed=embed)
-            print(f"({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
 
             uid = str(member.id)
+            print(f"({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+
             cursor = self.conn.cursor()
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
             user = cursor.fetchone()
@@ -747,8 +748,6 @@ class Moderation(commands.Cog):
             self.conn.commit()
 
             await ctx.guild.ban(discord_user, reason=reason)
-
-            timestamp - utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
 
             embed = discord.Embed(
                 title="Ban",
