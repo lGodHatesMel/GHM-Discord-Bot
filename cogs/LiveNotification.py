@@ -34,11 +34,16 @@ class LiveNotification(commands.Cog):
                     if data['data'] and not self.is_live:
                         self.is_live = True
                         user = await self.bot.fetch_user(self.config['owner_id'])
+                        game_id = data['data'][0]['game_id']
+                        title = data['data'][0]['title']
+                        game_name = await self.get_game_name(game_id, headers)
                         await self.LiveEmbedNotification(
                             self.bot.get_channel(self.config['stream_channel_id']),
                             f'Hey everyone! {user.mention} is now live on Twitch!',
                             f'https://www.twitch.tv/{self.config["twitch_username"]}',
-                            self.twitchIcon
+                            self.twitchIcon,
+                            game_name,
+                            title
                         )
                     elif not data['data']:
                         self.is_live = False
@@ -73,23 +78,43 @@ class LiveNotification(commands.Cog):
                     data = await response.json()
                     if data['data']:
                         user = await self.bot.fetch_user(self.config['owner_id'])
+                        game_id = data['data'][0]['game_id']
+                        title = data['data'][0]['title']
+                        game_name = await self.get_game_name(game_id, headers)
                         await self.LiveEmbedNotification(
                             ctx,
                             f'Hey everyone! {user.mention} is now live on Twitch!',
                             f'https://www.twitch.tv/{self.config["twitch_username"]}',
-                            self.twitchIcon
+                            self.twitchIcon,
+                            game_name,
+                            title
                         )
 
-    async def LiveEmbedNotification(self, ctx, message, link, icon):
-        link = f'https://www.twitch.tv/{self.config["twitch_username"]}'
+    async def get_game_name(self, game_id, headers):
+        TwitchAPI = f'https://api.twitch.tv/helix/games?id={game_id}'
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(TwitchAPI, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data['data']:
+                        return data['data'][0]['name']
+        return None
+
+    async def LiveEmbedNotification(self, ctx, message, streamlink, icon, game_name, title):
+        streamlink = f'https://www.twitch.tv/{self.config["twitch_username"]}'
         embed = discord.Embed(
-            title='Twitch Live Notification',
+            title='Twitch Live Stream Notification',
             description=message,
             color=discord.Color.green()
         )
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
         embed.set_thumbnail(url=icon)
-        embed.add_field(name='Watch Now', value=f'[Click Here / Stream Link]({link})')
+        embed.add_field(name='Stream Title', value=title, inline=False)
+        embed.add_field(name='Game', value=game_name, inline=True)
+        embed.add_field(name='Watch Now', value=f'[Stream Link]({streamlink})', inline=True)
+        # embed.add_field(name='Message', value=f'[Message Here]', inline=False)
+
         await ctx.send(embed=embed)
 
     @commands.command()
