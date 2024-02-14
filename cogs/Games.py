@@ -87,10 +87,11 @@ class Games(commands.Cog):
         max_guesses = 6
         self.games[ctx.author.id] = {"word": word, "hidden_word": hidden_word, "wrong_guesses": wrong_guesses, "max_guesses": max_guesses}
 
-        embed = discord.Embed(title="Hangman has begun!", color=discord.Color.blue())
+        embed = discord.Embed(title=f"{ctx.author.name}'s Hangman game has begun!", color=discord.Color.blue())
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed.add_field(name="Word", value=' '.join(hidden_word), inline=False)
         embed.add_field(name="Wrong guesses", value=wrong_guesses, inline=False)
-        embed.add_field(name="Guesses remaining", value=max_guesses, inline=False)
+        embed.set_footer(text=f"Guesses remaining: {max_guesses}")
         await ctx.send(embed=embed)
 
         await self.play_turn(ctx, max_guesses)
@@ -126,10 +127,11 @@ class Games(commands.Cog):
                 # Add spaces between the characters
                 spaced_word = ' '.join(self.games[ctx.author.id]['hidden_word'])
 
-                embed = discord.Embed(title="Hangman", color=discord.Color.blue())
+                embed = discord.Embed(title=f"{ctx.author.name}'s Hangman game", color=discord.Color.blue())
+                embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
                 embed.add_field(name="Word", value=spaced_word, inline=False)
                 embed.add_field(name="Wrong guesses", value=', '.join(self.games[ctx.author.id]['wrong_guesses']), inline=False)
-                embed.add_field(name="Guesses remaining", value=remaining_guesses, inline=False)
+                embed.set_footer(text=f"Guesses remaining: {remaining_guesses}")
                 embed_msg = await ctx.send(embed=embed)
 
         # Game over
@@ -137,10 +139,12 @@ class Games(commands.Cog):
             await embed_msg.delete()
 
         if "_" not in self.games[ctx.author.id]["hidden_word"]:
-            embed = discord.Embed(title="Congratulations!", description=f"You guessed the word: {self.games[ctx.author.id]['word']}", color=discord.Color.green())
+            embed = discord.Embed(title="Congratulations!", description=f"{ctx.author.name}, you guessed the word: {self.games[ctx.author.id]['word']}", color=discord.Color.green())
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(title="Game Over!", description=f"You ran out of guesses! The word was: {self.games[ctx.author.id]['word']}", color=discord.Color.red())
+            embed = discord.Embed(title="Game Over!", description=f"{ctx.author.name}, you ran out of guesses! The word was: {self.games[ctx.author.id]['word']}", color=discord.Color.red())
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
 def setup(bot):

@@ -10,40 +10,19 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-# Not used 
-# Function to customize command visibility based on roles
-# def is_visible(allowed_roles):
-#     def predicate(ctx):
-#         async def check(ctx):
-#             if ctx.author.id == ctx.guild.owner_id:
-#                 return True
-
-#             user_roles = ctx.author.roles
-#             for role_name in allowed_roles:
-#                 required_role = discord.utils.get(ctx.guild.roles, name=role_name)
-#                 if required_role and required_role in user_roles:
-#                     return True
-
-#             await ctx.send(f"You don't have the required roles ({', '.join(allowed_roles)}) or higher to use this command.")
-#             return False
-
-#         return commands.check(check)
-
-#     return predicate
-
 async def LogModAction(guild, action, target, reason, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
     if not config:
         raise ValueError("config is required for LogModAction")
 
-    mod_logs_channel_id = config.get('mod_logs_channel_id')
+    ModLogChannelID = config.get('mod_logs_channel_id')
 
-    if not mod_logs_channel_id:
+    if not ModLogChannelID:
         raise ValueError("mod_logs_channel_id is not defined in the config")
 
-    mod_logs_channel = guild.get_channel(mod_logs_channel_id)
+    ModLogChannel = guild.get_channel(ModLogChannelID)
 
-    if not mod_logs_channel:
-        raise ValueError(f"Mod logs channel with ID {mod_logs_channel_id} not found")
+    if not ModLogChannel:
+        raise ValueError(f"Mod logs channel with ID {ModLogChannelID} not found")
 
     embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
 
@@ -55,8 +34,8 @@ async def LogModAction(guild, action, target, reason, warning_number=None, issue
         timestamp=timestamp
     )
 
-    embed.add_field(name="Action", value=action, inline=True)
-    embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=True)
+    embed.add_field(name="Action", value=action, inline=False)
+    embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
 
     if action == 'Warning':
@@ -79,7 +58,7 @@ async def LogModAction(guild, action, target, reason, warning_number=None, issue
                 inline=False
             )
 
-    await mod_logs_channel.send(embed=embed)
+    await ModLogChannel.send(embed=embed)
 
 # Function to format set details with line breaks
 def FormatedSetDetails(SetDetails):

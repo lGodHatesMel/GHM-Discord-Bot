@@ -55,8 +55,11 @@ class LiveNotification(commands.Cog):
 
     @commands.command()
     async def islive(self, ctx):
-        await self.TwitchLiveNotification()
-        # await self.YoutubeLiveNotification()
+        try:
+            await self.TwitchLiveNotification()
+            # await self.YoutubeLiveNotification()
+        except Exception as e:
+            await ctx.send(f'An error occurred: {e}')
 
 def setup(bot):
     bot.add_cog(LiveNotification(bot))
