@@ -84,7 +84,7 @@ class Games(commands.Cog):
         await ctx.send(embed=embed, file=discord.File(image_buffer, 'gimmighoul_coin.png'))
 
     ## Hangman
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(pass_context=True)
     async def hangman(self, ctx):
         # Check if already playing
         if ctx.author.id in self.games:
@@ -159,6 +159,8 @@ class Games(commands.Cog):
             embed = discord.Embed(title="Game Over!", description=f"{ctx.author.name}, you ran out of guesses! The word was: {self.games[ctx.author.id]['word']}", color=discord.Color.red())
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
+
+        del self.games[ctx.author.id]
 
 def setup(bot):
     bot.add_cog(Games(bot))

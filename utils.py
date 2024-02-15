@@ -10,17 +10,15 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-async def LogModAction(guild, action, target, reason, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
+async def LogModAction(guild, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
     if not config:
         raise ValueError("config is required for LogModAction")
 
     ModLogChannelID = config.get('mod_logs_channel_id')
-
     if not ModLogChannelID:
         raise ValueError("mod_logs_channel_id is not defined in the config")
 
     ModLogChannel = guild.get_channel(ModLogChannelID)
-
     if not ModLogChannel:
         raise ValueError(f"Mod logs channel with ID {ModLogChannelID} not found")
 
@@ -28,8 +26,19 @@ async def LogModAction(guild, action, target, reason, warning_number=None, issue
 
     timestamp = GetLocalTime()
 
+    emojis = {
+        "Kick": "👢",
+        "Ban": "🔨",
+        "Warning": "⚠️",
+        "Note": "📝",
+        "Database": "💾",
+        "Edit": "✏️",
+        "Deletion": "🗑️",
+    }
+
+    emoji = emojis.get(action, "")
     embed = discord.Embed(
-        title=f"{action} Log",
+        title=f"{emoji} {action} Log",
         color=embed_color,
         timestamp=timestamp
     )
@@ -37,6 +46,9 @@ async def LogModAction(guild, action, target, reason, warning_number=None, issue
     embed.add_field(name="Action", value=action, inline=False)
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
+
+    if edited_content:
+        embed.add_field(name="Edited Content", value=edited_content, inline=False)
 
     if action == 'Warning':
         if warning_number:

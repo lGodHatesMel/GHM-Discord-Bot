@@ -763,6 +763,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
+    @commands.command(help='<UID> <Reason>')
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, discord_user: discord.Object, *, reason: str = None):
         try:

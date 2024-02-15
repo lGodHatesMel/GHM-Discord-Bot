@@ -5,6 +5,9 @@ from discord.ext import commands
 import json
 import utils
 import traceback
+# import logging
+
+# logging.basicConfig(level=logging.INFO)
 
 class EmbedHelpCommand(commands.HelpCommand):
     def __init__(self):
@@ -20,11 +23,13 @@ class EmbedHelpCommand(commands.HelpCommand):
         with open('config.json') as f:
             config = json.load(f)
 
+        exclude_commands = ['staffcommands', 'commands', 'help', 'ping', 'botping']
+
         embed = Embed(title="Server Bot Commands", color=discord.Color.blue())
         for cog, commands in mapping.items():
             if getattr(cog, "hidden", False):
                 continue
-            commands = [c for c in commands if not c.hidden]
+            commands = [c for c in commands if not c.hidden and c.name not in exclude_commands]
             command_signatures = [self.get_command_signature(c) for c in commands]
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "Other Commands")
@@ -38,7 +43,6 @@ class EmbedHelpCommand(commands.HelpCommand):
         embed.set_thumbnail(url=logo_url)
         channel = self.get_destination()
         await channel.send(embed=embed)
-
 
 intents = discord.Intents.default()
 intents.members = True
@@ -97,7 +101,14 @@ def load_or_create_config():
 
 config = load_or_create_config()
 
-bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True, intents=intents, owner_ids=[config['owner_id']], help_command=EmbedHelpCommand())
+bot = commands.Bot(
+    command_prefix=config['prefix'],
+    case_insensitive=True,
+    intents=intents,
+    owner_ids=[config['owner_id']],
+    help_command=EmbedHelpCommand(),
+    description="Custom bot for our Discord server."
+)
 bot.config = config
 
 @bot.command(name='commands')
@@ -136,12 +147,22 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, error):
+    error = getattr(error, 'original', error)
+
     if isinstance(error, commands.CommandNotFound):
         return
     elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.MissingAnyRole):
         await ctx.send('You do not have the correct permissions or roles to run this command.')
     elif isinstance(error, commands.NotOwner):
         await ctx.send('Only the owner of this bot can run this command.')
+    elif isinstance(error, commands.CheckFailure):
+        await ctx.send(f"{ctx.message.author.mention} You don't have permission to use this command.")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"{ctx.message.author.mention} You are missing required arguments.")
+    elif isinstance(error, commands.BotMissingPermissions):
+        await ctx.send("⚠ I don't have the permissions to do this.")
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send(f"{ctx.message.author.mention} One or more arguments are invalid.")
     else:
         tb_lines = traceback.format_exception(type(error), error, error.__traceback__)
         tb_text = ''.join(tb_lines)

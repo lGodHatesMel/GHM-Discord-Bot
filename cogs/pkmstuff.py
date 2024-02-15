@@ -3,26 +3,32 @@ import discord
 from discord.ext import commands
 import random
 import requests
-import io
 import utils
+import logging
+
+ValidGames = ['sv', 'swsh', 'pla', 'bdsp']
+ImageLink = "https://api.github.com/repos/lGodHatesMel/Pokemon-Data/contents/PokemonImages/Sprites/AlternateArt"
 
 class PKMStuff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['pkf', 'funfact'], help='Get a random Pokémon fact.')
+    def GetFilePath(self, game, PokemonName):
+        """Validate the game and get the file path for the Pokemon sets."""
+        game = game.lower()
+
+        if game not in ValidGames:
+            raise ValueError(f"Invalid game '{game}'. Valid games are: {', '.join(ValidGames)}")
+
+        PokemonName = PokemonName.lower()
+        SetsFolder = os.path.join('sets', game)
+        return os.path.join(SetsFolder, f"{PokemonName}.txt")
+
+    @commands.command(help='Get a random Pokémon fact.')
     async def pokefacts(self, ctx):
         try:
             RandomFact = utils.RandomPKMFacts()
-            GithubAPILink = "https://api.github.com/repos/lGodHatesMel/Pokemon-Data/contents/PokemonImages/Sprites/AlternateArt"
-
-            embed = discord.Embed(
-                title="**__Random Pokémon Fact__**",
-                description=RandomFact,
-                color=discord.Color.random()
-            )
-
-            response = requests.get(GithubAPILink)
+            response = requests.get(ImageLink)
             if response.status_code == 200:
                 data = response.json()
                 image_filenames = [file['name'] for file in data if file['type'] == 'file' and file['name'].endswith('.png')]
@@ -30,28 +36,23 @@ class PKMStuff(commands.Cog):
                 RandomImage = random.choice(image_filenames)
                 ImageURL = f"https://raw.githubusercontent.com/lGodHatesMel/Pokemon-Data/main/PokemonImages/Sprites/AlternateArt/{RandomImage}"
 
+                embed = discord.Embed(
+                    title="**__Random Pokémon Fact__**",
+                    description=RandomFact,
+                    color=discord.Color.random()
+                )
                 embed.set_image(url=ImageURL)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send("Failed to fetch file list from GitHub.")
         except Exception as e:
-            print(e)
+            logging.error(e)
             await ctx.send("An error occurred while fetching Pokémon facts.")
 
-    @commands.command(aliases=['showdownset'], help='[Game: sv, swsh, pla, bdsp] <Pokemon Name>')
+    @commands.command(aliases=['showdownset'], help='<Game: sv, swsh, pla, bdsp> <Pokemon Name>')
     async def showdown(self, ctx, game, PokemonName):
         try:
-            game = game.lower()
-            ValidGames = ['sv', 'swsh', 'pla', 'bdsp']
-
-            if game not in ValidGames:
-                await ctx.send(f"Invalid game '{game}'. Valid games are: {', '.join(ValidGames)}")
-                return
-
-            PokemonName = PokemonName.lower()
-            SetsFolder = os.path.join('sets', game)
-            file_path = os.path.join(SetsFolder, f"{PokemonName}.txt")
-
+            file_path = self.GetFilePath(game, PokemonName)
             if not os.path.exists(file_path):
                 await ctx.send(f"No sets found for {PokemonName} [{game}].")
                 return
@@ -71,33 +72,31 @@ class PKMStuff(commands.Cog):
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f"No sets found for {PokemonName.capitalize()} [{game.upper()}].")
+        except ValueError as e:
+            await ctx.send(str(e))
         except Exception as e:
-            print(e)
+            logging.error(e)
             await ctx.send("An error occurred while fetching Pokémon sets.")
 
-    @commands.command(help='Game: <sv, swsh, pla, bdsp> <Pokemon Name> <ShowdownSet Details>', hidden=True)
+    @commands.command(
+        description='Add a new Pokémon set. This command is only available to users with the Helper, Moderator, or Admin role. The game must be one of the following: sv, swsh, pla, bdsp. The Pokémon name should be the name of the Pokémon. The ShowdownSet Details should be the details of the set in Showdown format.',
+        help='<Game: sv, swsh, pla, bdsp> <Pokemon Name> <ShowdownSet Details>',
+        hidden=True
+    )
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def addset(self, ctx, game, PokemonName, *SetDetails):
         try:
-            game = game.lower()
-            ValidGames = ['sv', 'swsh', 'pla', 'bdsp']
-
-            if game not in ValidGames:
-                await ctx.send(f"Invalid game '{game}'. Valid games are: {', '.join(ValidGames)}")
-                return
-
-            PokemonName = PokemonName.lower()
-            SetsFolder = os.path.join('sets', game)
-            file_path = os.path.join(SetsFolder, f"{PokemonName}.txt")
+            file_path = self.GetFilePath(game, PokemonName)
             FormatedSet = utils.FormatedSetDetails(f"{' '.join(SetDetails)}")
 
             with open(file_path, 'a') as file:
                 file.write(f"\n===\n{FormatedSet}")
 
             await ctx.send(f"New set added for {PokemonName.capitalize()} [{game.upper()}].")
-
+        except ValueError as e:
+            await ctx.send(str(e))
         except Exception as e:
-            print(e)
+            logging.error(e)
             await ctx.send("An error occurred while adding the set.")
 
 def setup(bot):

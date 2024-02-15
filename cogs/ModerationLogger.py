@@ -9,7 +9,8 @@ class ModerationLogger(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.delete_words = [
+        self.AllowedRoles = ['Admin', 'Moderator', 'Helper', "Bypass"]
+        self.DeleteWords = [
             "t.me", "Pedophile", "kys",
 
             "porn", "sex", "gay", "Homosexual", "Molest", "masterbate",
@@ -24,13 +25,9 @@ class ModerationLogger(commands.Cog):
             # "trigger2": "response2"
         }
 
-    @commands.command(aliases=["clear", "purge"], hidden=True)
+    @commands.command(aliases=["clear", "clearmessages"], hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def clearmessages(self, ctx, amount: int):
-        """
-        Clear a specified number of messages from the channel.
-        Usage: !clear_messages <amount>
-        """
+    async def purge(self, ctx, amount: int):
         if amount <= 0:
             await ctx.send("Please specify a valid number of messages to clear.")
             return
@@ -60,6 +57,9 @@ class ModerationLogger(commands.Cog):
         embed.add_field(name=f"{action} Message", value=reason, inline=False)
         embed.set_footer(text=f"UID: {user_id} • {timestamp}")
 
+        if len(embed.fields) > 25:
+            embed.fields = embed.fields[:25]
+
         await channel.send(embed=embed)
 
         removed_message = f"**Message Removed:** This message contained a blacklisted word/trigger and has been removed."
@@ -68,16 +68,17 @@ class ModerationLogger(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         # Check for blacklisted words
-        if any(word in message.content.lower() for word in self.delete_words):
-            await message.delete()
-            user_id = message.author.id
-            reason = "Contains banned word/trigger"
-            await self.LogModAction(message.guild, "Deletion", message.author, reason, user_id)
-            await self.LogBlacklistedWords(message.channel, "Deletion", message.author, reason, user_id)
+        if any(word in message.content.lower() for word in self.DeleteWords):
+            if not any(role.name.lower() in self.AllowedRoles for role in message.author.roles):
+                await message.delete()
+                user_id = message.author.id
+                reason = "Contains banned word/trigger"
+                await self.LogModAction(message.guild, "Deletion", message.author, message.content, user_id)
+                await self.LogBlacklistedWords(message.channel, "Deletion", message.author, reason, user_id)
 
         # Check for blacklisted emojis
         if any(emoji in message.content for emoji in self.delete_emojis):
-            if not any(role.name.lower() in ["admin", "moderator", "helper"] for role in message.author.roles):
+            if not any(role.name.lower() in self.AllowedRoles for role in message.author.roles):
                 await message.delete()
                 user_id = message.author.id
                 reason = "Contains banned emoji"
@@ -87,13 +88,50 @@ class ModerationLogger(commands.Cog):
         # Check for trigger words
         for trigger, response in self.reply_words.items():
             if trigger in message.content.lower():
-                if not any(role.name.lower() in ["admin", "moderator", "helper"] for role in message.author.roles):
+                if not any(role.name.lower() in self.AllowedRoles for role in message.author.roles):
                     await message.channel.send(response)
                     user_id = message.author.id
                     reason = f"Contains trigger word: {trigger}"
                     await self.LogModAction(message.guild, "Response Sent", message.author, reason, user_id)
                     await self.LogBlacklistedWords(message.channel, "Response Sent", message.author, reason, user_id)
 
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        # Check for blacklisted links
+        if 'http://' in after.content or 'https://' in after.content:
+            if not any(role.name.lower() in self.AllowedRoles for role in after.author.roles):
+                await after.delete()
+                user_id = after.author.id
+                reason = "Message included a link"
+                await self.LogModAction(after.guild, "Deletion", after.author, after.content, user_id)
+                await self.LogBlacklistedWords(after.channel, "Deletion", after.author, reason, user_id)
+
+        if before.content != after.content:
+            await self.LogModAction(after.guild, "Edit", after.author, "Message edited", before.content)
+
+        with open('config.json', 'r') as config_file:
+            config = json.load(config_file)
+            message_logger_channel_id = config.get("message_logger_channel_id")
+
+        if not message_logger_channel_id:
+            print("Message logger channel ID is not set in config.json.")
+            return
+
+        logging_channel = self.bot.get_channel(message_logger_channel_id)
+        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+
+        original_message = self.truncate_text(before.content, 1024)
+        edited_message = self.truncate_text(after.content, 1024)
+
+        embed = discord.Embed(color=discord.Color.orange())
+        embed.set_author(name=f"{before.author.name}", icon_url=before.author.avatar_url)
+        embed.description = f"Message edited in {before.channel.mention}"
+        embed.add_field(name="Original Message", value=original_message, inline=False)
+        embed.add_field(name="Edited Message", value=edited_message, inline=False)
+        embed.set_footer(text=f"UID: {before.author.id} • ID: {before.id} • {timestamp}")
+
+        await logging_channel.send(embed=embed)
+ 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if message.author.bot:
@@ -128,45 +166,6 @@ class ModerationLogger(commands.Cog):
     @staticmethod
     def truncate_text(text, length):
         return text[:length]
-
-    @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
-        if before.author.bot:
-            return
-
-        AllowedRoles = ['Admin', 'Moderator', 'Helper']
-        if 'http://' in after.content or 'https://' in after.content or any('http://' in e.url or 'https://' in e.url for e in after.embeds):
-            user_roles = [role.name for role in after.author.roles]
-            if not any(role in user_roles for role in AllowedRoles):
-                await after.delete()
-                user_id = after.author.id
-                reason = "Message included a link"
-                await self.LogModAction(after.guild, "Deletion", after.author, reason, user_id)
-                await self.LogBlacklistedWords(after.channel, "Deletion", after.author, reason, user_id)
-                return
-
-        with open('config.json', 'r') as config_file:
-            config = json.load(config_file)
-            message_logger_channel_id = config.get("message_logger_channel_id")
-
-        if not message_logger_channel_id:
-            print("Message logger channel ID is not set in config.json.")
-            return
-
-        logging_channel = self.bot.get_channel(message_logger_channel_id)
-        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
-
-        original_message = self.truncate_text(before.content, 1024)
-        edited_message = self.truncate_text(after.content, 1024)
-
-        embed = discord.Embed(color=discord.Color.orange())
-        embed.set_author(name=f"{before.author.name}", icon_url=before.author.avatar_url)
-        embed.description = f"Message edited in {before.channel.mention}"
-        embed.add_field(name="Original Message", value=original_message, inline=False)
-        embed.add_field(name="Edited Message", value=edited_message, inline=False)
-        embed.set_footer(text=f"UID: {before.author.id} • ID: {before.id} • {timestamp}")
-
-        await logging_channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_ready(self):
