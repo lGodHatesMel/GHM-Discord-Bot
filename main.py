@@ -102,7 +102,7 @@ bot.config = config
 
 @bot.command(name='commands')
 async def _commands(ctx, *args):
-    await bot.get_command('help')(ctx, *args)
+    await ctx.send_help(*args)
 
 folders = ['cogs']
 for folder in folders:
