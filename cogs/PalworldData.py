@@ -11,15 +11,25 @@ class PalworldData(commands.Cog):
     self.bot = bot
     data_folder = 'Data'
 
-    self.palworld_file = os.path.join(data_folder, 'palworlddex.json')
-    with open(self.palworld_file) as f:
+    self.paldex_file = os.path.join(data_folder, 'PalworldDex.json')
+    with open(self.paldex_file) as f:
       self.palinfo = json.load(f)
-    print(f"Loaded JSON data from {self.palworld_file}")
+    print(f"Loaded JSON data from {self.paldex_file}")
 
     self.palitems_file = os.path.join(data_folder, 'PalworldItems.json')
     with open(self.palitems_file) as f:
       self.palitems = json.load(f)
     print(f"Loaded JSON data from {self.palitems_file}")
+
+    self.palgear_file = os.path.join(data_folder, 'PalworldGear.json')
+    with open(self.palgear_file) as f:
+      self.palgear = json.load(f)
+    print(f"Loaded JSON data from {self.palgear_file}")
+
+    # self.palpassiveskills_file = os.path.join(data_folder, 'PalworldPassiveSkills.json')
+    # with open(self.palpassiveskills_file) as f:
+    #   self.palpassiveskills = json.load(f)
+    # print(f"Loaded JSON data from {self.palpassiveskills_file}")
 
   async def create_embed(self, pal_name):
     pal_data = None
@@ -144,6 +154,20 @@ class PalworldData(commands.Cog):
       await ctx.send(embed=embed)
     else:
       await ctx.send(f"No items of type '{type_name}' found.")
+
+  @commands.command(help="Displays all gear data")
+  async def palgear(self, ctx):
+    embed = discord.Embed(title="Palworld Gear", color=discord.Color.random())
+    for gear in self.palgear:
+      gear_info = ""
+      for rarity in ['common', 'uncommon', 'rare', 'epic', 'legendary']:
+        if rarity in gear['status']:
+          gear_info += f"{rarity.capitalize()}: HP {gear['status'][rarity]['hp']}, Defense {gear['status'][rarity]['defense']}\n"
+      if gear_info:
+        for i in range(0, len(gear_info), 1024):
+          chunk = gear_info[i:i+1024]
+          embed.add_field(name=gear['name'], value=chunk, inline=False)
+    await ctx.send(embed=embed)
 
 def setup(bot):
   bot.add_cog(PalworldData(bot))
