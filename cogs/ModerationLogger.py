@@ -97,6 +97,11 @@ class ModerationLogger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        if after.author.bot:
+            return
+
+        if after.channel.name == 'message-logs':
+            return
         # Check for blacklisted links
         if 'http://' in after.content or 'https://' in after.content:
             if not any(role.name.lower() in self.AllowedRoles for role in after.author.roles):
@@ -131,7 +136,7 @@ class ModerationLogger(commands.Cog):
         embed.set_footer(text=f"UID: {before.author.id} • ID: {before.id} • {timestamp}")
 
         await logging_channel.send(embed=embed)
- 
+
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if message.author.bot:
