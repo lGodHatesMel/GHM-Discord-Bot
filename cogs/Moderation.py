@@ -792,12 +792,12 @@ class Moderation(commands.Cog):
 
                 try:
                     await ctx.guild.unban(discord_user, reason=reason)
-                    await ctx.send(f"{discord_user.name} has been unbanned for the following reason: {reason}")
+                    await ctx.send(f"{user.name} has been unbanned for the following reason: {reason}")
 
-                    await utils.LogModAction(ctx.guild, 'Unban', discord_user, reason, issuer=ctx.author, user_data=user_info, config=config)
+                    await utils.LogModAction(ctx.guild, 'Unban', user, reason, issuer=ctx.author, user_data=user_info, config=config)
 
                 except discord.errors.NotFound:
-                    await ctx.send(f"No ban found for user {discord_user.name} in the Discord server.")
+                    await ctx.send(f"No ban found for user {user.name} in the Discord server.")
             else:
                 await ctx.send(f"No bans found for user {uid} in the database.")
         else:

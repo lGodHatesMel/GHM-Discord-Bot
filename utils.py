@@ -10,7 +10,7 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-async def LogModAction(guild, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
+async def LogModAction(guild, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None, old_message=None, new_message=None):
     if not config:
         raise ValueError("config is required for LogModAction")
 
@@ -46,6 +46,10 @@ async def LogModAction(guild, action, target, reason, edited_content=None, warni
     embed.add_field(name="Action", value=action, inline=False)
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
+
+    if action == 'Edit' and old_message and new_message:
+        embed.add_field(name="Original Message", value=old_message, inline=False)
+        embed.add_field(name="Edited Message", value=new_message, inline=False)
 
     if edited_content:
         embed.add_field(name="Edited Content", value=edited_content, inline=False)
