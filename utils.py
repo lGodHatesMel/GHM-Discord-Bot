@@ -3,7 +3,6 @@ from discord.ext import commands
 from datetime import datetime
 import pytz
 import random
-import json
 
 def generate_number():
     return random.randint(1, 9999)
