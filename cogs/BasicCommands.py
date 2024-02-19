@@ -5,6 +5,8 @@ import json
 import utils
 import logging
 from googletrans import Translator
+from sympy import sympify
+
 
 EMOJI_OPTIONS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
 
@@ -157,6 +159,20 @@ class BasicCommands(commands.Cog):
             await ctx.send(embed=embed)
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
+
+    @commands.command(name="calc")
+    async def calc(self, ctx, *, equation: str):
+        try:
+            result = sympify(equation)
+            await ctx.reply(
+                embed=discord.Embed(
+                    description=f"Result: {result}", color=0x00FF00
+                )
+            )
+        except Exception as e:
+            await ctx.reply(
+                embed=discord.Embed(description=f"Error: {e}", color=0xFF0000)
+            )
 
 def setup(bot):
     bot.add_cog(BasicCommands(bot))

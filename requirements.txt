@@ -3,4 +3,4 @@ pytz
 pillow
 requests
 googletrans==4.0.0-rc1
-pysqlite3
+sympy
