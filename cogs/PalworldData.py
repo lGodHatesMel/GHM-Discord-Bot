@@ -13,7 +13,7 @@ class PalworldData(commands.Cog):
     self.palinfo = self.load_json('PalworldDex.json')
     self.palitems = self.load_json('PalworldItems.json')
     self.palgear = self.load_json('PalworldGear.json')
-    #self.palskills = self.load_json('PalworldPassiveSkills.json')
+    self.palskills = self.load_json('PalworldPassiveSkills.json')
 
   def load_json(self, filename):
     file_path = os.path.join(self.data_folder, filename)
@@ -158,16 +158,36 @@ class PalworldData(commands.Cog):
   @commands.command(help="- Displays all gear data")
   async def palgear(self, ctx):
     embed = discord.Embed(title="Palworld Gear", color=discord.Color.random())
+    char_count = len(embed.title) + len(embed.footer.text)
+    field_count = 0
     for gear in self.palgear:
-      gear_info = ""
       for rarity in ['common', 'uncommon', 'rare', 'epic', 'legendary']:
         if rarity in gear['status']:
-          gear_info += f"**{rarity.capitalize()}**\nHP: {gear['status'][rarity]['hp']}, Defense: {gear['status'][rarity]['defense']}\n\n"
-      if gear_info:
-        embed.add_field(name=gear['name'], value=gear_info, inline=False)
-    embed.set_footer(text="Palworld Gear Information")
+          gear_info = f"HP: {gear['status'][rarity]['hp']}, Defense: {gear['status'][rarity]['defense']}, Price: {gear['status'][rarity]['price']}, Durability: {gear['status'][rarity]['durability']}"
+          field_name = f"{gear['name']} ({rarity.capitalize()})"
+          if char_count + len(field_name) + len(gear_info) > 6000 or field_count >= 25:
+            await ctx.send(embed=embed)
+            embed = discord.Embed(title="Palworld Gear (contd.)", color=discord.Color.random())
+            char_count = len(embed.title) + len(embed.footer.text)
+            field_count = 0
+          embed.add_field(name=field_name, value=gear_info, inline=True)
+          char_count += len(field_name) + len(gear_info)
+          field_count += 1
     await ctx.send(embed=embed)
-    
+
+  @commands.command(help="<skill name>")
+  async def palskills(self, ctx, *, SkillName: str):
+    for skill in self.palskills:
+      if SkillName.lower() == skill.lower():
+        skill_data = self.palskills[skill]
+        embed = discord.Embed(title=skill_data['name'], color=discord.Color.random())
+        embed.add_field(name="Positive", value=skill_data['positive'] if skill_data['positive'] else "None", inline=False)
+        embed.add_field(name="Negative", value=skill_data['negative'] if skill_data['negative'] else "None", inline=False)
+        embed.add_field(name="Tier", value=skill_data['tier'], inline=False)
+        await ctx.send(embed=embed)
+        return
+    await ctx.send(f"Skill '{SkillName}' not found.")
+
   @commands.command(help="- Displays all Palworld commands")
   async def palcommands(self, ctx):
     embed = discord.Embed(title="Palworld Commands", color=discord.Color.random())
