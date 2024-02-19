@@ -21,7 +21,7 @@ class Rules(commands.Cog):
             return json.load(f)
 
     async def update_rules(self):
-        rules_channel_id = self.config.get("rules_channel_id")
+        RulesChannelID = self.config['channel_ids']['RulesChannel']  # Modified this line
         self.c.execute("SELECT * FROM rules")
         rules_data = self.c.fetchall()
 
@@ -36,17 +36,17 @@ class Rules(commands.Cog):
 
         counter = 0
         try:
-            msg = await self.bot.get_channel(rules_channel_id).fetch_message(rules_channel_id)
+            msg = await self.bot.get_channel(RulesChannelID).fetch_message(RulesChannelID)
         except discord.errors.NotFound:
             msg = None
-        async for message in self.bot.get_channel(rules_channel_id).history(limit=100, oldest_first=True, after=msg).filter(lambda m: m.author == self.bot.user):
+        async for message in self.bot.get_channel(RulesChannelID).history(limit=100, oldest_first=True, after=msg).filter(lambda m: m.author == self.bot.user):
             if counter < len(messages):
                 if message.embeds and message.embeds[0].title == messages[counter].title \
                     and message.embeds[0].description == messages[counter].description:
                     counter += 1
                     continue
                 await message.delete()
-                await self.bot.get_channel(rules_channel_id).send(embed=messages[counter])
+                await self.bot.get_channel(RulesChannelID).send(embed=messages[counter])
                 counter += 1
                 await asyncio.sleep(1)
             else:
@@ -54,7 +54,7 @@ class Rules(commands.Cog):
                 await asyncio.sleep(1)
         for message_info in messages[counter:]:
             embed = message_info
-            await self.bot.get_channel(rules_channel_id).send(embed=embed)
+            await self.bot.get_channel(RulesChannelID).send(embed=embed)
             await asyncio.sleep(1)
 
     @commands.command(hidden=True)

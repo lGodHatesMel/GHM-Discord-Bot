@@ -29,7 +29,7 @@ class FactsQuestions(commands.Cog):
 
     async def UpdateFAQ(self, ctx):
         self.SetupDatabase()
-        FAQChannelID = self.bot.config.get('faq_channel_id')
+        FAQChannelID = self.bot.config['channel_ids'].get('FAQChannel')
 
         if FAQChannelID is None:
             await ctx.send("⚠ FAQ channel ID is not set in config.json. Set it to a valid channel ID to use this feature.")
@@ -38,7 +38,7 @@ class FactsQuestions(commands.Cog):
         FAQChannel = ctx.guild.get_channel(FAQChannelID)
 
         if not FAQChannel:
-            await ctx.send("⚠ FAQ channel not found. Make sure 'faq_channel_id' in config.json points to a valid channel.")
+            await ctx.send("⚠ FAQ channel not found. Make sure 'FAQChannel' in config.json points to a valid channel.")
             return
 
         async for msg in FAQChannel.history(limit=None):
@@ -107,7 +107,7 @@ class FactsQuestions(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addfaq(self, ctx):
-        FAQChannelID = self.bot.config.get('faq_channel_id')
+        FAQChannelID = self.bot.config['channel_ids'].get('FAQChannel')
 
         if FAQChannelID is None:
             await ctx.send("⚠ FAQ channel ID is not set in config.json. Set it to a valid channel ID to use this feature.")
@@ -116,7 +116,7 @@ class FactsQuestions(commands.Cog):
         FAQChannel = ctx.guild.get_channel(FAQChannelID)
 
         if not FAQChannel:
-            await ctx.send("⚠ FAQ channel not found. Make sure 'faq_channel_id' in config.json points to a valid channel.")
+            await ctx.send("⚠ FAQ channel not found. Make sure 'FAQChannel' in config.json points to a valid channel.")
             return
 
         await ctx.send("Type the bot command name for this FAQ entry (no spaces or special characters), or type `cancel` to cancel:")
