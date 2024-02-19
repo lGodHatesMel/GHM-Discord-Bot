@@ -163,18 +163,15 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command()
+    @commands.command(help="Shows the hidden commands")
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def staffcommands(self, ctx):
-        """Shows the hidden commands."""
         bot_commands = self.bot.commands
-        hidden_commands = [command for command in bot_commands if command.hidden and commands.is_owner() not in command.checks]
+        hidden_commands = [command for command in bot_commands if command.hidden and not any(check.__qualname__ == 'is_owner.<locals>.predicate' for check in command.checks)]
 
         embeds = self.create_embeds(hidden_commands)
         for embed in embeds:
             await ctx.send(embed=embed)
-
-    # Python
 
     def create_embeds(self, commands):
         """Creates embeds for the given commands."""

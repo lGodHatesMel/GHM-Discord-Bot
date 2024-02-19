@@ -38,7 +38,7 @@ class LiveNotification(commands.Cog):
                         title = data['data'][0]['title']
                         game_name = await self.get_game_name(game_id, headers)
                         await self.LiveEmbedNotification(
-                            self.bot.get_channel(self.config['stream_channel_id']),
+                            self.bot.get_channel(self.config['channel_ids']['StreamChannel']),
                             f'Hey everyone! {user.mention} is now live on Twitch!',
                             f'https://www.twitch.tv/{self.config["twitch_username"]}',
                             self.twitchIcon,

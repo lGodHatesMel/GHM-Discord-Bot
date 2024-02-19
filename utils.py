@@ -3,6 +3,8 @@ from discord.ext import commands
 from datetime import datetime
 import pytz
 import random
+import json
+
 
 def GetLocalTime():
     utc_now = datetime.utcnow()
@@ -10,17 +12,17 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-async def LogModAction(guild, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None, old_message=None, new_message=None):
+async def LogAction(guild, channel_name, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None, old_message=None, new_message=None):
     if not config:
-        raise ValueError("config is required for LogModAction")
+        raise ValueError("config is required for LogAction")
 
-    ModLogChannelID = config.get('mod_logs_channel_id')
-    if not ModLogChannelID:
-        raise ValueError("mod_logs_channel_id is not defined in the config")
+    ChannelID = config['channel_ids'].get(channel_name)
+    if not ChannelID:
+        raise ValueError(f"{channel_name} is not defined in the config")
 
-    ModLogChannel = guild.get_channel(ModLogChannelID)
-    if not ModLogChannel:
-        raise ValueError(f"Mod logs channel with ID {ModLogChannelID} not found")
+    channel = guild.get_channel(ChannelID)
+    if not channel:
+        raise ValueError(f"Channel with ID {ChannelID} not found")
 
     embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
 
@@ -73,8 +75,7 @@ async def LogModAction(guild, action, target, reason, edited_content=None, warni
                 value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
                 inline=False
             )
-
-    await ModLogChannel.send(embed=embed)
+    await channel.send(embed=embed)
 
 # Function to format set details with line breaks
 def FormatedSetDetails(SetDetails):

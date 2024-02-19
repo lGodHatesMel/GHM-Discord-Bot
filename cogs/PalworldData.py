@@ -180,7 +180,8 @@ class PalworldData(commands.Cog):
     for skill in self.palskills:
       if SkillName.lower() == skill.lower():
         skill_data = self.palskills[skill]
-        embed = discord.Embed(title=skill_data['name'], color=discord.Color.random())
+        embed = discord.Embed(title='Passive Skills', color=discord.Color.random())
+        embed.add_field(name="Skill", value=skill_data['name'], inline=False)
         embed.add_field(name="Positive", value=skill_data['positive'] if skill_data['positive'] else "None", inline=False)
         embed.add_field(name="Negative", value=skill_data['negative'] if skill_data['negative'] else "None", inline=False)
         embed.add_field(name="Tier", value=skill_data['tier'], inline=False)

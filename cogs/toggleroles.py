@@ -8,6 +8,7 @@ class ToggleRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.load_config()
+        self.RoleChannelID = self.config['channel_ids'].get('RoleChannel')
 
     def load_config(self):
         with open('config.json', 'r') as config_file:
@@ -15,163 +16,155 @@ class ToggleRoles(commands.Cog):
 
     @commands.command(help="Toggle the 'Pokemon Scarlet Violet' role. Usage: !togglesv")
     async def togglesv(self, ctx):
-        role_name = "Pokemon Scarlet Violet"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Pokemon Scarlet Violet"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
     @commands.command(help="Toggle the 'Pokemon BDSP' role. Usage: !togglebdsp")
     async def togglebdsp(self, ctx):
-        role_name = "Pokemon BDSP"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Pokemon BDSP"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
     @commands.command(help="Toggle the 'Pokemon Legends Arceus' role. Usage: !togglepla")
     async def togglepla(self, ctx):
-        role_name = "Pokemon Legends Arceus"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Pokemon Legends Arceus"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
     @commands.command(help="Toggle the 'Pokemon Sword Shield' role. Usage: !toggleswsh")
     async def toggleswsh(self, ctx):
-        role_name = "Pokemon Sword Shield"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Pokemon Sword Shield"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
     @commands.command(help="Toggle the 'Animal Crossing New Horizon' role. Usage: !toggleacnh")
     async def toggleacnh(self, ctx):
-        role_name = "Animal Crossing New Horizon"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Animal Crossing New Horizon"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
     @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannocements")
     async def toggleannocements(self, ctx):
-        role_name = "Announcement Pings"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Announcement Pings"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
     @commands.command(help="Toggle the 'Tera Raiders' role. Usage: !toggleteraraider")
     async def toggleteraraider(self, ctx):
-        role_name = "Tera Raiders"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "Tera Raiders"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
             
     @commands.command(help="Toggle the 'PalWorld' role. Usage: !togglepalworld")
     async def togglepalworld(self, ctx):
-        role_name = "PalWorld"
-        role_channel_id = self.config.get('role_channel_id')
-        if ctx.channel.id != role_channel_id:
+        RoleName = "PalWorld"
+        if ctx.channel.id != self.RoleChannelID:
             await ctx.send("You can only use this command in the <#956769501607755806> channel.")
             return
 
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{role_name}' does not exist on this server.")
+            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             await ctx.author.remove_roles(role)
-            await ctx.send(f"Removed the '{role_name}' role from {ctx.author.mention}.")
+            await ctx.send(f"Removed the '{RoleName}' role from {ctx.author.mention}.")
         else:
             await ctx.author.add_roles(role)
-            await ctx.send(f"Gave the '{role_name}' role to {ctx.author.mention}.")
+            await ctx.send(f"Gave the '{RoleName}' role to {ctx.author.mention}.")
 
 def setup(bot):
     bot.add_cog(ToggleRoles(bot))

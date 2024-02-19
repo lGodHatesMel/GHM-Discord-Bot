@@ -23,13 +23,13 @@ class EmbedHelpCommand(commands.HelpCommand):
         with open('config.json') as f:
             config = json.load(f)
 
-        exclude_commands = ['staffcommands', 'commands', 'help', 'ping', 'botping']
+        ExcludeCommands = ['staffcommands', 'commands', 'help', 'ping', 'botping']
 
         embed = Embed(title="Server Bot Commands", color=discord.Color.blue())
         for cog, commands in mapping.items():
             if getattr(cog, "hidden", False):
                 continue
-            commands = [c for c in commands if not c.hidden and c.name not in exclude_commands]
+            commands = [c for c in commands if not c.hidden and c.name not in ExcludeCommands]
             command_signatures = [self.get_command_signature(c) for c in commands]
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "Other Commands")
@@ -55,26 +55,29 @@ def load_or_create_config():
         default_config = {
             "token": "YOUR_TOKEN_HERE",
             "prefix": "!",
-            "enable_countdown": False,
-            "token_refresher_enabled": False,
-            "countdown_channel_id": None,
-            "target_timestamp": None,
-            "welcome_channel_id": None,
-            "rules_channel_id": None,
-            "faq_channel_id": None,
-            "info_channel_id": None,
-            "message_logger_channel_id": None,
-            "role_channel_id": None,
-            "mod_logs_channel_id": None,
-            "member_logs_channel_id": None,
-            "server_logs_channel_id": None,
             "owner_id": "YOUR_OWNER_ID",
+            "channel_ids": {
+                "WelcomeChannel": None,
+                "RulesChannel": None,
+                "FAQChannel": None,
+                "RoleChannel": None,
+                "AutoMod": None,
+                "ModLogs": None,
+                "MemberLogs": None,
+                "ServerLogs": None,
+                "MessageLogs": None,
+                "StreamChannel": None
+            },
             "twitch_username": "YOUR_TWITCH_USERNAME",
             "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
             "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
             "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
             "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
-            "stream_channel_id": "YOUR_DISCORD_CHANNEL_ID",
+            # Not really need and may remove code for this below
+            "enable_countdown": False,
+            "token_refresher_enabled": False,
+            "countdown_channel_id": None,
+            "target_timestamp": None,
         }
         with open('config.json', 'w') as config_file:
             json.dump(default_config, config_file, indent=4)
