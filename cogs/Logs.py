@@ -3,12 +3,11 @@ from discord.ext import commands
 import json
 import utils
 
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
 class Logs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        with open('config.json', 'r') as config_file:
+            self.config = json.load(config_file)
 
     @staticmethod
     def get_mention(target):
@@ -20,25 +19,25 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
         if before.name != after.name:
-            await self.log_user_change(after, f"Username changed from {before.name} to {after.name}")
+            await self.LogUserChange(after, f"Username changed from {before.name} to {after.name}")
 
         if before.roles != after.roles:
             added_roles = [role for role in after.roles if role not in before.roles]
             removed_roles = [role for role in before.roles if role not in after.roles]
 
             if added_roles:
-                await self.log_user_change(after, f"Roles added: {', '.join([role.name for role in added_roles])}")
+                await self.LogUserChange(after, f"Roles added: {', '.join([role.name for role in added_roles])}")
             
             if removed_roles:
-                await self.log_user_change(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
+                await self.LogUserChange(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
 
-    async def log_user_change(self, user, change_message):
-        member_logs_channel_id = config.get('member_logs_channel_id')
+    async def LogUserChange(self, user, change_message):
+        MemberLogChannelId = self.config['channel_ids'].get('MemberLogs', None)
 
-        if member_logs_channel_id:
-            mod_logs_channel = user.guild.get_channel(int(member_logs_channel_id))
+        if MemberLogChannelId:
+            ModLogsChannelID = user.guild.get_channel(int(MemberLogChannelId))
 
-            if mod_logs_channel:
+            if ModLogsChannelID:
                 embed = discord.Embed(
                     title="User Change Log",
                     description=f"User: {user.mention}",
@@ -50,16 +49,16 @@ class Logs(commands.Cog):
                 timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
                 embed.set_footer(text=f"UID: {user.id} • {timestamp}")
 
-                await mod_logs_channel.send(embed=embed)
+                await ModLogsChannelID.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
-        server_logs_channel_id = config.get('server_logs_channel_id')
+        ServerLogsChannelID = self.config['channel_ids'].get('ServerLogs', None)
 
-        if server_logs_channel_id:
-            server_logs_channel = channel.guild.get_channel(int(server_logs_channel_id))
+        if ServerLogsChannelID:
+            ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))
 
-            if server_logs_channel:
+            if ServerLogsChannel:
                 embed = discord.Embed(
                     title="Text Channel Created",
                     description=f"Channel: {channel.mention}",
@@ -67,16 +66,16 @@ class Logs(commands.Cog):
                 )
                 timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
                 embed.set_footer(text=f"Channel ID: {channel.id} • {timestamp}")
-                await server_logs_channel.send(embed=embed)
+                await ServerLogsChannel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
-        server_logs_channel_id = config.get('server_logs_channel_id')
+        ServerLogsChannelID = self.config['channel_ids'].get('ServerLogs', None)
 
-        if server_logs_channel_id:
-            server_logs_channel = after.guild.get_channel(int(server_logs_channel_id))
+        if ServerLogsChannelID:
+            ServerLogsChannel = after.guild.get_channel(int(ServerLogsChannelID))
 
-            if server_logs_channel:
+            if ServerLogsChannel:
                 embed = discord.Embed(
                     title="Text Channel Updated",
                     description=f"Overwrites in {after.mention} updated",
@@ -102,12 +101,17 @@ class Logs(commands.Cog):
                 change_message = "\n\n".join(changes)
 
                 if change_message:
+                    while len(change_message) > 1024:
+                        index = change_message.rfind('\n\n', 0, 1024)
+                        embed.add_field(name="Change Details", value=change_message[:index], inline=False)
+                        change_message = change_message[index+2:]
+
                     embed.add_field(name="Change Details", value=change_message, inline=False)
 
                     timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
                     embed.set_footer(text=f"Channel ID: {after.id} • {timestamp}")
 
-                    await server_logs_channel.send(embed=embed)
+                    await ServerLogsChannel.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Logs(bot))

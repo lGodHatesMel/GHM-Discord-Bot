@@ -45,7 +45,7 @@ class StickyMessages(commands.Cog):
                 }
         conn.close()
 
-    async def save_sticky_notes(self):
+    async def SaveStickyNotes(self):
         conn = sqlite3.connect(self.database_file)
         c = conn.cursor()
         c.execute("CREATE TABLE IF NOT EXISTS sticky_notes (channel_id INTEGER, author_id INTEGER, content TEXT, message INTEGER)")
@@ -85,32 +85,34 @@ class StickyMessages(commands.Cog):
                 logging.error(f"An error occurred in on_message (sticky_message): {e}")
 
     async def StickyMessages(self, message):
-        if message.channel.id in self.StickyMsg:
-            OriginalStickyData = self.StickyMsg[message.channel.id]
-            OriginalStickyMsgID = OriginalStickyData["message"].id
-            OriginalStickyMsgAuthorID = OriginalStickyData["author_id"]
+        OriginalStickyData = self.StickyMsg.get(message.channel.id)
+        if not OriginalStickyData:
+            return
 
-            if OriginalStickyMsgID != message.id:
-                if OriginalStickyMsgAuthorID == self.bot.user.id:
-                    channel = message.channel
-                    try:
-                        OldStickyMsg = await channel.fetch_message(OriginalStickyMsgID)
-                    except discord.NotFound:
-                        OldStickyMsg = None
+        OriginalStickyMsgID = OriginalStickyData["message"].id
+        OriginalStickyMsgAuthorID = OriginalStickyData["author_id"]
 
-                    await asyncio.sleep(2.5)
+        if OriginalStickyMsgID != message.id:
+            if OriginalStickyMsgAuthorID == self.bot.user.id:
+                channel = message.channel
+                try:
+                    OldStickyMsg = await channel.fetch_message(OriginalStickyMsgID)
+                except discord.NotFound:
+                    OldStickyMsg = None
 
-                    if OldStickyMsg:
-                        await OldStickyMsg.delete()
+                await asyncio.sleep(2.5)
 
-                    new_embed = discord.Embed(
-                        title="**STICKY NOTE**",
-                        description=OriginalStickyData["content"],
-                        color=discord.Color.random()
-                    )
+                if OldStickyMsg:
+                    await OldStickyMsg.delete()
 
-                    NewStickyMsg = await message.channel.send(embed=new_embed)
-                    self.StickyMsg[message.channel.id]["message"] = NewStickyMsg
+                new_embed = discord.Embed(
+                    title="**STICKY NOTE**",
+                    description=OriginalStickyData["content"],
+                    color=discord.Color.random()
+                )
+
+                NewStickyMsg = await message.channel.send(embed=new_embed)
+                self.StickyMsg[message.channel.id]["message"] = NewStickyMsg
 
     @commands.command(help='<#Channel> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -133,7 +135,7 @@ class StickyMessages(commands.Cog):
             "author_id": self.bot.user.id,
             "content": formatted_message
         }
-        await self.save_sticky_notes()
+        await self.SaveStickyNotes()
 
         await ctx.send(f"Sticky note added to {channel.mention}.")
 
@@ -144,7 +146,7 @@ class StickyMessages(commands.Cog):
         if channel.id in self.StickyMsg:
             StickyMsg = self.StickyMsg.pop(channel.id)["message"]
             await StickyMsg.delete()
-            await self.save_sticky_notes()
+            await self.SaveStickyNotes()
             await ctx.send(f"Sticky note removed from {channel.mention}.")
         else:
             await ctx.send(f"No sticky note found in {channel.mention}.")
@@ -155,9 +157,9 @@ class StickyMessages(commands.Cog):
         if channel.id not in self.StickyMsg:
             return await ctx.send(f"No sticky note found in {channel.mention}.")
 
-        OriginaStickyMsgData = self.StickyMsg[channel.id]
+        # OriginaStickyMsgData = self.StickyMsg[channel.id]
+        # OriginalStickyMsgContent = OriginaStickyMsgData["content"]
 
-        OriginalStickyMsgContent = OriginaStickyMsgData["content"]
         OriginalStickyMsgEmbed = discord.Embed(
             title="**STICKY NOTE**",
             description=new_message,
@@ -168,7 +170,7 @@ class StickyMessages(commands.Cog):
         self.StickyMsg[channel.id]["message"] = NewStickyMsg
         self.StickyMsg[channel.id]["content"] = new_message
 
-        await self.save_sticky_notes()
+        await self.SaveStickyNotes()
 
         await ctx.send(f"Sticky note in {channel.mention} has been edited.")
 

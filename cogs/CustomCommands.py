@@ -64,7 +64,7 @@ class CustomCommands(commands.Cog):
 
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
-    @commands.command(help='Refresh custom commands from the SQLite database', hidden=True)
+    @commands.command(description='Refresh custom commands', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def refreshcommands(self, ctx):
         try:
@@ -163,93 +163,131 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(aliases=['modcommands'], help='Display the staff command list')
-    @commands.has_any_role("Moderator", "Admin")
+    @commands.command(help="Shows the hidden commands")
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def staffcommands(self, ctx):
-        embed = discord.Embed(
-            title='**__Staff Command List__**',
-            description='*Here are the staff commands:*',
-            color=discord.Color.random()
-        )
-        embed.add_field(
-            name='User Database:',
-            value=(
-                "`!adduser <uid>` - Add a user to the database.\n"
-                "`!updateinfo <uid> <key> <value>` - Update user information."
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name='Info:',
-            value=(
-                "`!info <uid>` - Retrieve user information.\n"
-                "`!accountage <uid>` - Check's when a user account was created.\n"
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name='Bans:',
-            value=(
-                "`!ban <uid> <reason>` - Ban a user.\n"
-                "`!unban <uid> <reason>` - Unban a user.\n"
-                "`!checkbans <uid>` - Check a user's bans."
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name='SoftBan:',
-            value=(
-                "`!softban <uid> <reason>` - SoftBan a user"
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name='Notes:',
-            value=(
-                "`!addnote <uid> <message>` - Add a note for a user.\n"
-                "`!removenote <uid> <note#> <message>` - Remove a user's note.\n"
-                "`!notes <uid> <note#>` - View a user's notes."
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name='Warnings:',
-            value=(
-                "`!addwarning <uid> <reason>` - Add a warning for a user.\n"
-                "`!removewarning <uid> <warning#> <reason>` - Remove a user's warning.\n"
-                "`!checkwarning <uid> <warning#>` - View a user's warnings."
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name='Kicks:',
-            value='`!kick <uid> <reason>` - Kick a user.',
-            inline=False
-        )
-        embed.add_field(
-            name='Others:',
-            value=(
-                "`!botdown <channel> <message>` - Send a bot down message.\n"
-                "`!announcement <channel> <message>` - Send an announcement.\n"
-                "`!addsticky <channel> <message>` - Add a sticky note.\n"
-                "`!removesticky <channel>` - Remove a sticky note.\n"
-                "`!addcommand <command_name> <respond_message>` - Add's a custom command.\n"
-                "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`\n"
-                "`!efreshcommands` - Refreshes the custom_commands.json.\n"
-                "`!merge <width> <height> <save_name>` - Merges multiple attached images into one.\n"
-                "`!poll \"Poll Title\" \"option1\" \"option2\" <add_more_if_needed> \"Your Message Here\"` - Creates a poll.\n"
-                "`!translate <TargetLanguage> <TextToTranslate>` - Example: !translate fr Hello, how are you?"
-            ),
-            inline=False
-        )
-        embed.add_field(name='\u200b', value='\u200b', inline=False)
-        embed.set_footer(
-        text="Note: If you use a command and it says 'User not in database', "
-            "use the `!adduser <uid>` command to add them first, "
-            "and then use the other command."
-    )
+        bot_commands = self.bot.commands
+        hidden_commands = [command for command in bot_commands if command.hidden and not any(check.__qualname__ == 'is_owner.<locals>.predicate' for check in command.checks)]
 
-        await ctx.send(embed=embed)
+        embeds = self.create_embeds(hidden_commands)
+        for embed in embeds:
+            await ctx.send(embed=embed)
+
+    def create_embeds(self, commands):
+        """Creates embeds for the given commands."""
+        embeds = []
+        embed = discord.Embed(title="Staff Commands", description="These are the available staff commands.", color=discord.Color.green())
+        no_help_commands = []
+
+        for command in commands:
+            if command.help is not None:
+                embed.add_field(name=command.name, value=command.help, inline=True)
+            else:
+                no_help_commands.append(command)
+
+            if len(embed.fields) == 25:
+                embed.set_footer(text=f"Page {len(embeds) + 1}")
+                embeds.append(embed)
+                embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
+
+        for command in no_help_commands:
+            if len(embed.fields) == 25:
+                embed.set_footer(text=f"Page {len(embeds) + 1}")
+                embeds.append(embed)
+                embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
+            embed.add_field(name=command.name, value="No help text available", inline=True)
+
+        embed.set_footer(text=f"Page {len(embeds) + 1}")
+        embeds.append(embed)
+        return embeds
+
+    # @commands.command(aliases=['modcommands'], help='Display the staff command list')
+    # @commands.has_any_role("Moderator", "Admin")
+    # async def staffcommands(self, ctx):
+    #     embed = discord.Embed(
+    #         title='**__Staff Command List__**',
+    #         description='*Here are the staff commands:*',
+    #         color=discord.Color.random()
+    #     )
+    #     embed.add_field(
+    #         name='User Database:',
+    #         value=(
+    #             "`!adduser <uid>` - Add a user to the database.\n"
+    #             "`!updateinfo <uid> <key> <value>` - Update user information."
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='Info:',
+    #         value=(
+    #             "`!info <uid>` - Retrieve user information.\n"
+    #             "`!accountage <uid>` - Check's when a user account was created.\n"
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='Bans:',
+    #         value=(
+    #             "`!ban <uid> <reason>` - Ban a user.\n"
+    #             "`!unban <uid> <reason>` - Unban a user.\n"
+    #             "`!checkbans <uid>` - Check a user's bans."
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='SoftBan:',
+    #         value=(
+    #             "`!softban <uid> <reason>` - SoftBan a user"
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='Notes:',
+    #         value=(
+    #             "`!addnote <uid> <message>` - Add a note for a user.\n"
+    #             "`!removenote <uid> <note#> <message>` - Remove a user's note.\n"
+    #             "`!notes <uid> <note#>` - View a user's notes."
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='Warnings:',
+    #         value=(
+    #             "`!addwarning <uid> <reason>` - Add a warning for a user.\n"
+    #             "`!removewarning <uid> <warning#> <reason>` - Remove a user's warning.\n"
+    #             "`!checkwarning <uid> <warning#>` - View a user's warnings."
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='Kicks:',
+    #         value='`!kick <uid> <reason>` - Kick a user.',
+    #         inline=False
+    #     )
+    #     embed.add_field(
+    #         name='Others:',
+    #         value=(
+    #             "`!botdown <channel> <message>` - Send a bot down message.\n"
+    #             "`!announcement <channel> <message>` - Send an announcement.\n"
+    #             "`!addsticky <channel> <message>` - Add a sticky note.\n"
+    #             "`!removesticky <channel>` - Remove a sticky note.\n"
+    #             "`!addcommand <command_name> <respond_message>` - Add's a custom command.\n"
+    #             "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`\n"
+    #             "`!efreshcommands` - Refreshes the custom_commands.json.\n"
+    #             "`!merge <width> <height> <save_name>` - Merges multiple attached images into one.\n"
+    #             "`!poll \"Poll Title\" \"option1\" \"option2\" <add_more_if_needed> \"Your Message Here\"` - Creates a poll.\n"
+    #             "`!translate <TargetLanguage> <TextToTranslate>` - Example: !translate fr Hello, how are you?"
+    #         ),
+    #         inline=False
+    #     )
+    #     embed.add_field(name='\u200b', value='\u200b', inline=False)
+    #     embed.set_footer(
+    #     text="Note: If you use a command and it says 'User not in database', "
+    #         "use the `!adduser <uid>` command to add them first, "
+    #         "and then use the other command."
+    # )
+
+    #     await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(CustomCommands(bot))

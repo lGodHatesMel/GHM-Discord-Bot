@@ -1,3 +1,4 @@
+import json
 import os
 import asyncio
 import discord
@@ -7,43 +8,54 @@ import sqlite3
 class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = sqlite3.connect('rules.db')
+        self.config = self.load_config()
+        database_folder = 'Database'
+        self.db_file = os.path.join(database_folder, 'rules.db')
+        self.conn = sqlite3.connect(self.db_file)
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS rules
                     (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
 
+    def load_config(self):
+        with open('config.json', 'r') as f:
+            return json.load(f)
+
     async def update_rules(self):
-        rules_channel_id = self.config.get("rules_channel_id")
+        RulesChannelID = self.config['channel_ids']['RulesChannel']  # Modified this line
         self.c.execute("SELECT * FROM rules")
         rules_data = self.c.fetchall()
 
         messages = []
         for rule in rules_data:
             embed = discord.Embed(
-                title=f"Rule {rule[0]}",
-                description=rule[1],
+                title=f"{rule[1]}",
+                description=rule[2],
                 color=discord.Color.green()
             )
             messages.append(embed)
 
         counter = 0
         try:
-            msg = await self.bot.get_channel(rules_channel_id).fetch_message(rules_channel_id)
+            msg = await self.bot.get_channel(RulesChannelID).fetch_message(RulesChannelID)
         except discord.errors.NotFound:
             msg = None
-        async for message in self.bot.get_channel(rules_channel_id).history(limit=100, oldest_first=True, after=msg).filter(lambda m: m.author == self.bot.user):
+        async for message in self.bot.get_channel(RulesChannelID).history(limit=100, oldest_first=True, after=msg).filter(lambda m: m.author == self.bot.user):
             if counter < len(messages):
                 if message.embeds and message.embeds[0].title == messages[counter].title \
                     and message.embeds[0].description == messages[counter].description:
                     counter += 1
                     continue
-                await message.edit(embed=messages[counter])
+                await message.delete()
+                await self.bot.get_channel(RulesChannelID).send(embed=messages[counter])
                 counter += 1
+                await asyncio.sleep(1)
             else:
                 await message.delete()
+                await asyncio.sleep(1)
         for message_info in messages[counter:]:
             embed = message_info
-            await self.bot.get_channel(rules_channel_id).send(embed=embed)
+            await self.bot.get_channel(RulesChannelID).send(embed=embed)
+            await asyncio.sleep(1)
 
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
@@ -55,71 +67,83 @@ class Rules(commands.Cog):
         else:
             next_rule_id += 1
 
-        await ctx.send("Type the rule to be added after this message:\n(note: all rules are automatically underlined)")
+        timeout_rulename = 30.0
+        await ctx.send(f"Type the rule #:\nExample: If the last rule is (Rule #10) Then this rule should be typed out like (Rule #11)\nOnly the Rule # goes here, once you write the Rule #, press enter then it will as you to type the rule description (you have {timeout_rulename} seconds to respond):")
         try:
-            question = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
+            question = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=timeout_rulename)
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, stopping.")
 
-        await ctx.send("Type the rule description after this message:")
+        timeout_rule_description = 45.0
+        await ctx.send(f"Type the rule description after this message (you have {timeout_rule_description} seconds to respond):")
         try:
-            answer = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
+            answer = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=timeout_rule_description)
         except asyncio.TimeoutError:
-            return await ctx.send("🚫 Timed out while waiting for a response, stopping.")
+            return await ctx.send("🚫 Timed out while waiting for a response, stopping.\n May be better to have everything ready then copy and paste it to be faster")
 
-        self.c.execute("INSERT INTO rules VALUES (?, ?, ?)", (next_rule_id, question.content, answer.content))
+        self.c.execute("INSERT INTO rules VALUES (?, ?, ?)", (next_rule_id, f"**{question.content}**", answer.content))
         self.conn.commit()
 
         await ctx.send("✅ Entry added.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['delrule', 'dr'], help='<rules_id>', hidden=True)
+    @commands.command(aliases=['delrule'], help='<rules_id or name>', hidden=True)
     @commands.has_any_role("Admin")
-    async def deleterule(self, ctx, rules_id: int = 0):
-        if rules_id == 0:
-            return await ctx.send("⚠ Rule entry ID is required.")
-        self.c.execute("DELETE FROM rules WHERE id=?", (rules_id,))
+    async def deleterule(self, ctx, RuleNameID: str):
+        try:
+            rules_id = int(RuleNameID)
+            self.c.execute("DELETE FROM rules WHERE id=?", (rules_id,))
+        except ValueError:
+            rule_name = f"**{RuleNameID}**"
+            self.c.execute("DELETE FROM rules WHERE rule=?", (rule_name,))
         self.conn.commit()
         if self.c.rowcount == 0:
             return await ctx.send("⚠ No such entry exists.")
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['modify'], help='<rules_id>', hidden=True)
+    @commands.command(help='<rules_id or name>', hidden=True)
     @commands.has_any_role("Admin")
-    async def editrule(self, ctx, rules_id: int = 0, edit_type: str = "d"):
-        if rules_id == 0:
-            return await ctx.send("⚠ Rule entry ID is required.")
-        if not(edit_type[0] == "r" or edit_type[0] == "d"):
-            return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `rule`, `description` (default).")
-        self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+    async def editrule(self, ctx, RuleNameID: str, edit_type: str = "description"):
+        try:
+            rules_id = int(RuleNameID)
+            self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+        except ValueError:
+            rule_name = f"**{RuleNameID}**"
+            self.c.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
         entry = self.c.fetchone()
         if entry is None:
             return await ctx.send("⚠ No such entry exists.")
-        await ctx.send("Enter the new {} content:".format(edit_type))
+        if not(edit_type.lower() in ["rulename", "description"]):
+            return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `rulename`, `description` (default).")
+        timeout_edit = 30.0
+        await ctx.send(f"Enter the new {edit_type} content (you have {timeout_edit} seconds to respond):")
         try:
-            new_content = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=30.0)
+            new_content = await self.bot.wait_for("message", check=(lambda m: m.channel == ctx.message.channel and m.author == ctx.author), timeout=timeout_edit)
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, stopping.")
-        if edit_type[0] == "r":
-            self.c.execute("UPDATE rules SET rule=? WHERE id=?", (new_content.content, rules_id))
-        elif edit_type[0] == "d":
-            self.c.execute("UPDATE rules SET description=? WHERE id=?", (new_content.content, rules_id))
+        if edit_type.lower() == "rulename":
+            self.c.execute("UPDATE rules SET rule=? WHERE id=?", (f"**{new_content.content}**", entry[0]))
+        elif edit_type.lower() == "description":
+            self.c.execute("UPDATE rules SET description=? WHERE id=?", (new_content.content, entry[0]))
         self.conn.commit()
         await ctx.send("✅ Entry modified.")
         self.bot.loop.create_task(self.update_rules())
 
-    @commands.command(aliases=['source'], hidden=True)
+    @commands.command(aliases=['rulesource'], hidden=True)
     @commands.has_any_role("Admin")
-    async def raw(self, ctx, rules_id: int = 0, return_type: str = "both"):
-        if rules_id == 0:
-            return await ctx.send("⚠ Rule entry ID is required.")
-        if not(return_type[0] == "r" or return_type[0] == "d" or return_type[0] == "b"):
-            return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `rule`, `description`, `both` (default).")
-        self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+    async def ruleraw(self, ctx, RuleNameID: str, return_type: str = "both"):
+        try:
+            rules_id = int(RuleNameID)
+            self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+        except ValueError:
+            rule_name = f"**{RuleNameID}**"
+            self.c.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
         entry = self.c.fetchone()
         if entry is None:
             return await ctx.send("⚠ No such entry exists.")
+        if not(return_type[0] == "r" or return_type[0] == "d" or return_type[0] == "b"):
+            return await ctx.send("⚠ Unknown return type. Acceptable arguments are: `rule`, `description`, `both` (default).")
         if return_type[0] == "r":
             msg = entry[1]
         elif return_type[0] == "d":
@@ -128,16 +152,19 @@ class Rules(commands.Cog):
             msg = "\n\n".join([entry[1], entry[2]])
         await ctx.send("```\n{}\n```".format(msg))
 
-    @commands.command(aliases=['rule', 'showrule'], help='<rules_id>')
-    async def viewrule(self, ctx, rules_id: int = 0):
-        if rules_id == 0:
-            return await ctx.send("⚠ Rule entry ID is required.")
-        self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+    @commands.command(aliases=['veiwrule', 'showrule'], help='<rules id or name>')
+    async def rule(self, ctx, RuleNameID: str):
+        try:
+            rules_id = int(RuleNameID)
+            self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+        except ValueError:
+            rule_name = f"**{RuleNameID}**"
+            self.c.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
         entry = self.c.fetchone()
         if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         embed = discord.Embed(color=discord.Color.red())
-        embed.title = "R{}. {}".format(rules_id, entry[1])
+        embed.title = entry[1]
         embed.description = entry[2]
         await ctx.send(embed=embed)
 

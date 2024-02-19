@@ -8,15 +8,25 @@ import os
 
 hangmanwords = [
     # Random Words
-    "discord","hangman", "games", "community","goosebumps",
+    "discord","hangman", "games", "community","goosebumps",  "keyboard", "monitor", "python", "javascript", "database",
+    "laptop", "internet", "algorithm", "software", "hardware",
     # Games
     "minecraft", "fortnite", "zelda", "mario", "cyberpunk", "overwatch", "skyrim", "roblox", "valorant", "amongus",
-    "nintendo", "playstation",  "pokemon", "gamefreak", "palworld",
+    "nintendo", "playstation",  "pokemon", "gamefreak", "palworld", "uncharted", "leagueoflegends", "apexlegends",
+    "tetris", "pacman", "bioshock", "fallout", "witcher",
     # Sports
     "football", "basketball", "baseball", "soccer", "tennis", "cricket", "hockey", "golf", "volleyball", "rugby",
+    "badminton", "squash", "billiards", "bowling", "wrestling", "athletics", "cycling", "swimming", "boxing", "karate",
     # Anime
     "naruto", "onepiece", "bleach", "deathnote", "attackontitan", "dragonball", "myheroacademia", "tokyoghoul",
-    "demonslayer", "hunterxhunter"
+    "demonslayer", "hunterxhunter", "onepunchman", "fullmetalalchemist", "cowboybebop", "evangelion", "gintama",
+    "bleach", "fairytail", "gundam", "sailormoon",
+    # Movies
+    "inception", "titanic", "avatar", "joker", "avengers", "frozen", "lionking", "starwars", "harrypotter", "jurassicpark",
+    # Music
+    "beatles", "elvis", "madonna", "rihanna", "eminem", "beyonce", "drake", "edsheeran", "taylorswift", "billieeilish",
+    # Geography
+    "africa", "antarctica", "asia", "europe", "australia", "america", "ocean", "mountain", "river", "desert",
 ]
 
 class Games(commands.Cog):
@@ -24,7 +34,7 @@ class Games(commands.Cog):
         self.bot = bot
         self.games = {}
 
-    @commands.command(aliases=["dice", "rolldice"], help="<sides> <num_rolls>")
+    @commands.command(aliases=["dice", "rolldice"], help="<sides> <# of rolls>")
     async def roll(self, ctx, sides: int, num_rolls: int):
         if sides < 2 or num_rolls < 1:
             await ctx.send("Invalid input. Please use !roll <sides> <num_rolls>.")
@@ -82,27 +92,31 @@ class Games(commands.Cog):
             return
 
         word = random.choice(hangmanwords)
-        hidden_word = ["_" for _ in word]
-        wrong_guesses = []
-        max_guesses = 6
-        self.games[ctx.author.id] = {"word": word, "hidden_word": hidden_word, "wrong_guesses": wrong_guesses, "max_guesses": max_guesses}
+        HiddenWord = ["_" for _ in word]
+        WrongGuesses = []
+        MaxGuesses = 6
+        self.games[ctx.author.id] = {"word": word, "HiddenWord": HiddenWord, "WrongGuesses": WrongGuesses, "MaxGuesses": MaxGuesses}
 
-        embed = discord.Embed(title="Hangman has begun!", color=discord.Color.blue())
-        embed.add_field(name="Word", value=' '.join(hidden_word), inline=False)
-        embed.add_field(name="Wrong guesses", value=wrong_guesses, inline=False)
-        embed.add_field(name="Guesses remaining", value=max_guesses, inline=False)
+        # Add spaces between the characters
+        SpaceOutWord = ' '.join(self.games[ctx.author.id]['HiddenWord'])
+
+        embed = discord.Embed(title=f"{ctx.author.name}'s Hangman game has begun!", color=discord.Color.blue())
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.add_field(name="Word", value=SpaceOutWord, inline=False)
+        embed.add_field(name="Wrong guesses", value=WrongGuesses, inline=False)
+        embed.add_field(name="Number of letters", value=len(word), inline=False)
+        embed.set_footer(text=f"Guesses remaining: {MaxGuesses}")
         await ctx.send(embed=embed)
 
-        await self.play_turn(ctx, max_guesses)
+        await self.PlayHangman(ctx, MaxGuesses)
 
-    async def play_turn(self, ctx, remaining_guesses):
+    async def PlayHangman(self, ctx, RemainingGuesses):
         def check(message):
             return message.author == ctx.author and message.content.lower() != "end" and len(message.content) == 1 and message.content.isalpha()
 
-        # Initialize embed_msg
         embed_msg = None
 
-        while remaining_guesses > 0 and "_" in self.games[ctx.author.id]["hidden_word"]:
+        while RemainingGuesses > 0 and "_" in self.games[ctx.author.id]["HiddenWord"]:
             guess = await ctx.send("Guess a letter: ", delete_after=True)
             try:
                 guess = await self.bot.wait_for("message", check=check, timeout=60)
@@ -118,30 +132,35 @@ class Games(commands.Cog):
             if guess in self.games[ctx.author.id]["word"]:
                 for i, letter in enumerate(self.games[ctx.author.id]["word"]):
                     if letter == guess:
-                        self.games[ctx.author.id]["hidden_word"][i] = guess
+                        self.games[ctx.author.id]["HiddenWord"][i] = guess
             else:
-                self.games[ctx.author.id]["wrong_guesses"].append(guess)
-                remaining_guesses -= 1
+                self.games[ctx.author.id]["WrongGuesses"].append(guess)
+                RemainingGuesses -= 1
 
-                # Add spaces between the characters
-                spaced_word = ' '.join(self.games[ctx.author.id]['hidden_word'])
+            # Add spaces between the characters
+            SpaceOutWord = ' '.join(self.games[ctx.author.id]['HiddenWord'])
 
-                embed = discord.Embed(title="Hangman", color=discord.Color.blue())
-                embed.add_field(name="Word", value=spaced_word, inline=False)
-                embed.add_field(name="Wrong guesses", value=', '.join(self.games[ctx.author.id]['wrong_guesses']), inline=False)
-                embed.add_field(name="Guesses remaining", value=remaining_guesses, inline=False)
-                embed_msg = await ctx.send(embed=embed)
+            embed = discord.Embed(title=f"{ctx.author.name}'s Hangman game", color=discord.Color.blue())
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+            embed.add_field(name="Word", value=SpaceOutWord, inline=False)
+            embed.add_field(name="Wrong guesses", value=', '.join(self.games[ctx.author.id]['WrongGuesses']), inline=False)
+            embed.set_footer(text=f"Guesses remaining: {RemainingGuesses}")
+            embed_msg = await ctx.send(embed=embed)
 
         # Game over
         if embed_msg is not None:
             await embed_msg.delete()
 
-        if "_" not in self.games[ctx.author.id]["hidden_word"]:
-            embed = discord.Embed(title="Congratulations!", description=f"You guessed the word: {self.games[ctx.author.id]['word']}", color=discord.Color.green())
+        if "_" not in self.games[ctx.author.id]["HiddenWord"]:
+            embed = discord.Embed(title="Congratulations!", description=f"{ctx.author.name}, you guessed the word: {self.games[ctx.author.id]['word']}", color=discord.Color.green())
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(title="Game Over!", description=f"You ran out of guesses! The word was: {self.games[ctx.author.id]['word']}", color=discord.Color.red())
+            embed = discord.Embed(title="Game Over!", description=f"{ctx.author.name}, you ran out of guesses! The word was: {self.games[ctx.author.id]['word']}", color=discord.Color.red())
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
+
+        del self.games[ctx.author.id]
 
 def setup(bot):
     bot.add_cog(Games(bot))

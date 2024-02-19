@@ -1,13 +1,19 @@
 import discord
 from discord.ext import commands
 from datetime import datetime, timezone
+import json
 import utils
 import logging
 from googletrans import Translator
+from sympy import sympify
+
+
+EMOJI_OPTIONS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
 
 class BasicCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.latency = self.bot.latency
         self.translator = Translator()
 
     @commands.Cog.listener()
@@ -23,35 +29,34 @@ class BasicCommands(commands.Cog):
         if "hello" in words or "hey" in words:
             await message.reply(f"Hello, {message.author.mention}!")
 
-    @commands.command(help='Replies with Pong if bot is up', hidden=True)
+    @commands.command(description='Replies with Pong if bot is up')
     @commands.has_any_role("Moderator", "Admin")
     async def ping(self, ctx):
         await ctx.send('Pong')
 
+    @commands.command(help="Shows bot's latency")
+    @commands.is_owner()
+    async def botping(self, ctx):
+        try:
+            BotLatency = self.bot.latency * 1000
 
-    # @commands.command(help="Shows bot's latency", hidden=True)
-    # @commands.has_any_role("Moderator", "Admin")
-    # async def botping(self, ctx):
-    #     try:
-    #         BotLatency = self.bot.latency * 1000
+            embed = discord.Embed(
+                title="Server Ping",
+                description=f"Server ping is currently {BotLatency:.2f}ms",
+                color=discord.Color.red()
+            )
+            avatar_url = str(ctx.author.avatar.url) if ctx.author.avatar else 'https://www.gravatar.com/avatar/?d=retro&s=32'
+            embed.set_thumbnail(url=avatar_url)
 
-    #         embed = discord.Embed(
-    #             title="Server Ping",
-    #             description=f"Server ping is currently {BotLatency:.2f}ms",
-    #             color=discord.Color.red()
-    #         )
-    #         avatar_url = str(ctx.author.avatar.url) if ctx.author.avatar else 'https://www.gravatar.com/avatar/?d=retro&s=32'
-    #         embed.set_thumbnail(url=avatar_url)
+            reply = await ctx.reply(embed=embed)
 
-    #         reply = await ctx.reply(embed=embed)
+            if reply:
+                logging.info("Bot ping message sent successfully.")
+            else:
+                logging.error("Failed to send bot ping message.")
 
-    #         if reply:
-    #             print("Bot ping message sent successfully.")
-    #         else:
-    #             print("Failed to send bot ping message.")
-
-    #     except Exception as e:
-    #         print(f"Error in botping command: {e}")
+        except Exception as e:
+            logging.error(f"Error in botping command: {e}")
 
 
     @commands.command(hidden=True)
@@ -81,7 +86,7 @@ class BasicCommands(commands.Cog):
             await ctx.send("You don't have the required permissions to use this command.")
 
 
-    @commands.command(aliases=['bd'], help='<#Channel> <Message>', hidden=True)
+    @commands.command(help='<#Channel> <Message>', description='Sends a bot down message to a specific channel', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def botdown(self, ctx, channel: discord.TextChannel, *, message):
 
@@ -91,25 +96,35 @@ class BasicCommands(commands.Cog):
         current_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
         author = ctx.message.author
         command = ctx.command.name
-        print(f"{current_time} - {author.name} used the *{command}* command.")
+        logging.info(f"{current_time} - {author.name} used the *{command}* command.")
 
 
-    @commands.command(aliases=['announce', 'ann'], help='<#Channel> <Message>', hidden=True)
+    @commands.command(help='<#Channel> <Title> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def announcement(self, ctx, channel: discord.TextChannel, *, message):
+    async def announcement(self, ctx, channel: discord.TextChannel, title, *, message):
+        with open('config.json') as f:
+            config = json.load(f)
 
-        await channel.send(f"**Announcement:**\n{message}")
+        logo_url = config.get('logo_url')
+
+        embed = discord.Embed(
+            title=title,
+            description=message,
+            color=discord.Color.random()
+        )
+        embed.set_thumbnail(url=logo_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+
+        await channel.send(embed=embed)
         await ctx.send(f"Announcement sent to {channel.mention}.")
 
 
-    @commands.command(help='Creates a poll. Usage: !poll "Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', hidden=True)
+    @commands.command(help='"Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', description='Creates a poll with multiple options', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def poll(self, ctx, pollTitle, *options: str):
-        emojiOptions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
-
         optionsDescription = ""
         for i, option in enumerate(options[:-1]):
-            optionsDescription += f"{emojiOptions[i]} {option}\n"
+            optionsDescription += f"{EMOJI_OPTIONS[i]} {option}\n"
 
         embed = discord.Embed(
             title=pollTitle,
@@ -117,17 +132,16 @@ class BasicCommands(commands.Cog):
             color=discord.Color.red()
         )
 
+        pollMessage = await ctx.send(embed=embed)
+
+        for i in range(len(options) - 1):
+            await pollMessage.add_reaction(EMOJI_OPTIONS[i])
+
         message = options[-1]
         if message is not None:
             await ctx.send(message)
 
-        pollMessage = await ctx.send(embed=embed)
-
-        for i in range(len(options) - 1):
-            await pollMessage.add_reaction(emojiOptions[i])
-
-
-    @commands.command(help='translate <TargetLanguage> <TextToTranslate>')
+    @commands.command(help='<Target Language> <Text To Translate>')
     async def translate(self, ctx, TargetLanguage, *, TextToTranslate):
         try:
             DetectedLanguage = self.translator.detect(TextToTranslate)
@@ -145,6 +159,20 @@ class BasicCommands(commands.Cog):
             await ctx.send(embed=embed)
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
+
+    @commands.command(name="calc")
+    async def calc(self, ctx, *, equation: str):
+        try:
+            result = sympify(equation)
+            await ctx.reply(
+                embed=discord.Embed(
+                    description=f"Result: {result}", color=0x00FF00
+                )
+            )
+        except Exception as e:
+            await ctx.reply(
+                embed=discord.Embed(description=f"Error: {e}", color=0xFF0000)
+            )
 
 def setup(bot):
     bot.add_cog(BasicCommands(bot))

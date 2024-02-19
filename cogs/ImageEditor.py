@@ -28,7 +28,7 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="<size> <image url> <save_name>", hidden=True)
+    @commands.command(help="<size> <image url> <save_name>", description="Resizes an image from URL to a specified size.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def resizeurlimage(self, ctx, size: int, url: str, save_name: str):
         try:
@@ -50,7 +50,7 @@ class ImageEditor(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="Resizes an attached image to a specified size. Usage: !resizeimage <size> <save_name>", hidden=True)
+    @commands.command(help="<size> <save_name>", description="Resizes an attached image to a specified size.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def resizeimage(self, ctx, size: int, save_name: str):
         if len(ctx.message.attachments) == 0:
@@ -72,7 +72,7 @@ class ImageEditor(commands.Cog):
             x_offset += image.size[0]
         return new_image
 
-    @commands.command(help="Merges multiple attached images into one. Usage: !merge <width> <height> <save_name>", hidden=True)
+    @commands.command(help="<width> <height> <save_name>", description="Merges multiple attached images into one", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def merge(self, ctx, width: int, height: int, save_name: str):
         # Check if the message has attachments

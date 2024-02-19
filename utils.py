@@ -3,6 +3,10 @@ from discord.ext import commands
 from datetime import datetime
 import pytz
 import random
+import json
+
+def generate_number():
+    return random.randint(1, 9999)
 
 def GetLocalTime():
     utc_now = datetime.utcnow()
@@ -10,54 +14,49 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-# Not used 
-# Function to customize command visibility based on roles
-# def is_visible(allowed_roles):
-#     def predicate(ctx):
-#         async def check(ctx):
-#             if ctx.author.id == ctx.guild.owner_id:
-#                 return True
-
-#             user_roles = ctx.author.roles
-#             for role_name in allowed_roles:
-#                 required_role = discord.utils.get(ctx.guild.roles, name=role_name)
-#                 if required_role and required_role in user_roles:
-#                     return True
-
-#             await ctx.send(f"You don't have the required roles ({', '.join(allowed_roles)}) or higher to use this command.")
-#             return False
-
-#         return commands.check(check)
-
-#     return predicate
-
-async def LogModAction(guild, action, target, reason, warning_number=None, issuer=None, user_data=None, config=None, embed=None):
+async def LogAction(guild, channel_name, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None, old_message=None, new_message=None):
     if not config:
-        raise ValueError("config is required for LogModAction")
+        raise ValueError("config is required for LogAction")
 
-    mod_logs_channel_id = config.get('mod_logs_channel_id')
+    ChannelID = config['channel_ids'].get(channel_name)
+    if not ChannelID:
+        raise ValueError(f"{channel_name} is not defined in the config")
 
-    if not mod_logs_channel_id:
-        raise ValueError("mod_logs_channel_id is not defined in the config")
-
-    mod_logs_channel = guild.get_channel(mod_logs_channel_id)
-
-    if not mod_logs_channel:
-        raise ValueError(f"Mod logs channel with ID {mod_logs_channel_id} not found")
+    channel = guild.get_channel(ChannelID)
+    if not channel:
+        raise ValueError(f"Channel with ID {ChannelID} not found")
 
     embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
 
     timestamp = GetLocalTime()
 
+    emojis = {
+        "Kick": "👢",
+        "Ban": "🔨",
+        "Warning": "⚠️",
+        "Note": "📝",
+        "Database": "💾",
+        "Edit": "✏️",
+        "Deletion": "🗑️",
+    }
+
+    emoji = emojis.get(action, "")
     embed = discord.Embed(
-        title=f"{action} Log",
+        title=f"{emoji} {action} Log",
         color=embed_color,
         timestamp=timestamp
     )
 
-    embed.add_field(name="Action", value=action, inline=True)
-    embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=True)
+    embed.add_field(name="Action", value=action, inline=False)
+    embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
+
+    if action == 'Edit' and old_message and new_message:
+        embed.add_field(name="Original Message", value=old_message, inline=False)
+        embed.add_field(name="Edited Message", value=new_message, inline=False)
+
+    if edited_content:
+        embed.add_field(name="Edited Content", value=edited_content, inline=False)
 
     if action == 'Warning':
         if warning_number:
@@ -78,8 +77,7 @@ async def LogModAction(guild, action, target, reason, warning_number=None, issue
                 value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
                 inline=False
             )
-
-    await mod_logs_channel.send(embed=embed)
+    await channel.send(embed=embed)
 
 # Function to format set details with line breaks
 def FormatedSetDetails(SetDetails):

@@ -4,8 +4,6 @@ import json
 import traceback
 
 class ExtensionManagement(commands.Cog):
-    hidden = True
-
     def __init__(self, bot):
         self.bot = bot
 
