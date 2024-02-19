@@ -1,12 +1,9 @@
 import discord
 from discord.ext import commands
-import json
 import os
 import sqlite3
 
 class CustomCommands(commands.Cog):
-    hidden = True
-
     def __init__(self, bot):
         self.bot = bot
         self.database_folder = 'Database'
@@ -16,8 +13,8 @@ class CustomCommands(commands.Cog):
         conn = sqlite3.connect(self.database_file)
         c = conn.cursor()
         c.execute(f'''create table if not exists {self.table_name}
-                    (command_name text primary key,
-                    command_response text)''')
+                (command_name text primary key,
+                command_response text)''')
         conn.commit()
         conn.close()
 
@@ -27,29 +24,23 @@ class CustomCommands(commands.Cog):
         try:
             conn = sqlite3.connect(self.database_file)
             c = conn.cursor()
-
             c.execute(f'select * from {self.table_name}')
             CustomName = c.fetchall()
-
             conn.close()
 
             # Register the custom commands to the bot
             for CommandName, command_response in CustomName:
                 async def custom_command(ctx, response=command_response):
                     await ctx.send(response)
-
                 self.bot.add_command(commands.Command(custom_command, name=CommandName))
-
         except Exception as e:
             print(f'An error occurred while loading custom commands: {str(e)}')
 
     def RefreshCustomCommands(self):
         conn = sqlite3.connect(self.database_file)
         c = conn.cursor()
-
         c.execute(f'select * from {self.table_name}')
         CustomName = c.fetchall()
-
         conn.close()
 
         # Remove existing custom commands from the bot
@@ -61,11 +52,10 @@ class CustomCommands(commands.Cog):
         for CommandName, command_response in CustomName:
             async def custom_command(ctx, response=command_response):
                 await ctx.send(response)
-
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
-    @commands.command(description='Refresh custom commands', hidden=True)
-    @commands.has_any_role("Helper", "Moderator", "Admin")
+    @commands.command(help='Refresh custom commands', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
     async def refreshcommands(self, ctx):
         try:
             self.RefreshCustomCommands()
@@ -94,7 +84,6 @@ class CustomCommands(commands.Cog):
 
             c.execute(f'insert into {self.table_name} values (?, ?)', (CommandName, command_response))
             conn.commit()
-
             conn.close()
 
             async def custom_command(ctx):
@@ -126,7 +115,6 @@ class CustomCommands(commands.Cog):
 
             c.execute(f'update {self.table_name} set command_response = ? where command_name = ?', (new_response, CommandName))
             conn.commit()
-
             conn.close()
 
             async def custom_command(ctx):
@@ -137,7 +125,7 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(aliases=['delcommand', 'delcmd'], help='<command_name>>', hidden=True)
+    @commands.command(help='<command_name>>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def deletecommand(self, ctx, CommandName):
         try:
@@ -154,7 +142,6 @@ class CustomCommands(commands.Cog):
 
             c.execute(f'delete from {self.table_name} where command_name = ?', (CommandName,))
             conn.commit()
-
             conn.close()
 
             self.bot.remove_command(CommandName)
@@ -163,7 +150,7 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    @commands.command(help="Shows the hidden commands")
+    @commands.command(help="Shows the staff commands", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def staffcommands(self, ctx):
         bot_commands = self.bot.commands
@@ -176,118 +163,58 @@ class CustomCommands(commands.Cog):
     def create_embeds(self, commands):
         """Creates embeds for the given commands."""
         embeds = []
-        embed = discord.Embed(title="Staff Commands", description="These are the available staff commands.", color=discord.Color.green())
+        embed = discord.Embed(title="__**Staff Commands**__", description="*These are the available staff commands.*", color=discord.Color.green())
         no_help_commands = []
 
         for command in commands:
             if command.help is not None:
-                embed.add_field(name=command.name, value=command.help, inline=True)
+                embed.add_field(name=f"`{command.name}`", value=f"`{command.help}`", inline=True)
             else:
                 no_help_commands.append(command)
 
             if len(embed.fields) == 25:
-                embed.set_footer(text=f"Page {len(embeds) + 1}")
+                embed.set_footer(text=f"*Page {len(embeds) + 1}*")
                 embeds.append(embed)
-                embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
+                embed = discord.Embed(title="**Staff Commands (cont.)**", color=discord.Color.green())
 
         for command in no_help_commands:
             if len(embed.fields) == 25:
-                embed.set_footer(text=f"Page {len(embeds) + 1}")
+                embed.set_footer(text=f"*Page {len(embeds) + 1}*")
                 embeds.append(embed)
-                embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
-            embed.add_field(name=command.name, value="No help text available", inline=True)
+                embed = discord.Embed(title="**Staff Commands (cont.)**", color=discord.Color.green())
+            embed.add_field(name=f"`{command.name}`", value="", inline=True)
 
-        embed.set_footer(text=f"Page {len(embeds) + 1}")
+        embed.set_footer(text=f"*Page {len(embeds) + 1}*")
         embeds.append(embed)
         return embeds
 
-    # @commands.command(aliases=['modcommands'], help='Display the staff command list')
-    # @commands.has_any_role("Moderator", "Admin")
-    # async def staffcommands(self, ctx):
-    #     embed = discord.Embed(
-    #         title='**__Staff Command List__**',
-    #         description='*Here are the staff commands:*',
-    #         color=discord.Color.random()
-    #     )
-    #     embed.add_field(
-    #         name='User Database:',
-    #         value=(
-    #             "`!adduser <uid>` - Add a user to the database.\n"
-    #             "`!updateinfo <uid> <key> <value>` - Update user information."
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='Info:',
-    #         value=(
-    #             "`!info <uid>` - Retrieve user information.\n"
-    #             "`!accountage <uid>` - Check's when a user account was created.\n"
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='Bans:',
-    #         value=(
-    #             "`!ban <uid> <reason>` - Ban a user.\n"
-    #             "`!unban <uid> <reason>` - Unban a user.\n"
-    #             "`!checkbans <uid>` - Check a user's bans."
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='SoftBan:',
-    #         value=(
-    #             "`!softban <uid> <reason>` - SoftBan a user"
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='Notes:',
-    #         value=(
-    #             "`!addnote <uid> <message>` - Add a note for a user.\n"
-    #             "`!removenote <uid> <note#> <message>` - Remove a user's note.\n"
-    #             "`!notes <uid> <note#>` - View a user's notes."
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='Warnings:',
-    #         value=(
-    #             "`!addwarning <uid> <reason>` - Add a warning for a user.\n"
-    #             "`!removewarning <uid> <warning#> <reason>` - Remove a user's warning.\n"
-    #             "`!checkwarning <uid> <warning#>` - View a user's warnings."
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='Kicks:',
-    #         value='`!kick <uid> <reason>` - Kick a user.',
-    #         inline=False
-    #     )
-    #     embed.add_field(
-    #         name='Others:',
-    #         value=(
-    #             "`!botdown <channel> <message>` - Send a bot down message.\n"
-    #             "`!announcement <channel> <message>` - Send an announcement.\n"
-    #             "`!addsticky <channel> <message>` - Add a sticky note.\n"
-    #             "`!removesticky <channel>` - Remove a sticky note.\n"
-    #             "`!addcommand <command_name> <respond_message>` - Add's a custom command.\n"
-    #             "`!togglechannel <channel> <role> <permission_name>` - Permission names: `send_messages` or `read_messages`\n"
-    #             "`!efreshcommands` - Refreshes the custom_commands.json.\n"
-    #             "`!merge <width> <height> <save_name>` - Merges multiple attached images into one.\n"
-    #             "`!poll \"Poll Title\" \"option1\" \"option2\" <add_more_if_needed> \"Your Message Here\"` - Creates a poll.\n"
-    #             "`!translate <TargetLanguage> <TextToTranslate>` - Example: !translate fr Hello, how are you?"
-    #         ),
-    #         inline=False
-    #     )
-    #     embed.add_field(name='\u200b', value='\u200b', inline=False)
-    #     embed.set_footer(
-    #     text="Note: If you use a command and it says 'User not in database', "
-    #         "use the `!adduser <uid>` command to add them first, "
-    #         "and then use the other command."
-    # )
+    # def create_embeds(self, commands):
+    #     """Creates embeds for the given commands."""
+    #     embeds = []
+    #     embed = discord.Embed(title="Staff Commands", description="These are the available staff commands.", color=discord.Color.green())
+    #     no_help_commands = []
 
-    #     await ctx.send(embed=embed)
+    #     for command in commands:
+    #         if command.help is not None:
+    #             embed.add_field(name=command.name, value=command.help, inline=True)
+    #         else:
+    #             no_help_commands.append(command)
+
+    #         if len(embed.fields) == 25:
+    #             embed.set_footer(text=f"Page {len(embeds) + 1}")
+    #             embeds.append(embed)
+    #             embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
+
+    #     for command in no_help_commands:
+    #         if len(embed.fields) == 25:
+    #             embed.set_footer(text=f"Page {len(embeds) + 1}")
+    #             embeds.append(embed)
+    #             embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
+    #         embed.add_field(name=command.name, value="No help text available", inline=True)
+
+    #     embed.set_footer(text=f"Page {len(embeds) + 1}")
+    #     embeds.append(embed)
+    #     return embeds
 
 def setup(bot):
     bot.add_cog(CustomCommands(bot))
