@@ -11,11 +11,13 @@ class FactsQuestions(commands.Cog):
         database_folder = 'Database'
         self.database_file = os.path.join(database_folder, 'faq.db')
         self.conn = None
+        self.cursor = None
         self.c = None
         self.SetupDatabase()
 
     def SetupDatabase(self):
         self.conn = sqlite3.connect(self.database_file)
+        self.cursor = self.conn.cursor()  # Create the cursor here
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS faq
                         (name TEXT PRIMARY KEY, question TEXT, answer TEXT)''')
@@ -24,8 +26,8 @@ class FactsQuestions(commands.Cog):
         self.conn.commit()
 
     def __del__(self):
-        if self.c:
-            self.c.connection.close()
+        if self.conn:
+            self.conn.close()
 
     async def UpdateFAQ(self, ctx):
         self.SetupDatabase()
