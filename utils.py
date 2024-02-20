@@ -32,21 +32,24 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
     emojis = {
         "Kick": "👢",
         "Ban": "🔨",
+        "SoftBan": "⏳",
+        "Unban": "🕊️",
         "Warning": "⚠️",
         "Note": "📝",
         "Database": "💾",
         "Edit": "✏️",
         "Deletion": "🗑️",
+        "BOT DM": "🤖",
     }
 
     emoji = emojis.get(action, "")
     embed = discord.Embed(
-        title=f"{emoji} {action} Log",
+        title=f"{emoji} {action}",
         color=embed_color,
         timestamp=timestamp
     )
 
-    embed.add_field(name="Action", value=action, inline=False)
+    # embed.add_field(name="Action", value=action, inline=False)
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
 

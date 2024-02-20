@@ -56,7 +56,18 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not message.author.bot:
+        if isinstance(message.channel, discord.DMChannel):
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+            print(f"Received DM from {message.author.name} at {timestamp}: {message.content}")
+            await utils.LogAction(
+                guild=self.bot.get_guild(config['guild_id']),
+                channel_name='DMLogs',
+                action='BOT DM',
+                target=message.author,
+                reason=f"Received DM at {timestamp}\n\n**DM Message:**\n\n{message.content}",
+                config=config
+            )
+        elif not message.author.bot:
             uid = str(message.author.id)
             cursor = self.conn.cursor()
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
