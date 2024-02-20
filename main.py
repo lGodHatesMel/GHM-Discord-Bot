@@ -1,4 +1,5 @@
 import os
+# os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 import discord
 from discord import Embed
 from discord.ext import commands
@@ -6,9 +7,19 @@ import json
 import utils
 import traceback
 # import logging
-
 # logging.basicConfig(level=logging.INFO)
 
+
+## Intents
+intents = discord.Intents.default()
+intents.members = True
+intents.presences = True
+intents.dm_messages = True
+#intents.dm_reactions = True
+# intents.typing = True
+
+
+## Custom Help Command
 class EmbedHelpCommand(commands.HelpCommand):
     def __init__(self):
         super().__init__()
@@ -44,65 +55,25 @@ class EmbedHelpCommand(commands.HelpCommand):
         channel = self.get_destination()
         await channel.send(embed=embed)
 
-intents = discord.Intents.default()
-intents.members = True
-intents.presences = True
 
-def load_or_create_config():
-    if os.path.exists('config.json'):
-        print("config.json already exists.")
-    else:
-        default_config = {
-            "token": "YOUR_TOKEN_HERE",
-            "prefix": "!",
-            "owner_id": "YOUR_OWNER_ID",
-            "channel_ids": {
-                "WelcomeChannel": None,
-                "RulesChannel": None,
-                "FAQChannel": None,
-                "RoleChannel": None,
-                "AutoMod": None,
-                "ModLogs": None,
-                "MemberLogs": None,
-                "ServerLogs": None,
-                "MessageLogs": None,
-                "StreamChannel": None
-            },
-            "twitch_username": "YOUR_TWITCH_USERNAME",
-            "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
-            "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
-            "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
-            "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
-            # Not really need and may remove code for this below
-            "enable_countdown": False,
-            "token_refresher_enabled": False,
-            "countdown_channel_id": None,
-            "target_timestamp": None,
-        }
-        with open('config.json', 'w') as config_file:
-            json.dump(default_config, config_file, indent=4)
-        print("A new config.json file has been created with default values.")
-
-    try:
-        with open('config.json', 'r') as config_file:
-            config = json.load(config_file)
-            if config['owner_id'] is None:
-                config['owner_id'] = int(input("Enter your owner ID: "))
-                with open('config.json', 'w') as config_file:
-                    json.dump(config, config_file, indent=4)
-                    print("owner_id has been set in config.json.")
-            return config
-    except FileNotFoundError:
-        print("Error: config.json file not found. Make sure the file exists.")
-        exit(1)
-    except json.JSONDecodeError:
-        print("Error: Failed to parse config.json. Check the file's format.")
-        exit(1)
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        exit(1)
-
-config = load_or_create_config()
+## Bot Setup
+try:
+    with open('config.json', 'r') as config_file:
+        config = json.load(config_file)
+        if config['owner_id'] is None:
+            config['owner_id'] = int(input("Enter your owner ID: "))
+            with open('config.json', 'w') as config_file:
+                json.dump(config, config_file, indent=4)
+                print("owner_id has been set in config.json.")
+except FileNotFoundError:
+    print("Error: config.json file not found. Make sure the file exists.")
+    exit(1)
+except json.JSONDecodeError:
+    print("Error: Failed to parse config.json. Check the file's format.")
+    exit(1)
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+    exit(1)
 
 bot = commands.Bot(
     command_prefix=config['prefix'],
@@ -114,10 +85,14 @@ bot = commands.Bot(
 )
 bot.config = config
 
+
+## Commands
 @bot.command(name='commands')
 async def _commands(ctx, *args):
     await ctx.send_help(*args)
 
+
+## Load Cogs
 folders = ['cogs']
 for folder in folders:
     for filename in os.listdir(folder):
@@ -129,6 +104,8 @@ for folder in folders:
             except Exception as e:
                 print(f'Failed to load extension {extension}: {str(e)}')
 
+
+## Events
 @bot.event
 async def on_ready():
     joined_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
@@ -171,6 +148,12 @@ async def on_command_error(ctx, error):
         tb_text = ''.join(tb_lines)
         print(f'Error: {error}\n{tb_text}')
 
+# @bot.event
+# async def on_typing(channel, user, when):
+#     print(f"{user.name} started typing in {channel.name} at {when}")
+
+
+## Run the bot
 if __name__ == "__main__":
     try:
         bot.run(config['token'])
