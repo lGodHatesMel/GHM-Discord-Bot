@@ -27,8 +27,6 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
 
     embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
 
-    timestamp = GetLocalTime()
-
     emojis = {
         "Kick": "👢",
         "Ban": "🔨",
@@ -42,6 +40,7 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
         "BOT DM": "🤖",
     }
 
+    timestamp = GetLocalTime()
     emoji = emojis.get(action, "")
     embed = discord.Embed(
         title=f"{emoji} {action}",
@@ -49,7 +48,6 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
         timestamp=timestamp
     )
 
-    # embed.add_field(name="Action", value=action, inline=False)
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
 
@@ -74,10 +72,11 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
     if user_data and action == 'Ban':
         bans = [ban for ban in user_data.get("banned", [])]
         for ban in bans:
+            timestamp = ban['timestamp'].strftime('%m-%d-%y %I:%M %p')
             embed.add_field(
                 name="Ban Info",
-                value=f"Date/Time: {ban['timestamp']}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
-                inline=False
+                value=f"Date/Time: {timestamp}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
+                inline=False,
             )
     await channel.send(embed=embed)
 
@@ -97,7 +96,6 @@ def FormatedSetDetails(SetDetails):
     for i in splittables:
         if i in SetDetails:
             SetDetails = SetDetails.replace(i, f"\n{i}")
-
     return SetDetails
 
 def RandomPKMFacts():

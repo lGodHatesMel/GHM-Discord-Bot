@@ -78,11 +78,7 @@ class PKMStuff(commands.Cog):
             logging.error(e)
             await ctx.send("An error occurred while fetching Pokémon sets.")
 
-    @commands.command(
-        description='Add a new Pokémon set. This command is only available to users with the Helper, Moderator, or Admin role. The game must be one of the following: sv, swsh, pla, bdsp. The Pokémon name should be the name of the Pokémon. The ShowdownSet Details should be the details of the set in Showdown format.',
-        help='<Game: sv, swsh, pla, bdsp> <Pokemon Name> <ShowdownSet Details>',
-        hidden=True
-    )
+    @commands.command(help='<Game: sv, swsh, pla, bdsp> <PokemonName> <ShowdownSetDetails>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def addset(self, ctx, game, PokemonName, *SetDetails):
         try:

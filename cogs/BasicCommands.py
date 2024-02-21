@@ -43,21 +43,22 @@ class BasicCommands(commands.Cog):
             embed = discord.Embed(
                 title="Server Ping",
                 description=f"Server ping is currently {BotLatency:.2f}ms",
-                color=discord.Color.red()
+                color=discord.Color.red(),
             )
-            avatar_url = str(ctx.author.avatar.url) if ctx.author.avatar else 'https://www.gravatar.com/avatar/?d=retro&s=32'
+            avatar_url = (
+                ctx.author.avatar.url
+                if ctx.author.avatar
+                else "https://www.gravatar.com/avatar/?d=retro&s=32"
+            )
             embed.set_thumbnail(url=avatar_url)
 
             reply = await ctx.reply(embed=embed)
-
             if reply:
                 logging.info("Bot ping message sent successfully.")
             else:
                 logging.error("Failed to send bot ping message.")
-
         except Exception as e:
-            logging.error(f"Error in botping command: {e}")
-
+            logging.error(f"An error occurred while trying to get the bot's ping: {e}")
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
@@ -76,15 +77,18 @@ class BasicCommands(commands.Cog):
         await channel.set_permissions(role, overwrite=permissions)
 
         if getattr(permissions, permission_name):
-            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled.")
+            await ctx.send(
+                f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled."
+            )
         else:
-            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled.")
+            await ctx.send(
+                f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled."
+            )
 
     @togglechannel.error
     async def togglechannel_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the required permissions to use this command.")
-
 
     @commands.command(help='<#Channel> <Message>', description='Sends a bot down message to a specific channel', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -97,7 +101,6 @@ class BasicCommands(commands.Cog):
         author = ctx.message.author
         command = ctx.command.name
         logging.info(f"{current_time} - {author.name} used the *{command}* command.")
-
 
     @commands.command(help='<#Channel> <Title> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -117,7 +120,6 @@ class BasicCommands(commands.Cog):
 
         await channel.send(embed=embed)
         await ctx.send(f"Announcement sent to {channel.mention}.")
-
 
     @commands.command(help='"Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', description='Creates a poll with multiple options', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -176,7 +178,6 @@ class BasicCommands(commands.Cog):
 
 def setup(bot):
     bot.add_cog(BasicCommands(bot))
-
 
 
 # !translate fr Hello, how are you?

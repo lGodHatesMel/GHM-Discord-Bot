@@ -5,6 +5,9 @@ import asyncio
 import discord
 from discord import RawReactionActionEvent, Embed, File
 from discord.ext import commands
+# from PIL import Image, ImageDraw, ImageFont
+# import requests
+# from io import BytesIO
 
 @staticmethod
 def star_level(star_count):
@@ -34,14 +37,8 @@ class Starboard(commands.Cog):
         with open('config.json') as f:
             self.config = json.load(f)
 
-    print("TEMPORARY: Replace with the actual starboard channel ID when fully live")
-
     def cog_unload(self):
         self.conn.close()
-
-    # from PIL import Image, ImageDraw, ImageFont
-    # import requests
-    # from io import BytesIO
 
     # def create_message_image(self, author_name, author_avatar_url, content):
     #     img = Image.new('RGB', (500, 100), color = (255, 255, 255))
@@ -199,14 +196,14 @@ class Starboard(commands.Cog):
 
         self.c.execute("SELECT * FROM starboard_table")
         starboard_records = self.c.fetchall()
+
         for record in starboard_records:
             try:
                 starboard_message = await starboard_channel.fetch_message(record[3])
                 await starboard_message.delete()
                 await asyncio.sleep(1)
-            except:
-                pass
-
+            except Exception as e:
+                print(f"Error while deleting message: {e}")
             try:
                 channel = self.bot.get_channel(record[4])
                 message = await channel.fetch_message(record[0])
@@ -224,7 +221,6 @@ class Starboard(commands.Cog):
             except discord.errors.NotFound:
                 print(f"Message {record[0]} not found.")
                 continue
-
         self.conn.commit()
         await ctx.send("All starboards have been refreshed.")
 
