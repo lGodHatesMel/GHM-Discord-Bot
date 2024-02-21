@@ -63,7 +63,7 @@ class Moderation(commands.Cog):
                 guild=self.bot.get_guild(config['guild_id']),
                 channel_name='DMLogs',
                 action='BOT DM',
-                target=message.author,
+                target=f"{message.author}\n(UID: {message.author.id})",
                 reason=f"Received DM at {timestamp}\n\n**DM Message:**\n\n{message.content}",
                 config=config
             )
@@ -935,6 +935,42 @@ class Moderation(commands.Cog):
             await ctx.send(f"Nickname changed for {member.mention} to {new_name}.")
         except discord.Forbidden:
             await ctx.send("Failed to change the nickname due to permission settings.")
+
+    @commands.command(help="<uid> <Message>", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def dm(self, ctx, user_id: int, *, message: str):
+        user = self.bot.get_user(user_id)
+        if user is None:
+            await ctx.send("User not found.")
+            return
+        try:
+            await user.send(message)
+            await ctx.send(f"Message sent to {user.name}. Message content: `{message}`")
+        except discord.Forbidden:
+            await ctx.send("I'm not able to DM that user.")
+
+    @commands.command(help="<uid> <Message>", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def dm(self, ctx, user_id: int, *, message: str):
+        user = self.bot.get_user(user_id)
+        if user is None:
+            await ctx.send("User not found.")
+            return
+        try:
+            await user.send(message)
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+            print(f"At {timestamp} {ctx.author} sent a DM to {user.name}. \nMessage content: '{{{message}}}'")
+            await utils.LogAction(
+                guild=ctx.guild,
+                channel_name='ModLogs',
+                action='BOT DM',
+                target=user,
+                reason=f"**DM Message:**\n\n{message}",
+                issuer=ctx.author,
+                config=config
+            )
+        except discord.Forbidden:
+            await ctx.send("I'm not able to DM that user.")
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
