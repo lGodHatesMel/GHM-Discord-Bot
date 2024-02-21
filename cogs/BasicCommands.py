@@ -93,7 +93,7 @@ class BasicCommands(commands.Cog):
         await channel.send(f"**Bot Down:**\n{message}")
         await ctx.send(f"Bot Down message sent to {channel.mention}.")
 
-        current_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+        current_time = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
         author = ctx.message.author
         command = ctx.command.name
         logging.info(f"{current_time} - {author.name} used the *{command}* command.")

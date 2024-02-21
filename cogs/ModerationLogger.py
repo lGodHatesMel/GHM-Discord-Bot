@@ -54,7 +54,7 @@ class ModerationLogger(commands.Cog):
             await ctx.send("Bot doesn't have the necessary permissions to clear messages.")
 
     async def LogBlacklistedWords(self, channel, action, target, reason, user_id):
-        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
 
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{target.name}", icon_url=target.avatar_url)
@@ -130,7 +130,7 @@ class ModerationLogger(commands.Cog):
             return
 
         LoggingChannel = self.bot.get_channel(MessageLoggerChannelID)
-        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
 
         OrginalMessage = self.truncate_text(before.content, 1024)
         EditedMessage = self.truncate_text(after.content, 1024)
@@ -156,7 +156,7 @@ class ModerationLogger(commands.Cog):
             return
 
         LoggingChannel = self.bot.get_channel(MessageLoggerChannelID)
-        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
 
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{message.author.name}", icon_url=message.author.avatar_url)

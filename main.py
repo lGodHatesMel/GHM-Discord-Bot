@@ -108,7 +108,7 @@ for folder in folders:
 ## Events
 @bot.event
 async def on_ready():
-    joined_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+    joined_time = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
     print(f'=====================================================')
     print(f'===   Bot Name: {bot.user.name}')
     print(f'===   Discord Server: {bot.guilds[0].name}')
