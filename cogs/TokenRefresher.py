@@ -27,10 +27,7 @@ class TokenRefresher(commands.Cog):
         if not self.RunTokenRefresher():
             return
 
-        # Define the token refresh endpoint
         token_url = 'https://id.twitch.tv/oauth2/token'
-
-        # Set the parameters for the POST request to refresh the token
         params = {
             'client_id': self.token_config['client_id'],
             'client_secret': self.token_config['client_secret'],
@@ -38,15 +35,12 @@ class TokenRefresher(commands.Cog):
             'grant_type': 'refresh_token'
         }
 
-        # Send the POST request to refresh the token
         response = requests.post(token_url, data=params)
-
-        # Check if the request was successful
         if response.status_code == 200:
             data = response.json()
             access_token = data['access_token']
             print(f"=====================================================")
-            print(f"======= Access Token Refresh @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')} =======")
+            print(f"===== Access Token Refreshed @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')} ====")
             print(f"==== New Token: ({access_token}) ====")
             print(f"=====================================================")
         else:

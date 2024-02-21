@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands
 from discord.ext import tasks
-import os
 import json
 import aiohttp
-import requests
 
 class LiveNotification(commands.Cog):
     def __init__(self, bot):
@@ -19,7 +17,7 @@ class LiveNotification(commands.Cog):
         with open('config.json', 'r') as f:
             return json.load(f)
 
-    @tasks.loop(minutes=5.0)
+    @tasks.loop(minutes=15.0)
     async def check_live(self):
         TwitchAPI = f'https://api.twitch.tv/helix/streams?user_login={self.config["twitch_username"]}'
         headers = {

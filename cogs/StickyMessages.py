@@ -48,10 +48,15 @@ class StickyMessages(commands.Cog):
     async def SaveStickyNotes(self):
         conn = sqlite3.connect(self.database_file)
         c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS sticky_notes (channel_id INTEGER, author_id INTEGER, content TEXT, message INTEGER)")
+        c.execute(
+            "CREATE TABLE IF NOT EXISTS sticky_notes (channel_id INTEGER, author_id INTEGER, content TEXT, message INTEGER)"
+        )
         c.execute("DELETE FROM sticky_notes")
         for channel_id, data in self.StickyMsg.items():
-            c.execute("INSERT INTO sticky_notes VALUES (?,?,?,?)", (channel_id, data["author_id"], data["content"], data["message"].id))
+            c.execute(
+                "INSERT INTO sticky_notes VALUES (?,?,?,?)",
+                (channel_id, data["author_id"], data["content"], data["message"].id),
+            )
         conn.commit()
         conn.close()
 
@@ -59,7 +64,7 @@ class StickyMessages(commands.Cog):
     async def on_ready(self):
         await self.load_sticky_notes()
         self.cleanup()
-        
+
     def cleanup(self):
         for channel_id, data in self.StickyMsg.items():
             asyncio.run_coroutine_threadsafe(

@@ -13,12 +13,10 @@ class ImageEditor(commands.Cog):
     async def resizetheimage(self, ctx, size, attachment, save_name):
         try:
             image = Image.open(io.BytesIO(await attachment.read()))
-
             original_width, original_height = image.size
             new_width = size
             new_height = int((original_height / original_width) * size)
             resized_image = image.resize((new_width, new_height))
-
             resized_image_data = io.BytesIO()
             resized_image.save(resized_image_data, format='PNG')
             resized_image_data.seek(0)
@@ -35,12 +33,10 @@ class ImageEditor(commands.Cog):
             response = await self.bot.session.get(url)
             img_data = await response.read()
             image = Image.open(io.BytesIO(img_data))
-
             original_width, original_height = image.size
             new_width = size
             new_height = int((original_height / original_width) * size)
             resized_image = image.resize((new_width, new_height))
-
             resized_image_data = io.BytesIO()
             resized_image.save(resized_image_data, format='PNG')
             resized_image_data.seek(0)

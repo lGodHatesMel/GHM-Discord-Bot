@@ -19,11 +19,11 @@ class Countdown(commands.Cog):
 
 @commands.Cog.listener()
 async def on_ready(self):
-    if config.get('enable_countdown', False) and config.get('countdown_channel_id') is not None:
+    if config.get('enable_countdown', False) and config.get['channel_ids'].get('ServerAnnocementChannel') is not None:
         await self.run_countdown()
 
 async def run_countdown(self):
-    countdown_channel_id = config.get('countdown_channel_id')
+    countdown_channel_id = config.get['channel_ids'].get('ServerAnnocementChannel')
     target_timestamp = datetime.utcfromtimestamp(int(config.get('target_timestamp')))
     channel = self.bot.get_channel(countdown_channel_id)
 

@@ -52,11 +52,22 @@ class Moderation(commands.Cog):
                 user_info["info"]["roles"] = [role.name for role in after.roles]
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
-            print(f"Updated user {username} : {uid} @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+            print(f"Updated user {username} : {uid} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not message.author.bot:
+        if isinstance(message.channel, discord.DMChannel):
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+            print(f"Received DM from {message.author.name} at {timestamp}: {message.content}")
+            await utils.LogAction(
+                guild=self.bot.get_guild(config['guild_id']),
+                channel_name='DMLogs',
+                action='BOT DM',
+                target=f"{message.author}\n(UID: {message.author.id})",
+                reason=f"Received DM at {timestamp}\n\n**DM Message:**\n\n{message.content}",
+                config=config
+            )
+        elif not message.author.bot:
             uid = str(message.author.id)
             cursor = self.conn.cursor()
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
@@ -81,7 +92,7 @@ class Moderation(commands.Cog):
             await ctx.send(f"Updated username to {new_username}.")
         else:
             await ctx.send("User not found in the database.")
-        print(f"Updated {new_username} : {uid} to the database @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+        print(f"Updated {new_username} : {uid} to the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
     @commands.Cog.listener()
     async def on_user_update(self, before, after):
@@ -97,7 +108,7 @@ class Moderation(commands.Cog):
                 user_info["info"]["avatar_url"] = str(after.avatar_url)
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
-            print(f"Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+            print(f"Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -114,7 +125,7 @@ class Moderation(commands.Cog):
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
             user = cursor.fetchone()
             if user:
-                print(f"User ({member.name} : {uid}) is already in the database and has joined back @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+                print(f"User ({member.name} : {uid}) is already in the database and has joined back @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
                 user_info = json.loads(user[1])
                 user_info["info"]["Left"] = None
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
@@ -144,7 +155,7 @@ class Moderation(commands.Cog):
                 if not member.bot:
                     user_info["info"]["roles"] = [role.name for role in member.roles]
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-                print(f"Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+                print(f"Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
                 embed = discord.Embed(
                     title="Welcome!",
                     description=f"Welcome to GodHatesMe Gaming Centre {member.mention}, you are our {member_number}!\n\n"
@@ -190,7 +201,7 @@ class Moderation(commands.Cog):
             await channel.send(embed=embed)
 
             uid = str(member.id)
-            print(f"({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+            print(f"({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
             cursor = self.conn.cursor()
             cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
@@ -250,7 +261,7 @@ class Moderation(commands.Cog):
                     }
                 }
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-            print(f"Adding ({member.name} : {uid}) to the database @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+            print(f"Adding ({member.name} : {uid}) to the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
         self.conn.commit()
         await ctx.send("Database updated with all server members!")
@@ -260,7 +271,7 @@ class Moderation(commands.Cog):
     async def forcesavedb(self, ctx):
         self.conn.commit()
         await ctx.send("Database saved successfully!")
-        print(f"Forced saved database @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+        print(f"Forced saved database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
     @commands.command(help='<UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -359,7 +370,7 @@ class Moderation(commands.Cog):
                 await ctx.send("User not found in the server.")
         else:
             await ctx.send(f"User with ID {uid} already exists in the database.")
-        print(f"Adding ({member.name} : {uid}) to the Database @ {utils.GetLocalTime().strftime('%m-%d-%y %H:%M')}")
+        print(f"Adding ({member.name} : {uid}) to the Database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
     @commands.command(help='<UID> <Note>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -396,7 +407,7 @@ class Moderation(commands.Cog):
 
         user_info = json.loads(user_row[1])
         notes = user_info["moderation"]["notes"]
-        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+        timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
         note_number = 1
         for note in notes:
             if note.get("number"):
@@ -484,16 +495,37 @@ class Moderation(commands.Cog):
             user_info = json.loads(user[1])
             warnings = user_info.get("warns", [])
             warning_number = len(warnings) + 1
-            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
             author = ctx.author.name
 
-            # Customize the message based on other conditions, for example:
             if "badword" in warning.lower():
                 warning += " Your warning contains offensive language."
             elif "spam" in warning.lower():
                 warning += " Your warning is related to spamming."
             elif "promoting" in warning.lower():
                 warning += " Your warning is related to Promoting other services / Platforms."
+            elif "scam" in warning.lower():
+                warning += " Your warning is related to Scamming / Phishing."
+            if "harassment" in warning.lower():
+                warning += " Your warning is related to harassment of other users."
+            elif "doxing" in warning.lower():
+                warning += " Your warning is related to sharing private information without consent."
+            elif "impersonation" in warning.lower():
+                warning += " Your warning is related to impersonating another user or staff."
+            elif "disrespect" in warning.lower():
+                warning += " Your warning is related to disrespecting other users or staff."
+            elif "trolling" in warning.lower():
+                warning += " Your warning is related to trolling or disruptive behavior."
+            elif "hatespeech" in warning.lower():
+                warning += " Your warning is related to using hate speech or discriminatory language."
+            elif "inappropriatecontent" in warning.lower():
+                warning += " Your warning is related to sharing inappropriate content."
+            elif "rulesviolation" in warning.lower():
+                warning += " Your warning is related to violating server rules."
+            elif "bot abuse" in warning.lower():
+                warning += " Your warning is related to abusing bot commands."
+            elif "spoilers" in warning.lower():
+                warning += " Your warning is related to sharing spoilers without warning."
 
             new_warning = {
                 "number": warning_number,
@@ -627,7 +659,7 @@ class Moderation(commands.Cog):
             user_info = json.loads(user[1])
             user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
-            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
 
             kick_info = {
                 "number": 1,
@@ -721,7 +753,7 @@ class Moderation(commands.Cog):
                 await ctx.send(f"An error occurred while sending a ban message to {user_with_uid}: {e}")
                 return
 
-            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
 
             ban_info = {
                 "timestamp": timestamp,
@@ -872,7 +904,7 @@ class Moderation(commands.Cog):
                 await asyncio.sleep(2)
                 await member.unban(reason="Soft ban")
 
-                timestamp = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+                timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
 
                 ban_info = {
                     "timestamp": timestamp,
@@ -924,6 +956,42 @@ class Moderation(commands.Cog):
             await ctx.send(f"Nickname changed for {member.mention} to {new_name}.")
         except discord.Forbidden:
             await ctx.send("Failed to change the nickname due to permission settings.")
+
+    @commands.command(help="<uid> <Message>", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def dm(self, ctx, user_id: int, *, message: str):
+        user = self.bot.get_user(user_id)
+        if user is None:
+            await ctx.send("User not found.")
+            return
+        try:
+            await user.send(message)
+            await ctx.send(f"Message sent to {user.name}. Message content: `{message}`")
+        except discord.Forbidden:
+            await ctx.send("I'm not able to DM that user.")
+
+    @commands.command(help="<uid> <Message>", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def dm(self, ctx, user_id: int, *, message: str):
+        user = self.bot.get_user(user_id)
+        if user is None:
+            await ctx.send("User not found.")
+            return
+        try:
+            await user.send(message)
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+            print(f"At {timestamp} {ctx.author} sent a DM to {user.name}. \nMessage content: '{{{message}}}'")
+            await utils.LogAction(
+                guild=ctx.guild,
+                channel_name='ModLogs',
+                action='BOT DM',
+                target=user,
+                reason=f"**DM Message:**\n\n{message}",
+                issuer=ctx.author,
+                config=config
+            )
+        except discord.Forbidden:
+            await ctx.send("I'm not able to DM that user.")
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

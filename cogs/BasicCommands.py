@@ -7,7 +7,6 @@ import logging
 from googletrans import Translator
 from sympy import sympify
 
-
 EMOJI_OPTIONS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
 
 class BasicCommands(commands.Cog):
@@ -43,21 +42,22 @@ class BasicCommands(commands.Cog):
             embed = discord.Embed(
                 title="Server Ping",
                 description=f"Server ping is currently {BotLatency:.2f}ms",
-                color=discord.Color.red()
+                color=discord.Color.red(),
             )
-            avatar_url = str(ctx.author.avatar.url) if ctx.author.avatar else 'https://www.gravatar.com/avatar/?d=retro&s=32'
+            avatar_url = (
+                ctx.author.avatar.url
+                if isinstance(ctx.author.avatar, discord.Asset)
+                else "https://www.gravatar.com/avatar/?d=retro&s=32"
+            )
             embed.set_thumbnail(url=avatar_url)
 
             reply = await ctx.reply(embed=embed)
-
             if reply:
-                logging.info("Bot ping message sent successfully.")
+                print("Bot ping message sent successfully.")
             else:
-                logging.error("Failed to send bot ping message.")
-
+                print("Failed to send bot ping message.")
         except Exception as e:
-            logging.error(f"Error in botping command: {e}")
-
+            logging.error(f"An error occurred while trying to get the bot's ping: {e}")
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
@@ -67,7 +67,6 @@ class BasicCommands(commands.Cog):
             return
 
         permissions = channel.overwrites_for(role)
-
         if getattr(permissions, permission_name):
             setattr(permissions, permission_name, False)
         else:
@@ -85,7 +84,6 @@ class BasicCommands(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the required permissions to use this command.")
 
-
     @commands.command(help='<#Channel> <Message>', description='Sends a bot down message to a specific channel', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def botdown(self, ctx, channel: discord.TextChannel, *, message):
@@ -93,11 +91,10 @@ class BasicCommands(commands.Cog):
         await channel.send(f"**Bot Down:**\n{message}")
         await ctx.send(f"Bot Down message sent to {channel.mention}.")
 
-        current_time = utils.GetLocalTime().strftime('%m-%d-%y %H:%M')
+        current_time = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
         author = ctx.message.author
         command = ctx.command.name
         logging.info(f"{current_time} - {author.name} used the *{command}* command.")
-
 
     @commands.command(help='<#Channel> <Title> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -106,7 +103,6 @@ class BasicCommands(commands.Cog):
             config = json.load(f)
 
         logo_url = config.get('logo_url')
-
         embed = discord.Embed(
             title=title,
             description=message,
@@ -117,7 +113,6 @@ class BasicCommands(commands.Cog):
 
         await channel.send(embed=embed)
         await ctx.send(f"Announcement sent to {channel.mention}.")
-
 
     @commands.command(help='"Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', description='Creates a poll with multiple options', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -133,7 +128,6 @@ class BasicCommands(commands.Cog):
         )
 
         pollMessage = await ctx.send(embed=embed)
-
         for i in range(len(options) - 1):
             await pollMessage.add_reaction(EMOJI_OPTIONS[i])
 
@@ -176,7 +170,6 @@ class BasicCommands(commands.Cog):
 
 def setup(bot):
     bot.add_cog(BasicCommands(bot))
-
 
 
 # !translate fr Hello, how are you?
