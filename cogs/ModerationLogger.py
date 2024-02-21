@@ -14,6 +14,7 @@ class ModerationLogger(commands.Cog):
         self.BadEmojis = [] # ex: "🚫", "❌"
         with open('Data/BadWordList.txt', 'r') as file:
             self.BadWords = [word.strip() for word in file.read().split(',')]
+        print("BadWordList.txt was loaded successfully.")
 
     @commands.command(help="Add word to the bad word list", hidden=True)
     @commands.has_any_role('Admin', 'Moderator')

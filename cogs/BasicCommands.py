@@ -7,7 +7,6 @@ import logging
 from googletrans import Translator
 from sympy import sympify
 
-
 EMOJI_OPTIONS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
 
 class BasicCommands(commands.Cog):
@@ -47,16 +46,16 @@ class BasicCommands(commands.Cog):
             )
             avatar_url = (
                 ctx.author.avatar.url
-                if ctx.author.avatar
+                if isinstance(ctx.author.avatar, discord.Asset)
                 else "https://www.gravatar.com/avatar/?d=retro&s=32"
             )
             embed.set_thumbnail(url=avatar_url)
 
             reply = await ctx.reply(embed=embed)
             if reply:
-                logging.info("Bot ping message sent successfully.")
+                print("Bot ping message sent successfully.")
             else:
-                logging.error("Failed to send bot ping message.")
+                print("Failed to send bot ping message.")
         except Exception as e:
             logging.error(f"An error occurred while trying to get the bot's ping: {e}")
 
@@ -68,7 +67,6 @@ class BasicCommands(commands.Cog):
             return
 
         permissions = channel.overwrites_for(role)
-
         if getattr(permissions, permission_name):
             setattr(permissions, permission_name, False)
         else:
@@ -77,13 +75,9 @@ class BasicCommands(commands.Cog):
         await channel.set_permissions(role, overwrite=permissions)
 
         if getattr(permissions, permission_name):
-            await ctx.send(
-                f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled."
-            )
+            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled.")
         else:
-            await ctx.send(
-                f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled."
-            )
+            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled.")
 
     @togglechannel.error
     async def togglechannel_error(self, ctx, error):
@@ -109,7 +103,6 @@ class BasicCommands(commands.Cog):
             config = json.load(f)
 
         logo_url = config.get('logo_url')
-
         embed = discord.Embed(
             title=title,
             description=message,
@@ -135,7 +128,6 @@ class BasicCommands(commands.Cog):
         )
 
         pollMessage = await ctx.send(embed=embed)
-
         for i in range(len(options) - 1):
             await pollMessage.add_reaction(EMOJI_OPTIONS[i])
 

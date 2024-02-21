@@ -498,13 +498,34 @@ class Moderation(commands.Cog):
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
             author = ctx.author.name
 
-            # Customize the message based on other conditions, for example:
             if "badword" in warning.lower():
                 warning += " Your warning contains offensive language."
             elif "spam" in warning.lower():
                 warning += " Your warning is related to spamming."
             elif "promoting" in warning.lower():
                 warning += " Your warning is related to Promoting other services / Platforms."
+            elif "scam" in warning.lower():
+                warning += " Your warning is related to Scamming / Phishing."
+            if "harassment" in warning.lower():
+                warning += " Your warning is related to harassment of other users."
+            elif "doxing" in warning.lower():
+                warning += " Your warning is related to sharing private information without consent."
+            elif "impersonation" in warning.lower():
+                warning += " Your warning is related to impersonating another user or staff."
+            elif "disrespect" in warning.lower():
+                warning += " Your warning is related to disrespecting other users or staff."
+            elif "trolling" in warning.lower():
+                warning += " Your warning is related to trolling or disruptive behavior."
+            elif "hatespeech" in warning.lower():
+                warning += " Your warning is related to using hate speech or discriminatory language."
+            elif "inappropriatecontent" in warning.lower():
+                warning += " Your warning is related to sharing inappropriate content."
+            elif "rulesviolation" in warning.lower():
+                warning += " Your warning is related to violating server rules."
+            elif "bot abuse" in warning.lower():
+                warning += " Your warning is related to abusing bot commands."
+            elif "spoilers" in warning.lower():
+                warning += " Your warning is related to sharing spoilers without warning."
 
             new_warning = {
                 "number": warning_number,
