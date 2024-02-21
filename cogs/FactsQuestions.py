@@ -8,8 +8,8 @@ from discord.ext import commands
 class FactsQuestions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        database_folder = 'Database'
-        self.database_file = os.path.join(database_folder, 'faq.db')
+        DBFolder = 'Database'
+        self.database_file = os.path.join(DBFolder, 'faq.db')
         self.conn = None
         self.cursor = None
         self.c = None
@@ -17,7 +17,7 @@ class FactsQuestions(commands.Cog):
 
     def SetupDatabase(self):
         self.conn = sqlite3.connect(self.database_file)
-        self.cursor = self.conn.cursor()  # Create the cursor here
+        self.cursor = self.conn.cursor()
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS faq
                         (name TEXT PRIMARY KEY, question TEXT, answer TEXT)''')
