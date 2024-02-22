@@ -124,7 +124,9 @@ class Todo(commands.Cog):
             embed = discord.Embed(description="Task not found or you don't have permission to add a subtask to this task!", color=discord.Color.red())
         else:
             subtask_name, note = subtask.split('|', 1) if '|' in subtask else (subtask, '')
-            subtask = f"☐ {subtask_name.strip()} {note.strip()}"
+            subtask_name = subtask_name.strip()
+            note = note.strip()
+            subtask = f"☐ {subtask_name} {note}"
             subtasks = res[1] + f", {subtask}" if res[1] else subtask
             self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
             self.conn.commit()
@@ -153,7 +155,7 @@ class Todo(commands.Cog):
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.is_owner()
-    async def completesubtask(self, ctx: commands.Context, unique_id: int, subtask: str):
+    async def completesubtask(self, ctx: commands.Context, unique_id: int, *, subtask: str):
         user_id = str(ctx.author.id)
         self.cursor.execute("SELECT user_id, subtasks FROM todo WHERE unique_id = ?", (unique_id,))
         res = self.cursor.fetchone()
@@ -168,7 +170,7 @@ class Todo(commands.Cog):
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def cancelsubtask(self, ctx: commands.Context, unique_id: int, subtask: str):
+    async def cancelsubtask(self, ctx: commands.Context, unique_id: int, *, subtask: str):
         user_id = str(ctx.author.id)
         self.cursor.execute("SELECT user_id, subtasks FROM todo WHERE unique_id = ?", (unique_id,))
         res = self.cursor.fetchone()
@@ -183,7 +185,7 @@ class Todo(commands.Cog):
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def prioritizesubtask(self, ctx: commands.Context, unique_id: int, subtask: str):
+    async def prioritizesubtask(self, ctx: commands.Context, unique_id: int, *, subtask: str):
         user_id = str(ctx.author.id)
         self.cursor.execute("SELECT user_id, subtasks FROM todo WHERE unique_id = ?", (unique_id,))
         res = self.cursor.fetchone()

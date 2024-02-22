@@ -75,7 +75,7 @@ class ModerationLogger(commands.Cog):
                 if not any(role.name in self.AllowedRoles for role in message.author.roles):
                     await message.delete()
                     user_id = message.author.id
-                    reason = f"Contains banned word: **{word}**"
+                    reason = f"Contains banned word: **{word}**\nMessage Content: \n**{message.content}**"
                     await utils.LogAction(message.guild, 'AutoMod', 'Deletion', message.author, reason, user_id, None, None, None, self.config)
                     await self.LogBlacklistedWords(message.channel, 'Deletion', message.author, reason, user_id)
 
@@ -85,7 +85,7 @@ class ModerationLogger(commands.Cog):
                 if not any(role.name in self.AllowedRoles for role in message.author.roles):
                     await message.delete()
                     user_id = message.author.id
-                    reason = f"Contains banned emoji: {emoji}"
+                    reason = f"Contains banned emoji: {emoji}\nMessage Content: \n**{message.content}**"
                     await utils.LogAction(message.guild, 'AutoMod', "Deletion", message.author, reason, user_id, None, None, None, self.config)
                     await self.LogBlacklistedEmojis(message.channel, 'Deletion', message.author, reason, user_id)
 
@@ -94,7 +94,7 @@ class ModerationLogger(commands.Cog):
             if not any(role.name in self.AllowedRoles for role in message.author.roles):
                 await message.delete()
                 user_id = message.author.id
-                reason = f"Message included a link: {message.content}"
+                reason = f"Message included a link: {message.content}\nMessage Content: \n**{message.content}**"
                 await utils.LogAction(message.guild, 'AutoMod', "Deletion", message.author, reason, user_id, None, None, None, self.config)
                 await self.LogBlacklistedWords(message.channel, "Deletion", message.author, reason, user_id)
 
