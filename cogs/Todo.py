@@ -26,14 +26,14 @@ class Todo(commands.Cog):
         embed = discord.Embed(title="Todo Commands", color=discord.Color.blue())
         embed.add_field(name=f"`{prefix}showalltasks`", value="*Shows all tasks from database.*", inline=False)
         embed.add_field(name=f"`{prefix}showtask`", value="*Shows your todo list. Each task has an ID which is used for other commands.*", inline=False)
-        embed.add_field(name=f"`{prefix}addtask [task]`", value="*Adds a task to your todo list. Replace [task] with the task you want to add.*", inline=False)
+        embed.add_field(name=f"`{prefix}addtask [name]`", value="*Adds a task to your todo list. Replace [task] with the task you want to add.*", inline=False)
         embed.add_field(name=f"`{prefix}removetask [id]`", value="*Removes a task from your todo list using its ID. Replace [id] with the ID of the task you want to remove.*", inline=False)
         embed.add_field(name=f"`{prefix}cleartask`", value="*Clears your todo list. This will remove all tasks from your list.*", inline=False)
-        embed.add_field(name=f"`{prefix}addsubtask [id] [subtask]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to add.*", inline=False)
-        embed.add_field(name=f"`{prefix}removesubtask [id] [subtask]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to remove.*", inline=False)
-        embed.add_field(name=f"`{prefix}completesubtask [id] [subtask]`", value="*Marks a subtask as completed. Replace [id] with the ID of the task and [subtask] with the subtask you want to mark as completed.*", inline=False)
-        embed.add_field(name=f"`{prefix}cancelsubtask [id] [subtask]`", value="*Cancels a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to cancel.*", inline=False)
-        embed.add_field(name=f"`{prefix}prioritizesubtask [id] [subtask]`", value="*Prioritizes a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to prioritize.*", inline=False)
+        embed.add_field(name=f"`{prefix}addsubtask [id] [name] | [note]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to add.*", inline=False)
+        embed.add_field(name=f"`{prefix}removesubtask [id] [name]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to remove.*", inline=False)
+        embed.add_field(name=f"`{prefix}completesubtask [id] [name]`", value="*Marks a subtask as completed. Replace [id] with the ID of the task and [subtask] with the subtask you want to mark as completed.*", inline=False)
+        embed.add_field(name=f"`{prefix}cancelsubtask [id] [name]`", value="*Cancels a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to cancel.*", inline=False)
+        embed.add_field(name=f"`{prefix}prioritizesubtask [id] [name]`", value="*Prioritizes a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to prioritize.*", inline=False)
         await ctx.send(embed=embed)
 
     @commands.command(help="<id>", hidden=True)
@@ -45,15 +45,15 @@ class Todo(commands.Cog):
         if not res or (res[1] != user_id and not await self.bot.is_owner(ctx.author)):
             embed = discord.Embed(description="Task not found or you don't have permission to view this task!", color=discord.Color.red())
         else:
-            task = res[3]
+            task = "__" + res[3] + "__"
             subtasks = res[4]
             creator_id = res[1]
             creator = self.bot.get_user(int(creator_id))
             if subtasks:
-                task += "\nSubtasks:\n" + "\n".join(subtasks.split(", "))
-            embed = discord.Embed(title=f"Task ID: {res[0]}", description=task, color=discord.Color.green())
+                task += "\n\n**Check List:**\n" + "\n".join(subtasks.split(", "))
+            embed = discord.Embed(title=task, description="", color=discord.Color.green())
             embed.set_author(name=f"Task created by {creator.name}", icon_url=creator.avatar_url)
-            #embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            embed.set_footer(text=f"Task ID: {res[0]}")
         await ctx.send(embed=embed)
 
     @commands.command(help="Shows all tasks from your todo list.", hidden=True)

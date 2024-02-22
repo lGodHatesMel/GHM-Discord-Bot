@@ -48,15 +48,12 @@ class ModerationLogger(commands.Cog):
         try:
             await ctx.message.delete()
             deleted_messages = await ctx.channel.purge(limit=amount)
-
             await ctx.send(f"Cleared {len(deleted_messages)} messages.", delete_after=5)
-
         except commands.MissingPermissions:
             await ctx.send("Bot doesn't have the necessary permissions to clear messages.")
 
     async def LogBlacklistedWords(self, channel, action, target, reason, user_id):
         timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{target.name}", icon_url=target.avatar_url)
         embed.description = f"{action} in {channel.mention}"
@@ -112,7 +109,7 @@ class ModerationLogger(commands.Cog):
                 await after.delete()
                 user_id = after.author.id
                 reason = "Message included a link"
-                await utils.LogAction(after.guild, 'AutoMod', "Deletion", after.author, before.content, after.content, user_id, None, None, None, self.config)
+                await utils.LogAction(after.guild, 'AutoMod', 'Deletion', after.author, reason, after.content, None, None, None, self.config)
                 await self.LogBlacklistedWords(after.channel, "Deletion", after.author, reason, user_id)
 
         # Check for blacklisted words and emojis
@@ -121,18 +118,16 @@ class ModerationLogger(commands.Cog):
                 await after.delete()
                 user_id = after.author.id
                 reason = "Message included a blacklisted word or emoji"
-                await utils.LogAction(after.guild, 'AutoMod', "Deletion", after.author, before.content, after.content, user_id, None, None, None, self.config)
+                await utils.LogAction(after.guild, 'AutoMod', 'Deletion', after.author, reason, after.content, None, None, None, self.config)
                 await self.LogBlacklistedWords(after.channel, "Deletion", after.author, reason, user_id)
 
         MessageLoggerChannelID = self.config['channel_ids'].get('MessageLogs', None)
-
         if not MessageLoggerChannelID:
             print("Message logger channel ID is not set in config.json.")
             return
 
         LoggingChannel = self.bot.get_channel(MessageLoggerChannelID)
         timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-
         OrginalMessage = self.truncate_text(before.content, 1024)
         EditedMessage = self.truncate_text(after.content, 1024)
 
@@ -142,7 +137,6 @@ class ModerationLogger(commands.Cog):
         embed.add_field(name="Original Message", value=OrginalMessage, inline=False)
         embed.add_field(name="Edited Message", value=EditedMessage, inline=False)
         embed.set_footer(text=f"UID: {before.author.id} • ID: {before.id} • {timestamp}")
-
         await LoggingChannel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -151,14 +145,12 @@ class ModerationLogger(commands.Cog):
             return
 
         MessageLoggerChannelID = self.config['channel_ids'].get('MessageLogs', None)
-
         if not MessageLoggerChannelID:
             print("Message logger channel ID is not set in config.json.")
             return
 
         LoggingChannel = self.bot.get_channel(MessageLoggerChannelID)
         timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{message.author.name}", icon_url=message.author.avatar_url)
         embed.description = f"Message deleted in {message.channel.mention}"
@@ -171,7 +163,6 @@ class ModerationLogger(commands.Cog):
 
         embed.add_field(name="Deleted Message", value=truncated_message, inline=False)
         embed.set_footer(text=f"UID: {message.author.id} • ID: {message.id} • {timestamp}")
-
         await LoggingChannel.send(embed=embed)
 
     @staticmethod

@@ -36,7 +36,6 @@ class Moderation(commands.Cog):
             return conn
         except Error as e:
             print(e)
-
         return conn
 
     @commands.Cog.listener()
@@ -52,7 +51,7 @@ class Moderation(commands.Cog):
                 user_info["info"]["roles"] = [role.name for role in after.roles]
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
-            print(f"Updated user {username} : {uid} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
+            print(f"Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -63,8 +62,8 @@ class Moderation(commands.Cog):
                 guild=self.bot.get_guild(config['guild_id']),
                 channel_name='DMLogs',
                 action='BOT DM',
-                target=f"{message.author}\n(UID: {message.author.id})",
-                reason=f"Received DM at {timestamp}\n\n**DM Message:**\n\n{message.content}",
+                target=message.author,
+                reason=f"Received DM from {message.author}\n(UID: {message.author.id}) at {timestamp}\n\n**DM Message:**\n\n{message.content}",
                 config=config
             )
         elif not message.author.bot:
@@ -186,7 +185,6 @@ class Moderation(commands.Cog):
             member_count = sum(1 for member in server.members if not member.bot)
             member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
             random_color = random.randint(0, 0xFFFFFF)
-
             goodbye = {
                 "title": "Goodbye!",
                 "description": f"We are sad to see you go, {member.mention}. You were our {member_number}.\n\n"
@@ -290,30 +288,24 @@ class Moderation(commands.Cog):
             )
 
             embed.set_thumbnail(url=user_info["info"]["avatar_url"])
-
             embed.add_field(name="Join Date", value=join_date, inline=True)
             embed.add_field(name="Leave Date", value=leave_date, inline=True)
-
             roles = ", ".join(user_info["info"]["roles"])
             embed.add_field(name="Roles", value=roles, inline=False)
 
             if "warns" in user_info and user_info["moderation"]["warns"]:
                 total_warnings = len(user_info["moderation"]["warns"])
                 embed.add_field(name="Warnings", value=total_warnings, inline=True)
-
             if "kicks_amount" in user_info:
                 total_kicks = user_info["moderation"]["kicks_amount"]
                 embed.add_field(name="Kicks", value=total_kicks, inline=True)
-
             if "notes" in user_info["moderation"] and user_info["moderation"]["notes"]:
                 total_notes = len(user_info["moderation"]["notes"])
                 embed.add_field(name="Notes", value=total_notes, inline=True)
-                
             if "banned" in user_info and user_info["moderation"]["banned"]:
                 embed.add_field(name="Banned", value="Yes", inline=True)
             else:
                 embed.add_field(name="Banned", value="No", inline=True)
-
             await ctx.send(embed=embed)
         else:
             await ctx.send("User not found in the database.")
@@ -434,13 +426,11 @@ class Moderation(commands.Cog):
         if user:
             user_info = json.loads(user[1])
             notes = user_info["moderation"]["notes"]
-
             found_note = None
             for note in notes:
                 if note.get("number") == note_number:
                     found_note = note
                     break
-
             if found_note:
                 deleted_content = found_note.get("content", "")
                 notes.remove(found_note)
@@ -462,22 +452,18 @@ class Moderation(commands.Cog):
         if user:
             user_info = json.loads(user[1])
             notes = user_info["moderation"].get("notes", [])
-
             if notes:
                 embed = discord.Embed(
                     title=f"Notes for {user_info['info']['username']} (UID: {uid})",
                     color=0x00ff00,
                 )
-
                 embed.add_field(name="Username", value=user_info["info"]["username"], inline=False)
-
                 for note in notes:
                     embed.add_field(
                         name=f"Note #{note['number']} - {note['timestamp']} - {note['author']}:",
                         value=note['content'],
                         inline=False
                     )
-
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f"No notes found for user {uid}.")
@@ -536,22 +522,18 @@ class Moderation(commands.Cog):
             }
 
             warnings.append(new_warning)
-
             await utils.LogAction(ctx.guild, 'ModLogs', 'Warning', member, warning, warning_number, ctx.author.name, config=config)
 
             # Check if this is the 3rd warning
             if warning_number == 3:
-
                 await member.send("You were kicked because of this warning. You can join again right away. Reaching 5 warnings will result in an automatic ban. Permanent invite link: https://discord.gg/SrREp2BbkS.")
                 await member.kick(reason="3rd Warning")
                 await ctx.send(f"{member.mention} has been kicked due to their 3rd warning.")
                 await utils.LogAction(ctx.guild, 'ModLogs', 'Kick', member, f"3rd Warning: {warning}", warning_number, ctx.author.name, config=config)
-
                 user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
             # Check if this is the 5th warning
             if warning_number == 5:
-                
                 ban_info = {
                     "timestamp": timestamp,
                     "issuer": ctx.author.name,
@@ -565,7 +547,6 @@ class Moderation(commands.Cog):
                 await member.send("You have received your 5th warning and have been banned from the server.")
                 await ctx.guild.ban(member, reason="5th Warning")
                 await ctx.send(f"{member.mention} has been banned due to their 5th warning.")
-
                 await utils.LogAction(ctx.guild, 'ModLogs', 'Ban', member, f"5th Warning: {warning}", warning_number, ctx.author.name, config=config)
 
             user_info["moderation"]["warns"] = warnings
@@ -596,12 +577,10 @@ class Moderation(commands.Cog):
                 if warning.get("number") == warning_number:
                     found_warning = warning
                     break
-
             if found_warning:
                 timestamp = found_warning.get("timestamp", "N/A")
                 issuer = found_warning.get("issuer", "N/A")
                 warning_text = found_warning.get("warning", "N/A")
-
                 await ctx.send(f"**Warning #{warning_number} for {user.mention}:**\n"
                             f"Time: {timestamp}\n"
                             f"Issuer: {issuer}\n"
@@ -634,7 +613,6 @@ class Moderation(commands.Cog):
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
                 await ctx.send(f"Deleted warning #{warning_number} for {user.mention}: {deleted_content}")
-
                 await utils.LogAction(ctx.guild, 'ModLogs', 'Warning', user, warning, warning_number, ctx.author, config=config)
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
@@ -660,7 +638,6 @@ class Moderation(commands.Cog):
             user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-
             kick_info = {
                 "number": 1,
                 "timestamp": timestamp,
@@ -713,16 +690,13 @@ class Moderation(commands.Cog):
                     title=f"Kick Reasons for {user_info['username']} (UID: {uid})",
                     color=0x00ff00,
                 )
-
                 embed.add_field(name="Username", value=user_info["username"], inline=False)
-
                 for kick in kicks:
                     embed.add_field(
                         name=f"Kick #{kick['number']} - {kick['timestamp']} - {kick['issuer']}:",
                         value=kick['reason'],
                         inline=False
                     )
-
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f"No kick reasons found for user {uid}.")
@@ -754,7 +728,6 @@ class Moderation(commands.Cog):
                 return
 
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-
             ban_info = {
                 "timestamp": timestamp,
                 "issuer": ctx.author.name,
@@ -780,7 +753,6 @@ class Moderation(commands.Cog):
             embed.add_field(name="Time", value=timestamp, inline=True)
 
             await utils.LogAction(ctx.guild, 'ModLogs', 'Ban', discord_user, reason, issuer=ctx.author, user_data=user_info, config=config, embed=embed)
-
             await ctx.send(f"{user_with_uid} has been banned for the following reason: {reason}")
         else:
             await ctx.send("User not found in the database.")
@@ -815,9 +787,7 @@ class Moderation(commands.Cog):
                 try:
                     await ctx.guild.unban(discord_user, reason=reason)
                     await ctx.send(f"{user.name} has been unbanned for the following reason: {reason}")
-
                     await utils.LogAction(ctx.guild, 'ModLogs', 'Unban', user, reason, issuer=ctx.author, user_data=user_info, config=config)
-
                 except discord.errors.NotFound:
                     await ctx.send(f"No ban found for user {user.name} in the Discord server.")
             else:
@@ -843,19 +813,16 @@ class Moderation(commands.Cog):
                 )
 
                 embed.add_field(name="Username", value=user_info["info"]["username"], inline=False)
-
                 for index, ban_info in enumerate(bans, start=1):
                     timestamp = ban_info["timestamp"]
                     issuer = ban_info["issuer"]
                     reason = ban_info["reason"]
                     unban_reason = ban_info.get("unban_reason", "N/A")
-
                     embed.add_field(
                         name=f"Ban #{index}",
                         value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nUnban Reason: {unban_reason}",
                         inline=False
                     )
-
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f"No bans found for user {uid}.")
@@ -875,7 +842,6 @@ class Moderation(commands.Cog):
 
             cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
             self.conn.commit()
-
             await ctx.send(f"Ban data for user {discord_user.name} has been deleted.")
         else:
             await ctx.send("User not found in the database.")
@@ -905,7 +871,6 @@ class Moderation(commands.Cog):
                 await member.unban(reason="Soft ban")
 
                 timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-
                 ban_info = {
                     "timestamp": timestamp,
                     "issuer": ctx.author.name,
@@ -913,12 +878,10 @@ class Moderation(commands.Cog):
                 }
 
                 user_info["moderation"].setdefault("banned", []).append(ban_info)
-
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
 
                 await utils.LogAction(ctx.guild, 'ModLogs', 'SoftBanned', member, reason, issuer=ctx.author, config=config)
-
                 await ctx.send(f"{member.mention} has been soft-banned.")
             except discord.Forbidden:
                 await ctx.send("Failed to send a DM to the user or perform the soft ban due to permission settings.")
@@ -935,7 +898,6 @@ class Moderation(commands.Cog):
 
         AccountCreatedDate = member.created_at
         AccountAge = datetime.utcnow() - AccountCreatedDate
-
         if AccountAge < timedelta(days=30):
             color = discord.Color.red()  # Red for less than 1 month old
         elif AccountAge < timedelta(days=365):
