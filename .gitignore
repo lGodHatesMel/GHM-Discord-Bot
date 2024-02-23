@@ -30,3 +30,8 @@ Database/NotUsed/rules.json
 Database/NotUsed/info.json
 Database/NotUsed/sticky_notes.json
 Database/DBInfo.db
+Database/faq.db
+Database/info.db
+Database/starboard.db
+Database/todo.db
+countdowns.db
