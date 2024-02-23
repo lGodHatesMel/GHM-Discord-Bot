@@ -9,9 +9,7 @@ class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = self.load_config()
-        database_folder = 'Database'
-        self.db_file = os.path.join(database_folder, 'rules.db')
-        self.conn = sqlite3.connect(self.db_file)
+        self.conn = sqlite3.connect('Database/rules.db')
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS rules
                     (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
