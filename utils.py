@@ -48,6 +48,12 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
         timestamp=timestamp
     )
 
+    if isinstance(target, str):
+        try:
+            target = await guild.fetch_member(target)
+        except discord.NotFound:
+            raise ValueError(f"User with ID {target} not found")
+
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
 
