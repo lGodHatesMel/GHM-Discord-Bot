@@ -29,7 +29,5 @@
     "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
     "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
 
-    "enable_countdown": false,
-    "countdown_channel_id": CHANNEL_ID_HERE,
-    "target_timestamp": 1668421200,
+    "enable_countdown": false
 }

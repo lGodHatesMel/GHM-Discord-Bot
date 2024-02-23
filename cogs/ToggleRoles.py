@@ -22,13 +22,13 @@ class ToggleRoles(commands.Cog):
 
         role = discord.utils.get(ctx.guild.roles, name=RoleName)
         if not role:
-            await ctx.send(f"The role '{RoleName}' does not exist on this server.")
+            await ctx.send(f"The role **{RoleName}** does not exist on this server.")
             return
 
         if role in ctx.author.roles:
             embed = discord.Embed(title=RoleName, color=discord.Color.red())
             await ctx.author.remove_roles(role)
-            embed.description = f"Removed the '{RoleName}' role from {ctx.author.mention}."
+            embed.description = f"Removed the **{RoleName}** role from {ctx.author.mention}."
         else:
             random_color = discord.Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             while random_color == discord.Color.red():
