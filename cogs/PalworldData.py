@@ -155,6 +155,7 @@ class PalworldData(commands.Cog):
         chunk = Item_str[i:i+1024]
         embed = discord.Embed(title=f"Items of type '{TypeName}' (part {i//1024 + 1})", color=discord.Color.random())
         embed.add_field(name="Items", value=chunk, inline=False)
+        embed.set_footer(text="Use the reactions to navigate between pages.")
         embeds.append(embed)
       paginator = Paginator(ctx, embeds)
       await paginator.start()

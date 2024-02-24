@@ -53,9 +53,9 @@ class EmbedHelpCommand(commands.HelpCommand):
                         field_value = ""
                 if field_value:
                     current_embed.add_field(name=f"{cog_name}", value=field_value, inline=True)
-                current_embed.set_footer(text="GodHatesme Discord Server Commands")
+                current_embed.set_footer(text="Use the reactions to navigate between pages.")
         if len(current_embed.fields) > 0:
-            current_embed.set_footer(text="GodHatesme Discord Server Commands")
+            current_embed.set_footer(text="Use the reactions to navigate between pages.")
             current_embed.title = f"**Server Commands - Page {len(embeds) + 1}**"
             embeds.append(current_embed)
 
@@ -98,13 +98,19 @@ async def _commands(ctx, *args):
     await ctx.send_help(*args)
 
 
-## Load Cogs
+
+## Run scripts from folders
+IgnoreScripts = config.get('ignore_scripts', [])
 folders = ['cogs']
 for folder in folders:
     for filename in os.listdir(folder):
         if filename.endswith('.py'):
+            script_name = filename[:-3]
+            if script_name in IgnoreScripts:
+                print(f'Ignored extension: {folder}.{script_name}')
+                continue
             try:
-                extension = f'{folder}.{filename[:-3]}'
+                extension = f'{folder}.{script_name}'
                 bot.load_extension(extension)
                 print(f'Loaded extension: {extension}')
             except Exception as e:

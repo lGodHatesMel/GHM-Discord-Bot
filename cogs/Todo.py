@@ -154,7 +154,7 @@ class Todo(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
-    @commands.is_owner()
+    @commands.has_any_role("Helper", "Moderator", "Admin")
     async def completesubtask(self, ctx: commands.Context, unique_id: int, *, subtask: str):
         user_id = str(ctx.author.id)
         self.cursor.execute("SELECT user_id, subtasks FROM todo WHERE unique_id = ?", (unique_id,))

@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
+import os
 import json
 from datetime import datetime
 import utils.utils as utils
+from utils.Paginator import Paginator
 import re
 
 class ModerationLogger(commands.Cog):
@@ -28,14 +30,14 @@ class ModerationLogger(commands.Cog):
     @commands.command(help="Show current bad word list",hidden=True)
     @commands.has_any_role('Admin', 'Moderator')
     async def badwordlist(self, ctx):
-        embed = discord.Embed(
-            title="Bad Words List",
-            description=", ".join(self.BadWords),
-            color=0x3498db
-        )
-        await ctx.send(embed=embed)
+        words_per_page = 50  # Adjust as needed
+        bad_words = [self.BadWords[i:i + words_per_page] for i in range(0, len(self.BadWords), words_per_page)]
+        embeds = [discord.Embed(title="Bad Words List", description=", ".join(words), color=0x3498db) for words in bad_words]
+        
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
 
-    @commands.command(aliases=["clear", "clearmessages"], help="1 to 100", hidden=True)
+    @commands.command(aliases=["clearmessages"], help="1 to 100", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def purge(self, ctx, amount: int):
         if amount <= 0:
@@ -48,7 +50,7 @@ class ModerationLogger(commands.Cog):
 
         try:
             await ctx.message.delete()
-            deleted_messages = await ctx.channel.purge(limit=amount)
+            deleted_messages = await ctx.channel.purge(limit=amount, bulk=True)
             await ctx.send(f"Cleared {len(deleted_messages)} messages.", delete_after=5)
         except commands.MissingPermissions:
             await ctx.send("Bot doesn't have the necessary permissions to clear messages.")
@@ -70,103 +72,113 @@ class ModerationLogger(commands.Cog):
         if message.author == self.bot.user or not isinstance(message.author, discord.Member):
             return
 
+        if os.path.exists('Data/AllowwedLinks.txt'):
+            with open('Data/AllowwedLinks.txt', 'r') as file:
+                self.AllowedLinks = [line.strip() for line in file.readlines()]
+        else:
+            self.AllowedLinks = []
+
         # Check for blacklisted words
         for word in self.BadWords:
             if word in message.content.lower():
                 if not any(role.name in self.AllowedRoles for role in message.author.roles):
                     await message.delete()
-                    reason = f"Contains banned word: **{word}**\n\n**Message Content:** \n{message.content}\n\n**Channel:** {message.channel.mention}"
+                    reason = f"Contains banned word: `**{word}**`\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
                     await utils.LogAction(
                         message.guild,
                         "AutoMod",
                         "Blacklisted",
                         message.author,
                         reason,
-                        self.config,
+                        config=self.config,
                     )
-                    # await utils.LogAction(message.guild, 'AutoMod', 'Blacklisted', message.author, reason, None, None, None, self.config)
 
         # Check for links
         if 'http://' in message.content or 'https://' in message.content:
             if not any(role.name in self.AllowedRoles for role in message.author.roles):
-                await message.delete()
                 urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
-                url_message = "Message included a link: " + ", ".join(urls) if urls else "No links in message"
-                reason = f"{url_message}\n\n**Message Content:** \n\n{message.content}\n\n**Channel:** {message.channel.mention}"
-                await utils.LogAction(
-                    message.guild,
-                    "AutoMod",
-                    "Blacklisted",
-                    message.author,
-                    reason,
-                    self.config,
-                )
-                # await utils.LogAction(message.guild, 'AutoMod', "Blacklisted", message.author, reason, None, None, None, self.config)
+                if not any(url in self.AllowedLinks for url in urls):
+                    await message.delete()
+                    url_message = "Message included a link:\n" + ", ".join(urls) if urls else "No links in message"
+                    reason = f"{url_message}\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
+                    await utils.LogAction(
+                        message.guild,
+                        "AutoMod",
+                        "Blacklisted",
+                        message.author,
+                        reason,
+                        config=self.config,
+                    )
 
         # Check for blacklisted emojis
         for emoji in self.BadEmojis:
             if emoji in message.content:
                 if not any(role.name in self.AllowedRoles for role in message.author.roles):
                     await message.delete()
-                    reason = f"Contains banned emoji: {emoji}\nMessage Content: \n{message.content}\n\n**Channel:** {message.channel.mention}"
+                    reason = f"Message contains banned emoji: `**{emoji}**`\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
                     await utils.LogAction(
                         message.guild,
                         "AutoMod",
                         "Blacklisted",
                         message.author,
                         reason,
-                        self.config,
+                        config=self.config,
                     )
-                    # await utils.LogAction(message.guild, 'AutoMod', "Blacklisted", message.author, reason, None, None, None, self.config)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         if after.author.bot:
             return
 
-        if 'http://' in after.content or 'https://' in after.content:
-            if not any(role.name.lower() in self.AllowedRoles for role in after.author.roles):
-                await after.delete()
-                reason = f"Message was edited to include a link\n\n**Original Message Content:** \n{before.content}\n\n**Edited Message Content:** \n{after.content}\n\n**Channel:** {after.channel.mention}"
-                await utils.LogAction(
-                    after.guild,
-                    "AutoMod",
-                    "Blacklisted",
-                    after.author,
-                    reason,
-                    self.config,
-                )
-                # await utils.LogAction(after.guild, 'AutoMod', 'Blacklisted', after.author, reason, after.content, None, None, None, self.config)
+        if os.path.exists('Data/AllowedLinks.txt'):
+            with open('Data/AllowedLinks.txt', 'r') as file:
+                self.AllowedLinks = [line.strip() for line in file.readlines()]
+        else:
+            self.AllowedLinks = []
 
         for word in self.BadWords:
             if word in after.content.lower():
                 if not any(role.name in self.AllowedRoles for role in after.author.roles):
                     await after.delete()
-                    reason = f"Message was edited to include banned word: **{word}**\n\n**Original Message Content:** \n{before.content}\n\n**Edited Message Content:** \n{after.content}\n\n**Channel:** {after.channel.mention}"
+                    reason = f"Message was edited to include banned word: `**{word}**`\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
                     await utils.LogAction(
                         after.guild,
                         "AutoMod",
                         "Blacklisted",
                         after.author,
                         reason,
-                        self.config,
+                        config=self.config
                     )
-                    # await utils.LogAction(after.guild, 'AutoMod', 'Blacklisted', after.author, reason, after.content, None, None, None, self.config)
+
+        if 'http://' in after.content or 'https://' in after.content:
+            if not any(role.name.lower() in self.AllowedRoles for role in after.author.roles):
+                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', after.content)
+                if not any(url in self.AllowedLinks for url in urls):
+                    await after.delete()
+                    url_message = "Message was edited to include a link:\n" + ", ".join(urls) if urls else "No links in message"
+                    reason = f"{url_message}\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
+                    await utils.LogAction(
+                        after.guild,
+                        "AutoMod",
+                        "Blacklisted",
+                        after.author,
+                        reason,
+                        config=self.config
+                    )
 
         for emoji in self.BadEmojis:
             if emoji in after.content:
                 if not any(role.name in self.AllowedRoles for role in after.author.roles):
                     await after.delete()
-                    reason = f"Message was edited to include banned emoji: {emoji}\n\n**Original Message Content:** \n{before.content}\n\n**Edited Message Content:** \n{after.content}\n\n**Channel:** {after.channel.mention}"
+                    reason = f"Message was edited to include banned word: `**{word}**`\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
                     await utils.LogAction(
                         after.guild,
                         "AutoMod",
                         "Blacklisted",
                         after.author,
                         reason,
-                        self.config,
+                        config=self.config
                     )
-                    # await utils.LogAction(after.guild, 'AutoMod', "Blacklisted", after.author, reason, None, None, None, self.config)
 
         MessageLoggerChannelID = self.config['channel_ids'].get('MessageLogs', None)
         if not MessageLoggerChannelID:
@@ -209,7 +221,8 @@ class ModerationLogger(commands.Cog):
             truncated_message = message.content
 
         embed.add_field(name="Deleted Message", value=truncated_message, inline=False)
-        embed.set_footer(text=f"UID: {message.author.id} • ID: {message.id} • {timestamp}")
+        embed.set_footer(text=f"👤 UID: `{message.author.id}` | 🕒 `{timestamp}`")
+        # embed.set_footer(text=f"👤 UID: `{message.author.id}` | 📄 ID: `{message.id}` | 🕒 `{timestamp}`")
         await LoggingChannel.send(embed=embed)
 
     @staticmethod

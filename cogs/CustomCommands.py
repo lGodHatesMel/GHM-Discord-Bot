@@ -177,7 +177,7 @@ class CustomCommands(commands.Cog):
 
             if len(embed.fields) == 25:
                 embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
-                embed.set_footer(text="GodHatesme Discord Server Commands")
+                embed.set_footer(text="Use the reactions to navigate between pages.")
                 embeds.append(embed)
                 embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
 
@@ -189,9 +189,40 @@ class CustomCommands(commands.Cog):
             embed.add_field(name=f"`{command.name}`", value="", inline=True)
 
         embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
-        embed.set_footer(text="GodHatesme Discord Server Commands")
+        embed.set_footer(text="Use the reactions to navigate between pages.")
         embeds.append(embed)
         return embeds
+
+    @commands.command(hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def addlink(self, ctx, link):
+        with open('Data/AllowedLinks.txt', 'a') as file:
+            file.write(link + '\n')
+        await ctx.send(f'Added {link} to the list of allowed links.')
+
+    @commands.command(hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def showlinks(self, ctx):
+        if os.path.exists('Data/AllowedLinks.txt'):
+            with open('Data/AllowedLinks.txt', 'r') as file:
+                links = [line.strip() for line in file.readlines()]
+        else:
+            links = []
+
+        chunks = [links[i:i + 10] for i in range(0, len(links), 10)]
+        embeds = []
+        for i, chunk in enumerate(chunks):
+            embed = discord.Embed(
+                title=f"🔗 Allowed Links - Page {i + 1} 🔗",
+                description="\n".join(chunk),
+                color=discord.Color.blue()
+            )
+            embed.set_author(name="God's Eye", icon_url=ctx.guild.me.avatar_url)
+            embed.set_footer(text="Use the reactions to navigate between pages.")
+            embeds.append(embed)
+
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
 
 def setup(bot):
     bot.add_cog(CustomCommands(bot))
