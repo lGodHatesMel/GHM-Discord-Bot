@@ -5,6 +5,7 @@ import aiohttp
 import io
 import os
 from PIL import Image
+from utils.Paginator import Paginator
 
 class PalworldData(commands.Cog):
   def __init__(self, bot):
@@ -135,28 +136,34 @@ class PalworldData(commands.Cog):
   async def pallistitemtypes(self, ctx):
     types = set(item['type'] for item in self.palitems)
     types_str = "\n".join(sorted(types))
-    embed = discord.Embed(title="Item Types", color=discord.Color.random())
+    embeds = []
     for i in range(0, len(types_str), 1024):
       chunk = types_str[i:i+1024]
+      embed = discord.Embed(title="Item Types", color=discord.Color.random())
       embed.add_field(name=f"Item List Types", value=chunk, inline=True)
-    await ctx.send(embed=embed)
+      embeds.append(embed)
+    paginator = Paginator(ctx, embeds)
+    await paginator.start()
 
   @commands.command(help="<type name>")
   async def palitemtype(self, ctx, *, TypeName: str):
     MatchItems = [item['name'] for item in self.palitems if TypeName.lower() == item['type'].lower()]
-
     if MatchItems:
-      embed = discord.Embed(title=f"Items of type '{TypeName}'", color=discord.Color.random())
       Item_str = "\n".join(MatchItems)
+      embeds = []
       for i in range(0, len(Item_str), 1024):
         chunk = Item_str[i:i+1024]
-        embed.add_field(name=f"Items (part {i//1024 + 1})", value=chunk, inline=False)
-      await ctx.send(embed=embed)
+        embed = discord.Embed(title=f"Items of type '{TypeName}' (part {i//1024 + 1})", color=discord.Color.random())
+        embed.add_field(name="Items", value=chunk, inline=False)
+        embeds.append(embed)
+      paginator = Paginator(ctx, embeds)
+      await paginator.start()
     else:
       await ctx.send(f"No items of type '{TypeName}' found.")
 
   @commands.command(help="- Displays all gear data")
   async def palgear(self, ctx):
+    embeds = []
     embed = discord.Embed(title="Palworld Gear", color=discord.Color.random())
     char_count = len(embed.title) + len(embed.footer.text)
     field_count = 0
@@ -166,14 +173,20 @@ class PalworldData(commands.Cog):
           gear_info = f"HP: {gear['status'][rarity]['hp']}, Defense: {gear['status'][rarity]['defense']}, Price: {gear['status'][rarity]['price']}, Durability: {gear['status'][rarity]['durability']}"
           field_name = f"{gear['name']} ({rarity.capitalize()})"
           if char_count + len(field_name) + len(gear_info) > 6000 or field_count >= 25:
-            await ctx.send(embed=embed)
-            embed = discord.Embed(title="Palworld Gear (contd.)", color=discord.Color.random())
+            embeds.append(embed)
+            embed = discord.Embed(title="Palworld Gear", color=discord.Color.random())
             char_count = len(embed.title) + len(embed.footer.text)
             field_count = 0
           embed.add_field(name=field_name, value=gear_info, inline=True)
           char_count += len(field_name) + len(gear_info)
           field_count += 1
-    await ctx.send(embed=embed)
+    embeds.append(embed)
+
+    for i, embed in enumerate(embeds):
+      embed.title = f"Palworld Gear (Page {i+1} of {len(embeds)})"
+
+    paginator = Paginator(ctx, embeds)
+    await paginator.start()
 
   @commands.command(help="<skill name>")
   async def palskills(self, ctx, *, SkillName: str):
@@ -185,7 +198,8 @@ class PalworldData(commands.Cog):
         embed.add_field(name="Positive", value=skill_data['positive'] if skill_data['positive'] else "None", inline=False)
         embed.add_field(name="Negative", value=skill_data['negative'] if skill_data['negative'] else "None", inline=False)
         embed.add_field(name="Tier", value=skill_data['tier'], inline=False)
-        await ctx.send(embed=embed)
+        paginator = Paginator(ctx, [embed])
+        await paginator.start()
         return
     await ctx.send(f"Skill '{SkillName}' not found.")
 

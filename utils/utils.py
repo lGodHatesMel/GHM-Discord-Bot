@@ -13,7 +13,7 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-async def LogAction(guild, channel_name, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None, old_message=None, new_message=None):
+async def LogAction(guild, channel_name, action, target, reason, issuer=None, user_data=None, config=None, embed=None):
     if not config:
         raise ValueError("config is required for LogAction")
 
@@ -37,6 +37,7 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
         "Database": "💾",
         "Edit": "✏️",
         "Deletion": "🗑️",
+        "Blacklisted": "🚫",
         "BOT DM": "🤖",
     }
 
@@ -60,9 +61,6 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
     if action == 'Edit' and old_message and new_message:
         embed.add_field(name="Original Message", value=old_message, inline=False)
         embed.add_field(name="Edited Message", value=new_message, inline=False)
-
-    # if edited_content:
-    #     embed.add_field(name="Edited Content", value=edited_content, inline=False)
 
     if action == 'Warning':
         if warning_number:

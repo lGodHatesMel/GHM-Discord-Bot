@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import os
 import sqlite3
+import asyncio
+from utils.Paginator import Paginator
 
 class CustomCommands(commands.Cog):
     def __init__(self, bot):
@@ -157,12 +159,13 @@ class CustomCommands(commands.Cog):
         hidden_commands = [command for command in bot_commands if command.hidden and not any(check.__qualname__ == 'is_owner.<locals>.predicate' for check in command.checks)]
 
         embeds = self.create_embeds(hidden_commands)
-        for embed in embeds:
-            await ctx.send(embed=embed)
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
 
     def create_embeds(self, commands):
         """Creates embeds for the given commands."""
         embeds = []
+        total_pages = (len(commands) + 24) // 25
         embed = discord.Embed(title="__**Staff Commands**__", description="*These are the available staff commands.*", color=discord.Color.green())
         no_help_commands = []
 
@@ -173,48 +176,22 @@ class CustomCommands(commands.Cog):
                 no_help_commands.append(command)
 
             if len(embed.fields) == 25:
-                embed.set_footer(text=f"*Page {len(embeds) + 1}*")
+                embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+                embed.set_footer(text="GodHatesme Discord Server Commands")
                 embeds.append(embed)
-                embed = discord.Embed(title="**Staff Commands (cont.)**", color=discord.Color.green())
+                embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
 
         for command in no_help_commands:
             if len(embed.fields) == 25:
-                embed.set_footer(text=f"*Page {len(embeds) + 1}*")
+                embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
                 embeds.append(embed)
-                embed = discord.Embed(title="**Staff Commands (cont.)**", color=discord.Color.green())
+                embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
             embed.add_field(name=f"`{command.name}`", value="", inline=True)
 
-        embed.set_footer(text=f"*Page {len(embeds) + 1}*")
+        embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+        embed.set_footer(text="GodHatesme Discord Server Commands")
         embeds.append(embed)
         return embeds
-
-    # def create_embeds(self, commands):
-    #     """Creates embeds for the given commands."""
-    #     embeds = []
-    #     embed = discord.Embed(title="Staff Commands", description="These are the available staff commands.", color=discord.Color.green())
-    #     no_help_commands = []
-
-    #     for command in commands:
-    #         if command.help is not None:
-    #             embed.add_field(name=command.name, value=command.help, inline=True)
-    #         else:
-    #             no_help_commands.append(command)
-
-    #         if len(embed.fields) == 25:
-    #             embed.set_footer(text=f"Page {len(embeds) + 1}")
-    #             embeds.append(embed)
-    #             embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
-
-    #     for command in no_help_commands:
-    #         if len(embed.fields) == 25:
-    #             embed.set_footer(text=f"Page {len(embeds) + 1}")
-    #             embeds.append(embed)
-    #             embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
-    #         embed.add_field(name=command.name, value="No help text available", inline=True)
-
-    #     embed.set_footer(text=f"Page {len(embeds) + 1}")
-    #     embeds.append(embed)
-    #     return embeds
 
 def setup(bot):
     bot.add_cog(CustomCommands(bot))

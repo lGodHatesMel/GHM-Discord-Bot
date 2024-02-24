@@ -1,31 +1,29 @@
+import discord
+from discord.ext import commands
+import json
+import sqlite3
+from sqlite3 import Error
+import utils.utils as utils
 import asyncio
 import datetime
 from datetime import datetime, timedelta
-import discord
-from discord.ext import commands
 import random
-import json
-import utils
 from typing import Union
-import sqlite3
-from sqlite3 import Error
+
 
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
 class Moderation(commands.Cog):
-    hidden = True
-
     def __init__(self, bot):
         self.bot = bot
-        self.database_file = 'Database/DBInfo.db'
-        self.conn = self.create_connection(self.database_file)
+        self.conn = self.create_connection('Database/DBInfo.db')
         self.WelcomeChannelID = config.get('channel_ids', {}).get('WelcomeChannel')
 
-    def create_connection(self, db_file):
+    def create_connection(self, database):
         conn = None
         try:
-            conn = sqlite3.connect(db_file)
+            conn = sqlite3.connect(database)
             cursor = conn.cursor()
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS UserInfo (
@@ -173,7 +171,14 @@ class Moderation(commands.Cog):
                 user_info = json.loads(user[1])
                 if user_info["moderation"].get("banned"):
                     for ban_info in user_info["moderation"]["banned"]:
-                        await utils.LogAction(server, 'ModLogs', 'Ban', member, f"User is still banned: {ban_info['reason']}", config=config)
+                        await utils.LogAction(
+                            server,
+                            "ModLogs",
+                            "Ban",
+                            member,
+                            f"User is still banned: {ban_info['reason']}",
+                            config=config,
+                        )
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -357,7 +362,14 @@ class Moderation(commands.Cog):
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (str(uid), json.dumps(user_info)))
                 self.conn.commit()
                 await ctx.send(f"User with ID `{uid}` (username: `{member.name}`) added to the database.")
-                await utils.LogAction(ctx.guild, 'ModLogs', 'Database', member, f"User added to the database by {ctx.author.name}", config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "Database",
+                    member,
+                    f"User added to the database by {ctx.author.name}",
+                    config=config,
+                )
             else:
                 await ctx.send("User not found in the server.")
         else:
@@ -415,7 +427,14 @@ class Moderation(commands.Cog):
         cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
         self.conn.commit()
         await ctx.send(f"📝 **Note Added**: {ctx.author.name} added a note for {discord_user.mention} (#{note_number})")
-        await utils.LogAction(ctx.guild, 'ModLogs', 'Note', discord_user, f"Note added by {ctx.author.name}\n\n Note: {note_content}", config=config)
+        await utils.LogAction(
+            ctx.guild,
+            "ModLogs",
+            "Note",
+            discord_user,
+            f"Note added by {ctx.author.name}\n\n Note: {note_content}",
+            config=config,
+        )
 
     @commands.command(aliases=["removenote", "delnote"], help='<UID> <Note #>', hidden=True)
     @commands.has_any_role("Admin")
@@ -437,7 +456,14 @@ class Moderation(commands.Cog):
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), str(uid)))
                 self.conn.commit()
                 await ctx.send(f"🗑 **Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}")
-                await utils.LogAction(ctx.guild, 'ModLogs', 'Note', ctx.author, f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}", config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "Note",
+                    ctx.author,
+                    f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}",
+                    config=config,
+                )
             else:
                 await ctx.send(f"Note #{note_number} not found for this user.")
         else:
@@ -522,14 +548,30 @@ class Moderation(commands.Cog):
             }
 
             warnings.append(new_warning)
-            await utils.LogAction(ctx.guild, 'ModLogs', 'Warning', member, warning, warning_number, ctx.author.name, config=config)
+            await utils.LogAction(
+                ctx.guild,
+                "ModLogs",
+                "Warning",
+                member,
+                f"Warning #{warning_number}: {warning}",
+                ctx.author.name,
+                config=config,
+            )
 
             # Check if this is the 3rd warning
             if warning_number == 3:
                 await member.send("You were kicked because of this warning. You can join again right away. Reaching 5 warnings will result in an automatic ban. Permanent invite link: https://discord.gg/SrREp2BbkS.")
                 await member.kick(reason="3rd Warning")
                 await ctx.send(f"{member.mention} has been kicked due to their 3rd warning.")
-                await utils.LogAction(ctx.guild, 'ModLogs', 'Kick', member, f"3rd Warning: {warning}", warning_number, ctx.author.name, config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "Kick",
+                    member,
+                    f"3rd Warning (Warning #{warning_number}): {warning}",
+                    issuer=ctx.author.name,
+                    config=config,
+                )
                 user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
             # Check if this is the 5th warning
@@ -547,7 +589,15 @@ class Moderation(commands.Cog):
                 await member.send("You have received your 5th warning and have been banned from the server.")
                 await ctx.guild.ban(member, reason="5th Warning")
                 await ctx.send(f"{member.mention} has been banned due to their 5th warning.")
-                await utils.LogAction(ctx.guild, 'ModLogs', 'Ban', member, f"5th Warning: {warning}", warning_number, ctx.author.name, config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "Ban",
+                    member,
+                    f"5th Warning (Warning #{warning_number}): {warning}",
+                    issuer=ctx.author.name,
+                    config=config,
+                )
 
             user_info["moderation"]["warns"] = warnings
 
@@ -613,13 +663,22 @@ class Moderation(commands.Cog):
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
                 await ctx.send(f"Deleted warning #{warning_number} for {user.mention}: {deleted_content}")
-                await utils.LogAction(ctx.guild, 'ModLogs', 'Warning', user, warning, warning_number, ctx.author, config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "Warning",
+                    user,
+                    warning,
+                    warning_number,
+                    ctx.author,
+                    config=config,
+                )
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <Reason>')
+    @commands.command(help='<UID> <Reason>', hidden=True)
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: Union[discord.Member, int], *, reason: str):
         if isinstance(member, int):
@@ -667,7 +726,15 @@ class Moderation(commands.Cog):
             try:
                 await member.kick(reason=reason)
                 await ctx.send(f"{member.mention} has been kicked for the following reason: {reason}")
-                await utils.LogAction(ctx.guild, 'ModLogs', 'Kick', member, reason, issuer=ctx.author, config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "Kick",
+                    member,
+                    reason,
+                    issuer=ctx.author,
+                    config=config,
+                )
             except discord.Forbidden:
                 await ctx.send(f"Failed to kick {member.mention} due to permission settings.")
             except Exception as e:
@@ -703,7 +770,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <Reason>')
+    @commands.command(help='<UID> <Reason>', hidden=True)
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, discord_user: discord.User, *, reason: str = None):
         if reason is None:
@@ -752,12 +819,22 @@ class Moderation(commands.Cog):
             embed.add_field(name="Reason", value=reason, inline=False)
             embed.add_field(name="Time", value=timestamp, inline=True)
 
-            await utils.LogAction(ctx.guild, 'ModLogs', 'Ban', discord_user, reason, issuer=ctx.author, user_data=user_info, config=config, embed=embed)
+            await utils.LogAction(
+                ctx.guild,
+                "ModLogs",
+                "Ban",
+                discord_user,
+                reason,
+                issuer=ctx.author,
+                user_data=user_info,
+                config=config,
+                embed=embed,
+            )
             await ctx.send(f"{user_with_uid} has been banned for the following reason: {reason}")
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<UID> <Reason>')
+    @commands.command(help='<UID> <Reason>', hidden=True)
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, discord_user: discord.Object, *, reason: str = None):
         try:
@@ -787,7 +864,16 @@ class Moderation(commands.Cog):
                 try:
                     await ctx.guild.unban(discord_user, reason=reason)
                     await ctx.send(f"{user.name} has been unbanned for the following reason: {reason}")
-                    await utils.LogAction(ctx.guild, 'ModLogs', 'Unban', user, reason, issuer=ctx.author, user_data=user_info, config=config)
+                    await utils.LogAction(
+                        ctx.guild,
+                        "ModLogs",
+                        "Unban",
+                        user,
+                        reason,
+                        issuer=ctx.author,
+                        user_data=user_info,
+                        config=config,
+                    )
                 except discord.errors.NotFound:
                     await ctx.send(f"No ban found for user {user.name} in the Discord server.")
             else:
@@ -881,7 +967,15 @@ class Moderation(commands.Cog):
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
 
-                await utils.LogAction(ctx.guild, 'ModLogs', 'SoftBanned', member, reason, issuer=ctx.author, config=config)
+                await utils.LogAction(
+                    ctx.guild,
+                    "ModLogs",
+                    "SoftBanned",
+                    member,
+                    reason,
+                    issuer=ctx.author,
+                    config=config,
+                )
                 await ctx.send(f"{member.mention} has been soft-banned.")
             except discord.Forbidden:
                 await ctx.send("Failed to send a DM to the user or perform the soft ban due to permission settings.")

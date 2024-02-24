@@ -2,7 +2,7 @@ import requests
 import json
 import discord
 from discord.ext import commands, tasks
-import utils
+import utils.utils as utils
 
 class TokenRefresher(commands.Cog):
     def __init__(self, bot):

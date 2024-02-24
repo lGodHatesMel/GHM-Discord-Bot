@@ -100,10 +100,11 @@ class StickyMessages(commands.Cog):
         if OriginalStickyMsgID != message.id:
             if OriginalStickyMsgAuthorID == self.bot.user.id:
                 channel = message.channel
+                OldStickyMsg = None
                 try:
                     OldStickyMsg = await channel.fetch_message(OriginalStickyMsgID)
                 except discord.NotFound:
-                    OldStickyMsg = None
+                    pass
 
                 await asyncio.sleep(2.5)
 

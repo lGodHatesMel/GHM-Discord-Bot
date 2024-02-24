@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import json
-import utils
+import utils.utils as utils
 
 class Logs(commands.Cog):
     def __init__(self, bot):
@@ -27,7 +27,6 @@ class Logs(commands.Cog):
 
             if added_roles:
                 await self.LogUserChange(after, f"Roles added: {', '.join([role.name for role in added_roles])}")
-            
             if removed_roles:
                 await self.LogUserChange(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
 
@@ -39,12 +38,18 @@ class Logs(commands.Cog):
 
             if ModLogsChannelID:
                 embed = discord.Embed(
-                    title="User Change Log",
+                    title="User Changes",
                     description=f"User: {user.mention}",
                     color=discord.Color.green(),
                 )
 
-                embed.add_field(name="Change Details", value=change_message, inline=False)
+                embed.set_author(name=f"{user.name}", icon_url=user.avatar_url)
+
+                change_message = change_message.replace("Roles added: ", "Roles Added:\n")
+                change_message = change_message.replace("Roles removed: ", "Roles Removed:\n")
+                change_message = change_message.replace(", ", "\n")
+
+                embed.add_field(name="**Updated Details**", value=change_message, inline=False)
 
                 timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
                 embed.set_footer(text=f"UID: {user.id} • {timestamp}")
@@ -61,9 +66,31 @@ class Logs(commands.Cog):
             if ServerLogsChannel:
                 embed = discord.Embed(
                     title="Text Channel Created",
-                    description=f"Channel: {channel.mention}",
+                    description=f"Name: {channel.name}\nCategory: {channel.category}",
                     color=discord.Color.green(),
                 )
+
+                changes = []
+                # Add the permission overwrites for each role or user
+                for target, overwrite in channel.overwrites.items():
+                    target_type = "Role" if isinstance(target, discord.Role) else "User"
+                    target_mention = "@everyone" if str(target) == "@everyone" else target.mention
+                    changes.append(f"{target_type} override for {target_mention}")
+
+                    # Iterate over all permissions
+                    for perm in discord.Permissions.ALL_PERMISSIONS:
+                        if perm in overwrite:
+                            emoji = ":white_check_mark:" if overwrite[perm] else ":x:"
+                            changes.append(f"{perm.replace('_', ' ').title()}: {emoji}")
+
+                change_message = "\n".join(changes)
+                if change_message:
+                    while len(change_message) > 1024:
+                        index = change_message.rfind('\n', 0, 1024)
+                        embed.add_field(name="**Permission Details**", value=change_message[:index], inline=False)
+                        change_message = change_message[index+1:]
+                    embed.add_field(name="**Permission Details**", value=change_message, inline=False)
+
                 timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
                 embed.set_footer(text=f"Channel ID: {channel.id} • {timestamp}")
                 await ServerLogsChannel.send(embed=embed)
@@ -83,35 +110,52 @@ class Logs(commands.Cog):
                 )
 
                 changes = []
-
-                # Check for changes in permissions (overwrites)
                 for target, overwrite in after.overwrites.items():
                     if target not in before.overwrites or before.overwrites[target] != overwrite:
-                        # Get permission names and their status only if changed
-                        permission_changes = []
+                        # Check if the target is a role or a user
+                        target_type = "Role" if isinstance(target, discord.Role) else "User"
+                        target_mention = "@everyone" if str(target) == "@everyone" else target.mention
+                        changes.append(f"{target_type} override for {target_mention}")
+
+                        # Iterate over the permissions in the overwrite
                         for perm, value in overwrite:
-                            if target not in before.overwrites or getattr(overwrite, perm) != getattr(before.overwrites[target], perm):
-                                emoji = ":white_check_mark:" if value else ":x:"
-                                permission_changes.append(f"{perm} ➜ {emoji}")
+                            emoji = ":white_check_mark:" if value else ":x:"
+                            changes.append(f"{perm.replace('_', ' ').title()}: {emoji}")
 
-                        if permission_changes:
-                            permission_changes_str = '\n'.join(permission_changes)
-                            changes.append(f"Role/User:{target.mention}\n\n{permission_changes_str}")
-
-                change_message = "\n\n".join(changes)
-
+                change_message = "\n".join(changes)
                 if change_message:
                     while len(change_message) > 1024:
-                        index = change_message.rfind('\n\n', 0, 1024)
-                        embed.add_field(name="Change Details", value=change_message[:index], inline=False)
-                        change_message = change_message[index+2:]
+                        index = change_message.rfind('\n', 0, 1024)
+                        embed.add_field(name="**Changed Details**", value=change_message[:index], inline=False)
+                        change_message = change_message[index+1:]
 
-                    embed.add_field(name="Change Details", value=change_message, inline=False)
-
+                    embed.add_field(name="**Changed Details**", value=change_message, inline=False)
                     timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
                     embed.set_footer(text=f"Channel ID: {after.id} • {timestamp}")
-
                     await ServerLogsChannel.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel):
+        ServerLogsChannelID = self.config['channel_ids'].get('ServerLogs', None)
+
+        if ServerLogsChannelID:
+            ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))
+
+            if ServerLogsChannel:
+                # Fetch the audit logs
+                audit_logs = await channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete).flatten()
+                # The user who deleted the channel is the user who triggered the latest 'channel_delete' audit log entry
+                deleter = audit_logs[0].user.name if audit_logs else "Unknown"
+
+                embed = discord.Embed(
+                    title="Text Channel Deleted",
+                    description=f"Name: {channel.name}\n\nCategory: {channel.category}\n\nDeleted by: {deleter}",
+                    color=discord.Color.red(),
+                )
+
+                timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+                embed.set_footer(text=f"Channel ID: {channel.id} • {timestamp}")
+                await ServerLogsChannel.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Logs(bot))

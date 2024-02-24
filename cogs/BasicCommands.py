@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from datetime import datetime, timezone
 import json
-import utils
+import utils.utils as utils
 import logging
 from googletrans import Translator
 from sympy import sympify
