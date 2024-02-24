@@ -63,13 +63,17 @@ class ToggleRoles(commands.Cog):
     async def toggleannocements(self, ctx):
         await self.ToggleRole(ctx, "Announcement Pings")
 
-    @commands.command(help="Toggle the 'Tera Raiders' role. Usage: !toggleteraraider")
-    async def toggleteraraider(self, ctx):
-        await self.ToggleRole(ctx, "Tera Raiders")
+    # @commands.command(help="Toggle the 'Tera Raiders' role. Usage: !toggleteraraider")
+    # async def toggleteraraider(self, ctx):
+    #     await self.ToggleRole(ctx, "Tera Raiders")
 
     @commands.command(help="Toggle the 'PalWorld' role. Usage: !togglepalworld")
     async def togglepalworld(self, ctx):
         await self.ToggleRole(ctx, "PalWorld")
+
+    @commands.command(help="Toggle the 'PokeBotAnnouncements' role. Usage: !togglepokebots")
+    async def togglepokebots(self, ctx):
+        await self.ToggleRole(ctx, "Poke Bot Announcements")
 
 def setup(bot):
     bot.add_cog(ToggleRoles(bot))
