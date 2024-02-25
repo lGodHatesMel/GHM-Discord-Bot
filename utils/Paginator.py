@@ -10,7 +10,7 @@ class Paginator:
         self.message = None
 
     def get_reactions(self):
-        return ['🏠', '⬅️', '➡️']
+        return ['🏠', '⬅️', '➡️', '🏁', '🗑️']
 
     async def start(self):
         self.message = await self.ctx.send(embed=self.embeds[self.current_page])
@@ -47,5 +47,10 @@ class Paginator:
                     self.current_page = 0
             elif str(reaction.emoji) == '🏠':
                 self.current_page = 0
+            elif str(reaction.emoji) == '🏁':
+                self.current_page = len(self.embeds) - 1
+            elif str(reaction.emoji) == '🗑️':
+                await self.message.delete()
+                return
 
             await self.message.edit(embed=self.embeds[self.current_page])
