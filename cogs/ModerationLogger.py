@@ -83,7 +83,7 @@ class ModerationLogger(commands.Cog):
             if word in message.content.lower():
                 if not any(role.name in self.AllowedRoles for role in message.author.roles):
                     await message.delete()
-                    reason = f"Contains banned word: `**{word}**`\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
+                    reason = f"Contains banned word: `{word}`\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
                     await utils.LogAction(
                         message.guild,
                         "AutoMod",
