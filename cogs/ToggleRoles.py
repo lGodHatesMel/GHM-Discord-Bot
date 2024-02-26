@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from utils.utils import custom_emojis
 import json
 import random
 
@@ -15,9 +16,9 @@ class ToggleRoles(commands.Cog):
         with open('config.json', 'r') as config_file:
             self.config = json.load(config_file)
 
-    async def ToggleRole(self, ctx, RoleName):
+    async def ToggleRole(self, ctx, RoleName, emoji_name=None):
         if ctx.channel.id != self.RoleChannelID:
-            await ctx.send("You can only use this command in the <#956769501607755806> channel.")
+            await ctx.send(f"You can only use this command in the <#{self.config['channel_ids']['RoleChannel']}> channel.")
             return
 
         role = discord.utils.get(ctx.guild.roles, name=RoleName)
@@ -25,51 +26,48 @@ class ToggleRoles(commands.Cog):
             await ctx.send(f"The role **{RoleName}** does not exist on this server.")
             return
 
+        title = f"{custom_emojis[emoji_name]} {RoleName}" if emoji_name else RoleName
+
         if role in ctx.author.roles:
-            embed = discord.Embed(title=RoleName, color=discord.Color.red())
+            embed = discord.Embed(title=title, color=discord.Color.red())
             await ctx.author.remove_roles(role)
             embed.description = f"Removed the **{RoleName}** role from {ctx.author.mention}."
         else:
             random_color = discord.Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             while random_color == discord.Color.red():
                 random_color = discord.Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-            embed = discord.Embed(title=RoleName, color=random_color)
+            embed = discord.Embed(title=title, color=random_color)
             await ctx.author.add_roles(role)
             embed.description = f"Gave the '{RoleName}' role to {ctx.author.mention}."
-
         await ctx.send(embed=embed)
 
     @commands.command(help="Toggle the 'Pokemon Scarlet Violet' role. Usage: !togglesv")
     async def togglesv(self, ctx):
-        await self.ToggleRole(ctx, "Pokemon Scarlet Violet")
+        await self.ToggleRole(ctx, "Pokemon Scarlet Violet", "sv")
 
     @commands.command(help="Toggle the 'Pokemon BDSP' role. Usage: !togglebdsp")
     async def togglebdsp(self, ctx):
-        await self.ToggleRole(ctx, "Pokemon BDSP")
+        await self.ToggleRole(ctx, "Pokemon BDSP", "bdsp")
 
     @commands.command(help="Toggle the 'Pokemon Legends Arceus' role. Usage: !togglepla")
     async def togglepla(self, ctx):
-        await self.ToggleRole(ctx, "Pokemon Legends Arceus")
+        await self.ToggleRole(ctx, "Pokemon Legends Arceus", "arceus")
 
     @commands.command(help="Toggle the 'Pokemon Sword Shield' role. Usage: !toggleswsh")
     async def toggleswsh(self, ctx):
-        await self.ToggleRole(ctx, "Pokemon Sword Shield")
+        await self.ToggleRole(ctx, "Pokemon Sword Shield", "swsh")
 
     @commands.command(help="Toggle the 'Animal Crossing New Horizon' role. Usage: !toggleacnh")
     async def toggleacnh(self, ctx):
-        await self.ToggleRole(ctx, "Animal Crossing New Horizon")
+        await self.ToggleRole(ctx, "Animal Crossing New Horizon", "acnh")
 
-    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannocements")
-    async def toggleannocements(self, ctx):
-        await self.ToggleRole(ctx, "Announcement Pings")
-
-    # @commands.command(help="Toggle the 'Tera Raiders' role. Usage: !toggleteraraider")
-    # async def toggleteraraider(self, ctx):
-    #     await self.ToggleRole(ctx, "Tera Raiders")
+@commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannocements")
+async def toggleannocements(self, ctx):
+    await self.ToggleRole(ctx, "Announcement Pings", "pinged")
 
     @commands.command(help="Toggle the 'PalWorld' role. Usage: !togglepalworld")
     async def togglepalworld(self, ctx):
-        await self.ToggleRole(ctx, "PalWorld")
+        await self.ToggleRole(ctx, "PalWorld", "pw_grizzbolt")
 
     @commands.command(help="Toggle the 'PokeBotAnnouncements' role. Usage: !togglepokebots")
     async def togglepokebots(self, ctx):

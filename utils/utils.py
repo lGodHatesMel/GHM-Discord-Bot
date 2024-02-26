@@ -4,6 +4,39 @@ from datetime import datetime, timezone, timedelta
 import pytz
 import random
 
+custom_emojis = {
+    "nitroboost": "<:nitroboost:1211532554578952303>",
+    "last_page": "<:Last_Page:1211360319352479754>",
+    "boosttheserver": "<:boosttheserver:1211532493963010159>",
+    "readrules": "<:readrules:1209938853343924295>",
+    "nintendo_switch": "<:nintendo_switch:1211354515224141865>",
+    "cute_arrow": "<:cute_arrow:1209924743969378424>",
+    "moderation": "<:moderation:1209933852848562216>",
+    "Giveaways": "<:Giveaways:964890435740897320>",
+    "sv": "<:sv:992912626533273770>",
+    "bdsp": "<:bdsp:957043167071457300>",
+    "swsh": "<:swsh:957043238043258960>",
+    "arceus": "<:arceus:957042842281345084>",
+    "pikagun": "<:pikagun:1211355558888738857>",
+    "wrongchannel": "<:wrongchannel:1211354438632087632>",
+    "bruheevee": "<:bruheevee:1211355485421305916>",
+    "rizz": "<:rizz:1209932282257735680>",
+    "pikapout": "<:pikapout:1211355412977287219>",
+    "thx": "<:thx:1165294866645909639>",
+    "ping": "<:pinged:1211542356780781628>",
+    "pw_grizzbolt": "<:pw_grizzbolt:1211542358676742204>",
+    "acnh": "<:acnh:1211543299979083796>",
+
+    # Animated emojis
+    "lightingbolt": "<a:lightingbolt:1211532526401749002>",
+    "pikahello": "<a:pikahello:1211355773754413107>",
+    "trainer_pixel": "<a:trainer_pixel:1211354730584866907>",
+    "dittodance": "<a:dittodance:1211357556090478614>",
+    "pika_minecraft": "<a:pika_minecraft:1211357535005573270>",
+    "pokeball_success": "<a:pokeball_success:1211358242723201064>",
+    "pikacheeks": "<a:pikacheeks:1211356756224118934>"
+}
+
 
 ACTIONS = {
     "Kick":         {"emoji": "👢",  "color": discord.Color.orange()},

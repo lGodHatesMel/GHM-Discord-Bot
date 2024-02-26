@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+from utils.utils import custom_emojis
 
 class Paginator:
     def __init__(self, ctx, embeds):
@@ -10,7 +11,7 @@ class Paginator:
         self.message = None
 
     def get_reactions(self):
-        return ['🏠', '⬅️', '➡️', '<:Last_Page:1211360319352479754>', '🗑️'] # '📄'
+        return ['🏠', '⬅️', '➡️', custom_emojis['last_page'], '🗑️'] # '📄'
 
     async def start(self):
         self.message = await self.ctx.send(embed=self.embeds[self.current_page])
@@ -52,7 +53,7 @@ class Paginator:
                     self.current_page = 0
             elif str(reaction.emoji) == '🏠':
                 self.current_page = 0
-            elif str(reaction.emoji) == '<:Last_Page:1211360319352479754>':
+            elif str(reaction.emoji) == custom_emojis['last_page']:
                 self.current_page = len(self.embeds) - 1
             elif str(reaction.emoji) == '🗑️':
                 await self.message.delete()
