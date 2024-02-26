@@ -120,10 +120,10 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
     if issuer:
         value = issuer if isinstance(issuer, str) else issuer.mention
         embed.add_field(name="Issuer", value=value, inline=False)
-
-    if action in ('Ban', 'Unban', 'Kick', 'SoftBanned') and issuer:
-        value = issuer if isinstance(issuer, str) else issuer.mention
-        embed.add_field(name="Issuer", value=value, inline=True)
+    
+    # if action in ('Ban', 'Unban', 'SoftBanned') and issuer:
+    #     value = issuer if isinstance(issuer, str) else issuer.mention
+    #     embed.add_field(name="Issuer", value=value, inline=True)
 
     if user_data and action == 'Ban':
         bans = [ban for ban in user_data.get("banned", [])]

@@ -745,6 +745,10 @@ class Moderation(commands.Cog):
             user_info = json.loads(user_info_db[1])
             user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
+            if user_info["moderation"]["kicks_amount"] >= 3:
+                await ctx.invoke(self.bot.get_command('ban'), discord_user=user, reason="3rd kick - " + reason)
+                return
+
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
             kick_info = {
                 "number": 1,
@@ -960,40 +964,6 @@ class Moderation(commands.Cog):
                     await ctx.send(f"No ban found for user {user.name} in the Discord server.")
             else:
                 await ctx.send(f"No bans found for user {uid} in the database.")
-        else:
-            await ctx.send("User not found in the database.")
-
-    @commands.command(help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Helpers", "Moderator", "Admin")
-    async def checkbans(self, ctx, discord_user: discord.User):
-        uid = str(discord_user.id)
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-        user_row = cursor.fetchone()
-        if user_row:
-            user_info = json.loads(user_row[1])
-            bans = user_info["moderation"].get("banned", [])
-
-            if bans:
-                embed = discord.Embed(
-                    title=f"Bans for {user_info['info']['username']} (UID: {uid})",
-                    color=0xFF0000,
-                )
-
-                embed.add_field(name="Username", value=user_info["info"]["username"], inline=False)
-                for index, ban_info in enumerate(bans, start=1):
-                    timestamp = ban_info["timestamp"]
-                    issuer = ban_info["issuer"]
-                    reason = ban_info["reason"]
-                    unban_reason = ban_info.get("unban_reason", "N/A")
-                    embed.add_field(
-                        name=f"Ban #{index}",
-                        value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nUnban Reason: {unban_reason}",
-                        inline=False
-                    )
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send(f"No bans found for user {uid}.")
         else:
             await ctx.send("User not found in the database.")
 
@@ -1247,7 +1217,43 @@ class Moderation(commands.Cog):
         await paginator.start()
 
 
+
+
     ## NOT USED ANYMORE DO TO EVERYTHING BEING ADDED TO THE INFO COMMAND
+    # @commands.command(help='<@username or UID>', hidden=True)
+    # @commands.has_any_role("Helpers", "Moderator", "Admin")
+    # async def checkbans(self, ctx, discord_user: discord.User):
+    #     uid = str(discord_user.id)
+    #     cursor = self.conn.cursor()
+    #     cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
+    #     user_row = cursor.fetchone()
+    #     if user_row:
+    #         user_info = json.loads(user_row[1])
+    #         bans = user_info["moderation"].get("banned", [])
+
+    #         if bans:
+    #             embed = discord.Embed(
+    #                 title=f"Bans for {user_info['info']['username']} (UID: {uid})",
+    #                 color=0xFF0000,
+    #             )
+
+    #             embed.add_field(name="Username", value=user_info["info"]["username"], inline=False)
+    #             for index, ban_info in enumerate(bans, start=1):
+    #                 timestamp = ban_info["timestamp"]
+    #                 issuer = ban_info["issuer"]
+    #                 reason = ban_info["reason"]
+    #                 unban_reason = ban_info.get("unban_reason", "N/A")
+    #                 embed.add_field(
+    #                     name=f"Ban #{index}",
+    #                     value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nUnban Reason: {unban_reason}",
+    #                     inline=False
+    #                 )
+    #             await ctx.send(embed=embed)
+    #         else:
+    #             await ctx.send(f"No bans found for user {uid}.")
+    #     else:
+    #         await ctx.send("User not found in the database.")
+
     # @commands.command(aliases=["notes", "checknotes"], help='<@username or UID>', hidden=True)
     # @commands.has_any_role("Helper", "Moderator", "Admin")
     # async def listnotes(self, ctx, user: discord.User):

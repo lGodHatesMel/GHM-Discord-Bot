@@ -82,7 +82,7 @@ class Tickets(commands.Cog):
                 await channel.delete()
 
     @commands.command(help="Close the ticket channel", hidden=True)
-    @commands.has_role("Admin", "Moderator")
+    @commands.has_any_role("Moderator", "Admin")
     async def close(self, ctx):
         if ctx.channel.category_id == self.ticket_category_id and ctx.channel.name.endswith(str(ctx.author.id)):
             await ctx.channel.delete()
