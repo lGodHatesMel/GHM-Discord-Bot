@@ -10,11 +10,12 @@ class Paginator:
         self.message = None
 
     def get_reactions(self):
-        return ['🏠', '⬅️', '➡️']
+        return ['🏠', '⬅️', '➡️', '<:Last_Page:1211360319352479754>', '🗑️'] # '📄'
 
     async def start(self):
         self.message = await self.ctx.send(embed=self.embeds[self.current_page])
         if len(self.embeds) > 1:
+            await asyncio.sleep(1)
             for reaction in self.get_reactions():
                 await self.message.add_reaction(reaction)
 
@@ -22,10 +23,14 @@ class Paginator:
             return user == self.ctx.author and str(reaction.emoji) in self.get_reactions()
 
         while True:
-            done, pending = await asyncio.wait([
-                self.ctx.bot.wait_for('reaction_add', timeout=60.0, check=check),
-                self.ctx.bot.wait_for('reaction_remove', timeout=60.0, check=check)
-            ], return_when=asyncio.FIRST_COMPLETED)
+            try:
+                done, pending = await asyncio.wait([
+                    self.ctx.bot.wait_for('reaction_add', timeout=60.0, check=check),
+                    self.ctx.bot.wait_for('reaction_remove', timeout=60.0, check=check)
+                ], return_when=asyncio.FIRST_COMPLETED)
+            except asyncio.TimeoutError:
+                print('The task took too long to complete.')
+                continue
 
             try:
                 reaction, user = done.pop().result()
@@ -47,5 +52,10 @@ class Paginator:
                     self.current_page = 0
             elif str(reaction.emoji) == '🏠':
                 self.current_page = 0
+            elif str(reaction.emoji) == '<:Last_Page:1211360319352479754>':
+                self.current_page = len(self.embeds) - 1
+            elif str(reaction.emoji) == '🗑️':
+                await self.message.delete()
+                return
 
             await self.message.edit(embed=self.embeds[self.current_page])

@@ -94,7 +94,7 @@ class Games(commands.Cog):
         word = random.choice(hangmanwords)
         HiddenWord = ["_" for _ in word]
         WrongGuesses = []
-        MaxGuesses = 6
+        MaxGuesses = 8
         self.games[ctx.author.id] = {"word": word, "HiddenWord": HiddenWord, "WrongGuesses": WrongGuesses, "MaxGuesses": MaxGuesses}
 
         # Add spaces between the characters

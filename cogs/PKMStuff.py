@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 import random
 import requests
-import utils
+import utils.utils as utils
 import logging
 
 ValidGames = ['sv', 'swsh', 'pla', 'bdsp']

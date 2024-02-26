@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import os
 import sqlite3
+import asyncio
+from utils.Paginator import Paginator
 
 class CustomCommands(commands.Cog):
     def __init__(self, bot):
@@ -157,12 +159,13 @@ class CustomCommands(commands.Cog):
         hidden_commands = [command for command in bot_commands if command.hidden and not any(check.__qualname__ == 'is_owner.<locals>.predicate' for check in command.checks)]
 
         embeds = self.create_embeds(hidden_commands)
-        for embed in embeds:
-            await ctx.send(embed=embed)
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
 
     def create_embeds(self, commands):
         """Creates embeds for the given commands."""
         embeds = []
+        total_pages = (len(commands) + 24) // 25
         embed = discord.Embed(title="__**Staff Commands**__", description="*These are the available staff commands.*", color=discord.Color.green())
         no_help_commands = []
 
@@ -173,48 +176,53 @@ class CustomCommands(commands.Cog):
                 no_help_commands.append(command)
 
             if len(embed.fields) == 25:
-                embed.set_footer(text=f"*Page {len(embeds) + 1}*")
+                embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+                embed.set_footer(text="Use the reactions to navigate between pages.")
                 embeds.append(embed)
-                embed = discord.Embed(title="**Staff Commands (cont.)**", color=discord.Color.green())
+                embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
 
         for command in no_help_commands:
             if len(embed.fields) == 25:
-                embed.set_footer(text=f"*Page {len(embeds) + 1}*")
+                embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
                 embeds.append(embed)
-                embed = discord.Embed(title="**Staff Commands (cont.)**", color=discord.Color.green())
+                embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
             embed.add_field(name=f"`{command.name}`", value="", inline=True)
 
-        embed.set_footer(text=f"*Page {len(embeds) + 1}*")
+        embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+        embed.set_footer(text="Use the reactions to navigate between pages.")
         embeds.append(embed)
         return embeds
 
-    # def create_embeds(self, commands):
-    #     """Creates embeds for the given commands."""
-    #     embeds = []
-    #     embed = discord.Embed(title="Staff Commands", description="These are the available staff commands.", color=discord.Color.green())
-    #     no_help_commands = []
+    @commands.command(hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def addlink(self, ctx, link):
+        with open('Data/AllowedLinks.txt', 'a') as file:
+            file.write(link + '\n')
+        await ctx.send(f'Added {link} to the list of allowed links.')
 
-    #     for command in commands:
-    #         if command.help is not None:
-    #             embed.add_field(name=command.name, value=command.help, inline=True)
-    #         else:
-    #             no_help_commands.append(command)
+    @commands.command(hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def showlinks(self, ctx):
+        if os.path.exists('Data/AllowedLinks.txt'):
+            with open('Data/AllowedLinks.txt', 'r') as file:
+                links = [line.strip() for line in file.readlines()]
+        else:
+            links = []
 
-    #         if len(embed.fields) == 25:
-    #             embed.set_footer(text=f"Page {len(embeds) + 1}")
-    #             embeds.append(embed)
-    #             embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
+        chunks = [links[i:i + 10] for i in range(0, len(links), 10)]
+        embeds = []
+        for i, chunk in enumerate(chunks):
+            embed = discord.Embed(
+                title=f"🔗 Allowed Links - Page {i + 1} 🔗",
+                description="\n".join(chunk),
+                color=discord.Color.blue()
+            )
+            embed.set_author(name="God's Eye", icon_url=ctx.guild.me.avatar_url)
+            embed.set_footer(text="Use the reactions to navigate between pages.")
+            embeds.append(embed)
 
-    #     for command in no_help_commands:
-    #         if len(embed.fields) == 25:
-    #             embed.set_footer(text=f"Page {len(embeds) + 1}")
-    #             embeds.append(embed)
-    #             embed = discord.Embed(title="Staff Commands (cont.)", color=discord.Color.green())
-    #         embed.add_field(name=command.name, value="No help text available", inline=True)
-
-    #     embed.set_footer(text=f"Page {len(embeds) + 1}")
-    #     embeds.append(embed)
-    #     return embeds
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
 
 def setup(bot):
     bot.add_cog(CustomCommands(bot))

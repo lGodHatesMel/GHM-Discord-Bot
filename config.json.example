@@ -11,23 +11,32 @@
         "WelcomeChannel": CHANNEL_ID_HERE,
         "RulesChannel": CHANNEL_ID_HERE,
         "FAQChannel": CHANNEL_ID_HERE,
-        "RoleChannel": CHANNEL_ID_HERE,
+        "RoleChannel": 956769501607755806,
+        "StarBoardChannel": CHANNEL_ID_HERE,
         "AutoMod": CHANNEL_ID_HERE,
+        "StaffChannel": CHANNEL_ID_HERE,
         "ModLogs": CHANNEL_ID_HERE,
         "MemberLogs": CHANNEL_ID_HERE,
         "ServerLogs": CHANNEL_ID_HERE,
         "MessageLogs": CHANNEL_ID_HERE,
-        "StreamChannel": CHANNEL_ID_HERE
+        "StreamChannel": CHANNEL_ID_HERE,
+        "TodoChannel": CHANNEL_ID_HERE,
+        "ServerAnnocementChannel": CHANNEL_ID_HERE,
+        "DMLogs": CHANNEL_ID_HERE,
+        "GiveawayChannel": CHANNEL_ID_HERE,
+        "TwitterUpdates": CHANNEL_ID_HERE,
+        "BlacklistedChannels": []
     },
 
+    "ignore_scripts": [],
+
     "token_refresher_enabled": false,
+    "enable_countdown": false,
 
     "twitch_username": "YOUR_TWITCH_USERNAME",
     "twitch_client_id": "YOUR_TWITCH_CLIENT_ID",
     "twitch_oauth_token": "YOUR_TWITCH_OAUTH_ID",
     "youtube_channel_id": "YOUR_YOUTUBE_CHANNEL_ID",
     "youtube_channel_name": "YOUR_YOUTUBE_CHANNEL_NAME",
-    "youtube_api_key": "YOUR_YOUTUBE_API_KEY",
-
-    "enable_countdown": false
+    "youtube_api_key": "YOUR_YOUTUBE_API_KEY"
 }

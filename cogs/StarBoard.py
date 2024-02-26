@@ -1,6 +1,6 @@
 import sqlite3
 import json
-import utils
+import utils.utils as utils
 import asyncio
 import discord
 from discord import RawReactionActionEvent, Embed, File

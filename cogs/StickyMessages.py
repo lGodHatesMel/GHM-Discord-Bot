@@ -100,10 +100,11 @@ class StickyMessages(commands.Cog):
         if OriginalStickyMsgID != message.id:
             if OriginalStickyMsgAuthorID == self.bot.user.id:
                 channel = message.channel
+                OldStickyMsg = None
                 try:
                     OldStickyMsg = await channel.fetch_message(OriginalStickyMsgID)
                 except discord.NotFound:
-                    OldStickyMsg = None
+                    pass
 
                 await asyncio.sleep(2.5)
 
@@ -147,10 +148,12 @@ class StickyMessages(commands.Cog):
     @commands.command(aliases=['delsticky'], help='<#Channel>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def removesticky(self, ctx, channel: discord.TextChannel):
-
         if channel.id in self.StickyMsg:
             StickyMsg = self.StickyMsg.pop(channel.id)["message"]
-            await StickyMsg.delete()
+            try:
+                await StickyMsg.delete()
+            except discord.errors.NotFound:
+                pass
             await self.SaveStickyNotes()
             await ctx.send(f"Sticky note removed from {channel.mention}.")
         else:
@@ -161,9 +164,6 @@ class StickyMessages(commands.Cog):
     async def editsticky(self, ctx, channel: discord.TextChannel, *, new_message):
         if channel.id not in self.StickyMsg:
             return await ctx.send(f"No sticky note found in {channel.mention}.")
-
-        # OriginaStickyMsgData = self.StickyMsg[channel.id]
-        # OriginalStickyMsgContent = OriginaStickyMsgData["content"]
 
         OriginalStickyMsgEmbed = discord.Embed(
             title="**STICKY NOTE**",
@@ -176,8 +176,16 @@ class StickyMessages(commands.Cog):
         self.StickyMsg[channel.id]["content"] = new_message
 
         await self.SaveStickyNotes()
-
         await ctx.send(f"Sticky note in {channel.mention} has been edited.")
+
+    @commands.command(help='<#Channel>', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def getsticky(self, ctx, channel: discord.TextChannel):
+        if channel.id not in self.StickyMsg:
+            return await ctx.send(f"No sticky note found in {channel.mention}.")
+
+        current_content = self.StickyMsg[channel.id]["content"]
+        await ctx.send(f"Current sticky note in {channel.mention}:\n```\n{current_content}\n```")
 
 def setup(bot):
     bot.add_cog(StickyMessages(bot))

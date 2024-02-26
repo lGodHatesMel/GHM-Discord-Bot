@@ -1,11 +1,36 @@
 import discord
 from discord.ext import commands
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import pytz
 import random
 
-def generate_number():
+
+ACTIONS = {
+    "Kick":         {"emoji": "👢",  "color": discord.Color.orange()},
+    "Ban":          {"emoji": "🔨",  "color": discord.Color.red()},
+    "SoftBan":      {"emoji": "⏳",  "color": discord.Color.gold()},
+    "Unban":        {"emoji": "🕊️",  "color": discord.Color.green()},
+    "Warning":      {"emoji": "⚠️",  "color": discord.Color(0xFFFF00)}, # Yellow
+    "Note":         {"emoji": "📝",  "color": discord.Color.blue()},
+    "Database":     {"emoji": "💾",  "color": discord.Color.teal()},
+    "Edit":         {"emoji": "✏️",  "color": discord.Color.blurple()},
+    "Deletion":     {"emoji": "🗑️",  "color": discord.Color.dark_red()},
+    "Blacklisted":  {"emoji": "🚫",  "color": discord.Color.dark_grey()},
+    "BOT DM":       {"emoji": "🤖",  "color": discord.Color.light_grey()},
+}
+## All possible discord.Color choices
+# discord.Color.default()     discord.Color.dark_teal()    discord.Color.teal()       discord.Color.dark_green()
+# discord.Color.green()       discord.Color.dark_blue()    discord.Color.blue()       discord.Color.dark_purple()
+# discord.Color.purple()      discord.Color.dark_magenta() discord.Color.magenta()    discord.Color.dark_gold()
+# discord.Color.gold()        discord.Color.dark_orange()  discord.Color.orange()     discord.Color.dark_red()
+# discord.Color.red()         discord.Color.lighter_grey() discord.Color.light_grey() discord.Color.dark_grey()
+# discord.Color.darker_grey() discord.Color.blurple()      discord.Color.greyple()    discord.Color.dark_theme()
+# discord.Color(0xFFFF00)}(Yellow)  discord.Color(0x00FF00)}(Lime)  discord.Color(0x0000FF)}(Blue) 
+# discord.Color(0xFF00FF)}(Magenta)
+
+def GenerateNumber():
     return random.randint(1, 9999)
+
 
 def GetLocalTime():
     utc_now = datetime.now(timezone.utc)
@@ -13,7 +38,26 @@ def GetLocalTime():
     local_time = utc_now.astimezone(target_timezone)
     return local_time
 
-async def LogAction(guild, channel_name, action, target, reason, edited_content=None, warning_number=None, issuer=None, user_data=None, config=None, embed=None, old_message=None, new_message=None):
+def TimeDelta(days=0, hours=0, minutes=0, seconds=0):
+    return timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+
+
+async def FetchMember(guild, target):
+    if isinstance(target, str):
+        try:
+            return await guild.FetchMember(target)
+        except discord.NotFound:
+            raise ValueError(f"User with ID {target} not found")
+    return target
+
+async def GetMember(ctx, user_id):
+    member = ctx.guild.GetMember(user_id)
+    if member is None:
+        raise ValueError("Member not found in this server.")
+    return member
+
+
+async def LogAction(guild, channel_name, action, target, reason, issuer=None, user_data=None, config=None, embed=None):
     if not config:
         raise ValueError("config is required for LogAction")
 
@@ -25,51 +69,24 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
     if not channel:
         raise ValueError(f"Channel with ID {ChannelID} not found")
 
-    embed_color = discord.Color.blue() if action in ('Kick', 'Warning', 'Note', 'Database') else discord.Color.red()
-
-    emojis = {
-        "Kick": "👢",
-        "Ban": "🔨",
-        "SoftBan": "⏳",
-        "Unban": "🕊️",
-        "Warning": "⚠️",
-        "Note": "📝",
-        "Database": "💾",
-        "Edit": "✏️",
-        "Deletion": "🗑️",
-        "BOT DM": "🤖",
-    }
-
+    action_data = ACTIONS.get(action, {"emoji": "", "color": discord.Color.red()})
+    emoji = action_data["emoji"]
+    embed_color = action_data["color"]
     timestamp = GetLocalTime()
-    emoji = emojis.get(action, "")
+    target = await FetchMember(guild, target)
+
     embed = discord.Embed(
         title=f"{emoji} {action}",
         color=embed_color,
         timestamp=timestamp
     )
 
-    if isinstance(target, str):
-        try:
-            target = await guild.fetch_member(target)
-        except discord.NotFound:
-            raise ValueError(f"User with ID {target} not found")
-
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
 
-    if action == 'Edit' and old_message and new_message:
-        embed.add_field(name="Original Message", value=old_message, inline=False)
-        embed.add_field(name="Edited Message", value=new_message, inline=False)
-
-    # if edited_content:
-    #     embed.add_field(name="Edited Content", value=edited_content, inline=False)
-
-    if action == 'Warning':
-        if warning_number:
-            embed.add_field(name="Warning Number", value=warning_number, inline=True)
-        if issuer:
-            value = issuer if isinstance(issuer, str) else issuer.mention
-            embed.add_field(name="Issuer", value=value, inline=True)
+    if issuer:
+        value = issuer if isinstance(issuer, str) else issuer.mention
+        embed.add_field(name="Issuer", value=value, inline=False)
 
     if action in ('Ban', 'Unban', 'Kick', 'SoftBanned') and issuer:
         value = issuer if isinstance(issuer, str) else issuer.mention
@@ -86,6 +103,7 @@ async def LogAction(guild, channel_name, action, target, reason, edited_content=
             )
     await channel.send(embed=embed)
 
+
 # Function to format set details with line breaks
 def FormatedSetDetails(SetDetails):
     splittables = [
@@ -98,11 +116,11 @@ def FormatedSetDetails(SetDetails):
         "Rash Nature", "Relaxed Nature", "Sassy Nature", "Serious Nature", "Timid Nature",
         "*",
     ]
-
     for i in splittables:
         if i in SetDetails:
             SetDetails = SetDetails.replace(i, f"\n{i}")
     return SetDetails
+
 
 def RandomPKMFacts():
     PKMFacts = [
@@ -210,5 +228,4 @@ def RandomPKMFacts():
         "In the Pokémon series, Professor Oak, the first Pokémon professor, is known for his iconic line: 'Are you a boy or a girl?'",
         "The Pokémon Gengar is believed to be the shadow of Clefable, another Pokémon, according to its Pokédex entry.",
     ]
-
     return random.choice(PKMFacts)

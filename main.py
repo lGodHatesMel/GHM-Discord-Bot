@@ -1,11 +1,11 @@
 import os
-# os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 import discord
 from discord import Embed
 from discord.ext import commands
 import json
-import utils
 import traceback
+import utils.utils as utils
+from utils.Paginator import Paginator
 # import logging
 # logging.basicConfig(level=logging.INFO)
 
@@ -15,8 +15,6 @@ intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
 intents.dm_messages = True
-#intents.dm_reactions = True
-# intents.typing = True
 
 
 ## Custom Help Command
@@ -31,30 +29,38 @@ class EmbedHelpCommand(commands.HelpCommand):
             return '`!{}`'.format(command.qualified_name)
 
     async def send_bot_help(self, mapping):
-        with open('config.json') as f:
-            config = json.load(f)
-
         ExcludeCommands = ['staffcommands', 'commands', 'help', 'ping', 'botping']
-
-        embed = Embed(title="Server Bot Commands", color=discord.Color.blue())
+        embeds = []
+        current_embed = discord.Embed(color=discord.Color.random())
+        current_count = 0
         for cog, commands in mapping.items():
             if getattr(cog, "hidden", False):
                 continue
             commands = [c for c in commands if not c.hidden and c.name not in ExcludeCommands]
-            command_signatures = [self.get_command_signature(c) for c in commands]
-            if command_signatures:
+            if commands:
                 cog_name = getattr(cog, "qualified_name", "Other Commands")
-                signatures = "\n".join(command_signatures)
-                # Split signatures into chunks of 1024 characters or less
-                for i in range(0, len(signatures), 1024):
-                    chunk = signatures[i:i+1024]
-                    embed.add_field(name=f"{cog_name}", value=chunk, inline=False)
+                field_value = ""
+                for command in commands:
+                    signature = self.get_command_signature(command)
+                    field_value += signature + "\n"
+                    current_count += 1
+                    if current_count == 9:
+                        current_embed.add_field(name=f"{cog_name}", value=field_value, inline=True)
+                        current_embed.title = f"**Server Commands - Page {len(embeds) + 1}**"
+                        embeds.append(current_embed)
+                        current_embed = discord.Embed(color=discord.Color.random())
+                        current_count = 0
+                        field_value = ""
+                if field_value:
+                    current_embed.add_field(name=f"{cog_name}", value=field_value, inline=True)
+                current_embed.set_footer(text="Use the reactions to navigate between pages.")
+        if len(current_embed.fields) > 0:
+            current_embed.set_footer(text="Use the reactions to navigate between pages.")
+            current_embed.title = f"**Server Commands - Page {len(embeds) + 1}**"
+            embeds.append(current_embed)
 
-        logo_url = config['logo_url']
-        embed.set_thumbnail(url=logo_url)
-        channel = self.get_destination()
-        await channel.send(embed=embed)
-
+        paginator = Paginator(self.context, embeds)
+        await paginator.start()
 
 ## Bot Setup
 try:
@@ -91,14 +97,27 @@ bot.config = config
 async def _commands(ctx, *args):
     await ctx.send_help(*args)
 
+@bot.command()
+async def shutdownbot(ctx):
+    if ctx.author.id == config['owner_id']:
+        await ctx.send("Shutting down bot...")
+        await bot.close()
+    else:
+        await ctx.send("You do not have permission to run this command.")
 
-## Load Cogs
+
+## Run scripts from folders
+IgnoreScripts = config.get('ignore_scripts', [])
 folders = ['cogs']
 for folder in folders:
     for filename in os.listdir(folder):
         if filename.endswith('.py'):
+            script_name = filename[:-3]
+            if script_name in IgnoreScripts:
+                print(f'Ignored extension: {folder}.{script_name}')
+                continue
             try:
-                extension = f'{folder}.{filename[:-3]}'
+                extension = f'{folder}.{script_name}'
                 bot.load_extension(extension)
                 print(f'Loaded extension: {extension}')
             except Exception as e:
