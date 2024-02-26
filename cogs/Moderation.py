@@ -211,7 +211,7 @@ class Moderation(commands.Cog):
             left_datetime = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
             if user:
                 user_info = json.loads(user[1])
-                if "Left" in user_info["info"]:
+                if "Left" in user_info["info"] and user_info["info"]["Left"] is not None:
                     user_info["info"]["Left"].append(left_datetime)
                 else:
                     user_info["info"]["Left"] = [left_datetime]
@@ -322,9 +322,9 @@ class Moderation(commands.Cog):
             if "warns" in user_info["moderation"]:
                 embed = discord.Embed(title="Warnings:", color=0xff0000)
                 for warn in user_info["moderation"]["warns"]:
-                    warn_content = f"Date/Time: {warn['timestamp']}\n" \
-                                f"Issuer: {warn['issuer']}\n" \
-                                f"Warning: {warn['warning']}"
+                    warn_content = f"**Date/Time:** {warn['timestamp']}\n" \
+                                f"**Issuer:** {warn['issuer']}\n" \
+                                f"**Warning:** {warn['warning']}"
                                 # f"Number: {warn['number']}\n" \
                     embed.add_field(name=f"Warning {warn['number']}", value=warn_content, inline=False)
                 embeds.append(embed)
@@ -332,8 +332,8 @@ class Moderation(commands.Cog):
             if "notes" in user_info["moderation"]:
                 embed = discord.Embed(title="Notes:", color=0x0000ff)
                 for note in user_info["moderation"]["notes"]:
-                    note_content = f"Author: {note['author']}\n" \
-                                f"Content: {note['content']}"
+                    note_content = f"**Author:** {note['author']}\n" \
+                                f"**Content:** {note['content']}"
                                 # f"Number: {note['number']}\n" \
                                     # f"Date/Time: {note['timestamp']}\n" \
                     embed.add_field(name=f"Note {note['number']}", value=note_content, inline=False)
@@ -342,9 +342,9 @@ class Moderation(commands.Cog):
             if "ban_reason" in user_info["moderation"]:
                 embed = discord.Embed(title="Bans:", color=0xff0000)
                 for ban in user_info["moderation"]["ban_reason"]:
-                    ban_content = f"Date/Time: {ban['timestamp']}\n" \
-                                f"Issuer: {ban['issuer']}\n" \
-                                f"Reason: {ban['reason']}"
+                    ban_content = f"**Date/Time:** {ban['timestamp']}\n" \
+                                f"**Issuer:** {ban['issuer']}\n" \
+                                f"**Reason:** {ban['reason']}"
                                 # f"Number: {ban['number']}\n" \
                     embed.add_field(name=f"Ban {ban['number']}", value=ban_content, inline=False)
                 embeds.append(embed)
@@ -352,9 +352,9 @@ class Moderation(commands.Cog):
             if "kick_reason" in user_info["moderation"]:
                 embed = discord.Embed(title="Kicks:", color=0xff0000)
                 for kick in user_info["moderation"]["kick_reason"]:
-                    kick_content = f"Date/Time: {kick['timestamp']}\n" \
-                                f"Issuer: {kick['issuer']}\n" \
-                                f"Reason: {kick['reason']}"
+                    kick_content = f"**Date/Time:** {kick['timestamp']}\n" \
+                                f"**Issuer:** {kick['issuer']}\n" \
+                                f"**Reason:** {kick['reason']}"
                     embed.add_field(name=f"Kick {kick['number']}", value=kick_content, inline=False)
                 embeds.append(embed)
 
@@ -362,9 +362,9 @@ class Moderation(commands.Cog):
                 embed = discord.Embed(title="Unbans:", color=0x00ff00)
                 for ban in user_info["moderation"]["banned"]:
                     if ban.get("lifted", False):
-                        unban_content = f"Date/Time: {ban['timestamp']}\n" \
-                                        f"Issuer: {ban['issuer']}\n" \
-                                        f"Unban Reason: {ban['unban_reason']}"
+                        unban_content = f"**Date/Time:** {ban['timestamp']}\n" \
+                                        f"**Issuer:** {ban['issuer']}\n" \
+                                        f"**Unban Reason:** {ban['unban_reason']}"
                         embed.add_field(name=f"Unban {ban['number']}", value=unban_content, inline=False)
                 embeds.append(embed)
 

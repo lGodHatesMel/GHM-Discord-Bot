@@ -97,6 +97,13 @@ bot.config = config
 async def _commands(ctx, *args):
     await ctx.send_help(*args)
 
+@bot.command()
+async def shutdownbot(ctx):
+    if ctx.author.id == config['owner_id']:
+        await ctx.send("Shutting down bot...")
+        await bot.close()
+    else:
+        await ctx.send("You do not have permission to run this command.")
 
 
 ## Run scripts from folders
