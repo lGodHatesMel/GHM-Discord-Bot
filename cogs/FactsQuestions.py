@@ -1,9 +1,9 @@
-import os
-import asyncio
-import sqlite3
-import random
 import discord
 from discord.ext import commands
+import asyncio
+import sqlite3
+import json
+import random
 
 class FactsQuestions(commands.Cog):
     def __init__(self, bot):
@@ -38,7 +38,7 @@ class FactsQuestions(commands.Cog):
         FAQChannel = ctx.guild.get_channel(FAQChannelID)
 
         if not FAQChannel:
-            await ctx.send("⚠ FAQ channel not found. Make sure 'FAQChannel' in config.json points to a valid channel.")
+            await ctx.send("⚠ FAQ channel not found. Make sure to set the 'FAQChannel' in the 'channel_ids' section of the config.json file to a valid channel.")
             return
 
         async for msg in FAQChannel.history(limit=None):
@@ -116,7 +116,7 @@ class FactsQuestions(commands.Cog):
         FAQChannel = ctx.guild.get_channel(FAQChannelID)
 
         if not FAQChannel:
-            await ctx.send("⚠ FAQ channel not found. Make sure 'FAQChannel' in config.json points to a valid channel.")
+            await ctx.send("⚠ FAQ channel not found. Make sure to set the 'FAQChannel' in the 'channel_ids' section of the config.json file to a valid channel.")
             return
 
         await ctx.send("Type the bot command name for this FAQ entry (no spaces or special characters), or type `cancel` to cancel:")

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import json
 import utils.utils as utils
+from utils.utils import custom_emojis
 
 class Logs(commands.Cog):
     def __init__(self, bot):
@@ -29,6 +30,13 @@ class Logs(commands.Cog):
                 await self.LogUserChange(after, f"Roles added: {', '.join([role.name for role in added_roles])}")
             if removed_roles:
                 await self.LogUserChange(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
+
+        if before.premium_since is None and after.premium_since is not None:
+            channel_id = self.bot.config["channel_ids"]["ServerAnnocementChannel"]
+            channel = self.bot.get_channel(channel_id)
+            embed = discord.Embed(title=f"{custom_emojis['nitroboost']} New Server Boost! {custom_emojis['nitroboost']}", description=f"{emojis['tada']} Thank you {after.mention} for boosting the server! {custom_emojis['tada']}", color=discord.Color.purple())
+            embed.set_author(name=str(after), icon_url=after.avatar_url)
+            await channel.send(embed=embed)
 
     async def LogUserChange(self, user, change_message):
         MemberLogChannelId = self.config['channel_ids'].get('MemberLogs', None)

@@ -100,7 +100,7 @@ class Info(commands.Cog):
         info_channel = ctx.guild.get_channel(info_channel_id)
 
         if not info_channel:
-            await ctx.send("⚠ INFO channel not found. Make sure 'info_channel_id' in config.json points to a valid channel.")
+            await ctx.send("⚠ INFO channel not found. Make sure 'info_channel_id' in the 'channel_ids' section of the config.json file points to a valid channel.")
             return
 
         await ctx.send("Type the bot command name for this INFO entry (no spaces or special characters), or type `cancel` to cancel:")
