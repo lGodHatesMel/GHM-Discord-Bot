@@ -54,7 +54,7 @@ class Todo(commands.Cog):
             embed = discord.Embed(title=task, description="", color=discord.Color.green())
             embed.set_author(name=f"Task created by {creator.name}", icon_url=creator.avatar_url)
             embed.set_footer(text=f"Task ID: {res[0]}")
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help="Shows all tasks from your todo list.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -74,7 +74,7 @@ class Todo(commands.Cog):
                 else:
                     creator_name = "Unknown"
                 embed.add_field(name=f"ID: {row[0]}", value=f"Task: {task}\nCreator: {creator_name}", inline=False)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help='<Task>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -84,7 +84,7 @@ class Todo(commands.Cog):
         self.cursor.execute("INSERT INTO todo(user_id, time, task, subtasks) VALUES (?, ?, ?, ?)", (user_id, _t, task, ""))
         self.conn.commit()
         embed = discord.Embed(description=f"{TICK_EMOJI} Created new todo list `{task}`.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help="<id>", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -98,7 +98,7 @@ class Todo(commands.Cog):
             self.cursor.execute("DELETE FROM todo WHERE unique_id = ?", (unique_id,))
             self.conn.commit()
             embed = discord.Embed(description=f"{TICK_EMOJI} Removed task with ID `{unique_id}` from your todo list.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help="Clears a specific task from your todo list.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -112,7 +112,7 @@ class Todo(commands.Cog):
             self.cursor.execute("DELETE FROM todo WHERE unique_id = ?", (unique_id,))
             self.conn.commit()
             embed = discord.Embed(description=f"{TICK_EMOJI} Cleared task with ID `{unique_id}` from your todo list.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help='<ID> <Subtask> | <Note>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -131,7 +131,7 @@ class Todo(commands.Cog):
             self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
             self.conn.commit()
             embed = discord.Embed(description=f"{TICK_EMOJI} Added task `{subtask}` to todo list with ID `{unique_id}`.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -151,7 +151,7 @@ class Todo(commands.Cog):
                 embed = discord.Embed(description=f"{TICK_EMOJI} Removed subtask `{subtask}` from todo list with ID `{unique_id}`.", color=discord.Color.green())
             else:
                 embed = discord.Embed(description="Subtask not found!", color=discord.Color.red())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -166,7 +166,7 @@ class Todo(commands.Cog):
             self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
             self.conn.commit()
             embed = discord.Embed(description=f"{TICK_EMOJI} Completed subtask `{subtask}` in task with ID `{unique_id}`.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -181,7 +181,7 @@ class Todo(commands.Cog):
             self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
             self.conn.commit()
             embed = discord.Embed(description=f"{X_EMOJI} Cancelled subtask `{subtask}` in task with ID `{unique_id}`.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help='<ID> <Subtask>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -196,7 +196,7 @@ class Todo(commands.Cog):
             self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
             self.conn.commit()
             embed = discord.Embed(description=f"{TODO_ARROW_EMOJI} Prioritized subtask `{subtask}` in task with ID `{unique_id}`.", color=discord.Color.green())
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Todo(bot))

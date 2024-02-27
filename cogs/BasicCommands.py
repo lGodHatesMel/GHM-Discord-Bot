@@ -31,7 +31,7 @@ class BasicCommands(commands.Cog):
     @commands.command(description='Replies with Pong if bot is up')
     @commands.has_any_role("Moderator", "Admin")
     async def ping(self, ctx):
-        await ctx.send('Pong')
+        await ctx.message.reply('Pong')
 
     @commands.command(help="Shows bot's latency")
     @commands.is_owner()
@@ -51,7 +51,7 @@ class BasicCommands(commands.Cog):
             )
             embed.set_thumbnail(url=avatar_url)
 
-            reply = await ctx.reply(embed=embed)
+            reply = await ctx.message.reply(embed=embed)
             if reply:
                 print("Bot ping message sent successfully.")
             else:
@@ -63,7 +63,7 @@ class BasicCommands(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def togglechannel(self, ctx, channel: discord.TextChannel, role: discord.Role, permission_name: str):
         if permission_name not in ('send_messages', 'read_messages'):
-            await ctx.send("Invalid permission name. Use 'send_messages' or 'read_messages'.")
+            await ctx.message.reply("Invalid permission name. Use 'send_messages' or 'read_messages'.")
             return
 
         permissions = channel.overwrites_for(role)
@@ -75,21 +75,21 @@ class BasicCommands(commands.Cog):
         await channel.set_permissions(role, overwrite=permissions)
 
         if getattr(permissions, permission_name):
-            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled.")
+            await ctx.message.reply(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been enabled.")
         else:
-            await ctx.send(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled.")
+            await ctx.message.reply(f"Permission '{permission_name}' for role '{role.name}' in channel '{channel.name}' has been disabled.")
 
     @togglechannel.error
     async def togglechannel_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have the required permissions to use this command.")
+            await ctx.message.reply("You don't have the required permissions to use this command.")
 
     @commands.command(help='<#Channel> <Message>', description='Sends a bot down message to a specific channel', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def botdown(self, ctx, channel: discord.TextChannel, *, message):
 
         await channel.send(f"**Bot Down:**\n{message}")
-        await ctx.send(f"Bot Down message sent to {channel.mention}.")
+        await ctx.message.reply(f"Bot Down message sent to {channel.mention}.")
 
         current_time = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
         author = ctx.message.author
@@ -112,7 +112,7 @@ class BasicCommands(commands.Cog):
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
 
         await channel.send(embed=embed)
-        await ctx.send(f"Announcement sent to {channel.mention}.")
+        await ctx.message.reply(f"Announcement sent to {channel.mention}.")
 
     @commands.command(help='"Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', description='Creates a poll with multiple options', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -150,9 +150,9 @@ class BasicCommands(commands.Cog):
             embed.add_field(name='Original Text', value=TextToTranslate, inline=False)
             embed.add_field(name='Translation', value=TranslatedText.text, inline=False)
 
-            await ctx.send(embed=embed)
+            await ctx.message.reply(embed=embed)
         except Exception as e:
-            await ctx.send(f'An error occurred: {str(e)}')
+            await ctx.message.reply(f'An error occurred: {str(e)}')
 
     @commands.command(name="calc")
     async def calc(self, ctx, *, equation: str):

@@ -112,7 +112,6 @@ class LiveNotification(commands.Cog):
         embed.add_field(name='Game', value=game_name, inline=True)
         embed.add_field(name='Watch Now', value=f'[Stream Link]({streamlink})', inline=True)
         # embed.add_field(name='Message', value=f'[Message Here]', inline=False)
-
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -120,7 +119,7 @@ class LiveNotification(commands.Cog):
         try:
             await self.TwitchLiveNotification(ctx)
         except Exception as e:
-            await ctx.send(f'An error occurred: {e}')
+            await ctx.message.reply(f'An error occurred: {e}')
 
 def setup(bot):
     bot.add_cog(LiveNotification(bot))

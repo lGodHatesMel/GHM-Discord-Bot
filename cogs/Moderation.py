@@ -8,6 +8,7 @@ import sqlite3
 from sqlite3 import Error
 import random
 from typing import Union
+from colorama import Fore, Style
 
 
 with open('config.json', 'r') as config_file:
@@ -50,23 +51,23 @@ class Moderation(commands.Cog):
                 user_info["info"]["roles"] = [role.name for role in after.roles]
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
-            print(f"Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
+            print(f"{Fore.MAGENTA}Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
             if added_roles:
-                print(f"Added roles: {', '.join(added_roles)}")
+                print(f"{Fore.GREEN}Added roles: {', '.join(added_roles)}{Style.RESET_ALL}")
             if removed_roles:
-                print(f"Removed roles: {', '.join(removed_roles)}")
+                print(f"{Fore.RED}Removed roles: {', '.join(removed_roles)}{Style.RESET_ALL}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if isinstance(message.channel, discord.DMChannel):
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-            print(f"Received DM from {message.author.name} at {timestamp}: {message.content}")
+            print(f"{Fore.BLUE}Received DM from {message.author.name} at {timestamp}: {message.content}{Style.RESET_ALL}")
             await utils.LogAction(
                 guild=self.bot.get_guild(config['guild_id']),
                 channel_name='DMLogs',
-                action='BOT DM',
+                action=f'BOT DM',
                 target=message.author,
-                reason=f"Received DM from {message.author}\n(UID: {message.author.id}) at {timestamp}\n\n**DM Message:**\n\n{message.content}",
+                reason=f"Message Received from {message.author.name} (UID: {message.author.id}) at {timestamp}\n\n**Message Content:**\n{message.content}.",
                 config=config
             )
         elif not message.author.bot:
@@ -77,7 +78,7 @@ class Moderation(commands.Cog):
             if user:
                 user_info = json.loads(user[1])
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-                self.conn.commit()
+            self.conn.commit()
 
     @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -93,7 +94,7 @@ class Moderation(commands.Cog):
             cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
             self.conn.commit()
             await ctx.send(f"Updated username to {new_username}.")
-            print(f"Updated username from {old_username} to {new_username} for user {uid} in the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
+            print(f"{Fore.YELLOW}Updated username from {old_username} to {new_username} for user {uid} in the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
         else:
             await ctx.send("User not found in the database.")
 
@@ -113,7 +114,7 @@ class Moderation(commands.Cog):
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
                 print(f"Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                print(f"Updated avatar URL from {old_avatar_url} to {new_avatar_url}")
+                # print(f"Updated avatar URL from {old_avatar_url} to {new_avatar_url}")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -158,8 +159,8 @@ class Moderation(commands.Cog):
                         "kicks_amount": 0
                     }
                 }
-                print(f"Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                print(f"User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}")
+                print(f"{Fore.GREEN}Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
+                print(f"{Fore.BLUE}User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}{Style.RESET_ALL}")
                 if not member.bot:
                     user_info["info"]["roles"] = [role.name for role in member.roles]
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
@@ -222,8 +223,8 @@ class Moderation(commands.Cog):
             left_datetime = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
             if user:
                 user_info = json.loads(user[1])
-                print(f"User ({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                print(f"User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}")
+                print(f"{Fore.YELLOW}User ({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
+                print(f"{Fore.GREEN}User joined at {user_info['info']['Joined']}{Style.RESET_ALL} and {Fore.RED}account was created at {user_info['info']['Account_Created']}{Style.RESET_ALL}")
                 if "Left" in user_info["info"] and user_info["info"]["Left"] is not None:
                     user_info["info"]["Left"].append(left_datetime)
                 else:
@@ -247,8 +248,8 @@ class Moderation(commands.Cog):
                         "kicks_amount": 0
                     }
                 }
-                print(f"Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                print(f"User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}")
+                print(f"{Fore.GREEN}Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
+                print(f"{Fore.BLUE}User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}{Style.RESET_ALL}")
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
             self.conn.commit()
 
@@ -1064,28 +1065,22 @@ class Moderation(commands.Cog):
     async def changenickname(self, ctx, member: discord.Member, *, new_name: str):
         try:
             await member.edit(nick=new_name)
-            await ctx.send(f"Nickname changed for {member.mention} to {new_name}.")
+            await ctx.message.reply(f"Nickname changed for {member.mention} to {new_name}.")
         except discord.Forbidden:
-            await ctx.send("Failed to change the nickname due to permission settings.")
+            await ctx.message.reply("Failed to change the nickname due to permission settings.")
+    
+    @commands.command(help="Set the bot's nickname", hidden=True)
+    @commands.is_owner()
+    async def setbotnickname(self, ctx, *, nickname):
+        await ctx.guild.me.edit(nick=nickname)
+        await ctx.message.reply(f"Nickname was changed to **{nickname}**")
 
     @commands.command(help="<@username or UID> <Message>", hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def dm(self, ctx, user: discord.User, *, message: str):
-        if user is None:
-            await ctx.send("User not found.")
-            return
-        try:
-            await user.send(message)
-            await ctx.send(f"Message sent to {user.name}. Message content: `{message}`")
-        except discord.Forbidden:
-            await ctx.send("I'm not able to DM that user.")
-
-    @commands.command(help="<uid> <Message>", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def dm(self, ctx, user_id: int, *, message: str):
         user = self.bot.get_user(user_id)
         if user is None:
-            await ctx.send("User not found.")
+            await ctx.message.reply("User not found.")
             return
         try:
             await user.send(message)
@@ -1093,15 +1088,15 @@ class Moderation(commands.Cog):
             print(f"At {timestamp} {ctx.author} sent a DM to {user.name}. \nMessage content: '{{{message}}}'")
             await utils.LogAction(
                 guild=ctx.guild,
-                channel_name='ModLogs',
-                action='BOT DM',
+                channel_name='DMLogs',
+                action=f'BOT DM',
                 target=user,
-                reason=f"**DM Message:**\n\n{message}",
+                reason=f"**Message Sent:**\n{message}",
                 issuer=ctx.author,
                 config=config
             )
         except discord.Forbidden:
-            await ctx.send("I'm not able to DM that user.")
+            await ctx.message.reply("I'm not able to DM that user.")
 
     @commands.command(hidden=True)
     @commands.is_owner()

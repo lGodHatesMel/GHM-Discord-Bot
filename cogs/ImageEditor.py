@@ -22,7 +22,6 @@ class ImageEditor(commands.Cog):
             resized_image_data.seek(0)
 
             await ctx.send(f'Resized image to {size}px:', file=discord.File(resized_image_data, filename=f'{save_name}.png'))
-
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
@@ -40,17 +39,15 @@ class ImageEditor(commands.Cog):
             resized_image_data = io.BytesIO()
             resized_image.save(resized_image_data, format='PNG')
             resized_image_data.seek(0)
-
-            await ctx.send(file=discord.File(resized_image_data, filename=f'{save_name}.png'))
-
+            await ctx.message.reply(file=discord.File(resized_image_data, filename=f'{save_name}.png'))
         except Exception as e:
-            await ctx.send(f'An error occurred: {str(e)}')
+            await ctx.message.reply(f'An error occurred: {str(e)}')
 
     @commands.command(help="<size> <save_name>", description="Resizes an attached image to a specified size.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def resizeimage(self, ctx, size: int, save_name: str):
         if len(ctx.message.attachments) == 0:
-            await ctx.send('No image attached to the message.')
+            await ctx.message.reply('No image attached to the message.')
             return
 
         attachment = ctx.message.attachments[0]
@@ -68,9 +65,9 @@ class ImageEditor(commands.Cog):
             x_offset += image.size[0]
         return new_image
 
-    @commands.command(help="<width> <height> <save_name>", description="Merges multiple attached images into one", hidden=True)
+    @commands.command(help="<width> <height> <save_name> <send_discord_only>", description="Merges multiple attached images into one", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def merge(self, ctx, width: int, height: int, save_name: str):
+    async def merge(self, ctx, width: int, height: int, save_name: str, discord_only: bool):
         # Check if the message has attachments
         if ctx.message.attachments:
             images = []
@@ -83,12 +80,13 @@ class ImageEditor(commands.Cog):
             # Check if there are at least two images
             if len(images) >= 2:
                 merged_image = self.merge_images(images)
-                merged_image.save(save_name + '.png')
-                await ctx.send(file=discord.File(save_name + '.png'))
+                if not discord_only:
+                    merged_image.save(f'images/{save_name}.png')  # Save the image to the bot's files
+                await ctx.message.reply(file=discord.File(f'images/{save_name}.png'))  # Send the image to the Discord channel
             else:
-                await ctx.send('Please attach at least two images to merge.')
+                await ctx.message.reply('Please attach at least two images to merge.')
         else:
-            await ctx.send('To use this command, type !merge width height save_name and attach two or more images to your message and I will merge them into one image.')
+            await ctx.message.reply('To use this command, type !merge width height save_name discord_only and attach two or more images to your message and I will merge them into one image.')
 
 def setup(bot):
     bot.add_cog(ImageEditor(bot))

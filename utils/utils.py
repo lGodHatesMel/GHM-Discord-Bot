@@ -17,6 +17,7 @@ custom_emojis = {
     "bdsp": "<:bdsp:957043167071457300>",
     "swsh": "<:swsh:957043238043258960>",
     "arceus": "<:arceus:957042842281345084>",
+    "pokemonz": "<:pokemon_z:1212048038957154314>",
     "pikagun": "<:pikagun:1211355558888738857>",
     "wrongchannel": "<:wrongchannel:1211354438632087632>",
     "bruheevee": "<:bruheevee:1211355485421305916>",
@@ -26,6 +27,7 @@ custom_emojis = {
     "ping": "<:pinged:1211542356780781628>",
     "pw_grizzbolt": "<:pw_grizzbolt:1211542358676742204>",
     "acnh": "<:acnh:1211543299979083796>",
+    "discordbot": "<:discord_bot:1211850387271721001>",
 
     # Animated emojis
     "lightingbolt": "<a:lightingbolt:1211532526401749002>",
@@ -34,7 +36,14 @@ custom_emojis = {
     "dittodance": "<a:dittodance:1211357556090478614>",
     "pika_minecraft": "<a:pika_minecraft:1211357535005573270>",
     "pokeball_success": "<a:pokeball_success:1211358242723201064>",
-    "pikacheeks": "<a:pikacheeks:1211356756224118934>"
+    "pikacheeks": "<a:pikacheeks:1211356756224118934>",
+    "serenahappy": "<a:serenahappy:1211853517979910236>",
+    "pikachutosstogepi": "<a:pikachutosstogepi:1211853515199225917>",
+    "pikachugun": "<a:pikachugun:1211853527928807444>", 
+    "sylveonkiss": "<a:sylveonkiss:1211853506550702120>",
+    "umbreonhype": "<a:umbreonhype:1211853787195514910>",
+    "pikawave": "<a:pikawave:1211853503941836830>",
+    "squirtledance": "<a:squirtledance:1211853524627886150>"
 }
 
 
@@ -49,7 +58,7 @@ ACTIONS = {
     "Edit":         {"emoji": "✏️",  "color": discord.Color.blurple()},
     "Deletion":     {"emoji": "🗑️",  "color": discord.Color.dark_red()},
     "Blacklisted":  {"emoji": "🚫",  "color": discord.Color.dark_grey()},
-    "BOT DM":       {"emoji": "🤖",  "color": discord.Color.light_grey()},
+    "BOT DM":       {"emoji": custom_emojis['discordbot'], "color": discord.Color.light_grey()},
 }
 ## All possible discord.Color choices
 # discord.Color.default()     discord.Color.dark_teal()    discord.Color.teal()       discord.Color.dark_green()
@@ -114,8 +123,10 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
         timestamp=timestamp
     )
 
+    field_name = "DM Message" if action == 'BOT DM' else "Reason"
+    embed.add_field(name=field_name, value=reason, inline=False)
     embed.add_field(name="User", value=f"{target.mention} ({target.name})", inline=False)
-    embed.add_field(name="Reason", value=reason, inline=False)
+    # embed.add_field(name="Reason", value=reason, inline=False)
 
     if issuer:
         value = issuer if isinstance(issuer, str) else issuer.mention

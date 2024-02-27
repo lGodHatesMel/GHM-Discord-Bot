@@ -9,9 +9,18 @@ class Paginator:
         self.embeds = embeds
         self.current_page = 0
         self.message = None
+        self.guild_emojis = [str(emoji) for emoji in ctx.guild.emojis]
 
     def get_reactions(self):
-        return ['🏠', '⬅️', '➡️', custom_emojis['last_page'], '🗑️'] # '📄'
+        reactions = ['🏠', '⬅️', '➡️', '🗑️']
+        if custom_emojis['last_page'] in self.guild_emojis:
+            reactions.append(custom_emojis['last_page'])
+        else:
+            reactions.append('📄')
+        return reactions
+
+    # def get_reactions(self):
+    #     return ['🏠', '⬅️', '➡️', custom_emojis['last_page'], '🗑️'] # '📄'
 
     async def start(self):
         self.message = await self.ctx.send(embed=self.embeds[self.current_page])
@@ -53,7 +62,7 @@ class Paginator:
                     self.current_page = 0
             elif str(reaction.emoji) == '🏠':
                 self.current_page = 0
-            elif str(reaction.emoji) == custom_emojis['last_page']:
+            elif str(reaction.emoji) == custom_emojis.get('last_page', '📄'):
                 self.current_page = len(self.embeds) - 1
             elif str(reaction.emoji) == '🗑️':
                 await self.message.delete()
