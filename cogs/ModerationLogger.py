@@ -214,7 +214,12 @@ class ModerationLogger(commands.Cog):
         timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{message.author.name}", icon_url=message.author.avatar_url)
-        embed.description = f"Message deleted in {message.channel.mention}"
+        
+        # Check if the message is from a DMChannel or TextChannel
+        if isinstance(message.channel, discord.DMChannel):
+            embed.description = f"Message deleted in DM with {message.author.name}"
+        else:
+            embed.description = f"Message deleted in {message.channel.mention}"
 
         # Truncate the message if it's longer than 1024 characters
         if len(message.content) > 1024:
@@ -224,7 +229,6 @@ class ModerationLogger(commands.Cog):
 
         embed.add_field(name="Deleted Message", value=truncated_message, inline=False)
         embed.set_footer(text=f"👤 UID: `{message.author.id}` | 🕒 `{timestamp}`")
-        # embed.set_footer(text=f"👤 UID: `{message.author.id}` | 📄 ID: `{message.id}` | 🕒 `{timestamp}`")
         await LoggingChannel.send(embed=embed)
 
     @staticmethod

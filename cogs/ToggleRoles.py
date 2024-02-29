@@ -26,20 +26,21 @@ class ToggleRoles(commands.Cog):
             await ctx.send(f"The role **{RoleName}** does not exist on this server.")
             return
 
-        title = f"{custom_emojis[emoji_name]} {RoleName}" if emoji_name else RoleName
+        emoji = custom_emojis.get(emoji_name, ':question:')
+        title = f"{emoji} {RoleName}"
 
         if role in ctx.author.roles:
             embed = discord.Embed(title=title, color=discord.Color.red())
             await ctx.author.remove_roles(role)
-            embed.description = f"Removed the **{RoleName}** role from {ctx.author.mention}."
+            embed.description = f"Alright {ctx.author.mention}, I've removed the **{RoleName}** role from you. If you need it back, just ask!"
         else:
             random_color = discord.Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             while random_color == discord.Color.red():
                 random_color = discord.Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             embed = discord.Embed(title=title, color=random_color)
             await ctx.author.add_roles(role)
-            embed.description = f"Gave the '{RoleName}' role to {ctx.author.mention}."
-        await ctx.send(embed=embed)
+            embed.description = f"Congratulations {ctx.author.mention}! You've been given the **{RoleName}** role. Enjoy!"
+        await ctx.message.reply(embed=embed)
 
     @commands.command(help="Toggle the 'Pokemon Scarlet Violet' role. Usage: !togglesv")
     async def togglesv(self, ctx):
@@ -61,9 +62,9 @@ class ToggleRoles(commands.Cog):
     async def toggleacnh(self, ctx):
         await self.ToggleRole(ctx, "Animal Crossing New Horizon", "acnh")
 
-@commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannocements")
-async def toggleannocements(self, ctx):
-    await self.ToggleRole(ctx, "Announcement Pings", "pinged")
+    @commands.command(help="Toggle the 'Announcement Pings' role. Usage: !toggleannocements")
+    async def toggleannocements(self, ctx):
+        await self.ToggleRole(ctx, "Announcement Pings", "pinged")
 
     @commands.command(help="Toggle the 'PalWorld' role. Usage: !togglepalworld")
     async def togglepalworld(self, ctx):
@@ -71,7 +72,7 @@ async def toggleannocements(self, ctx):
 
     @commands.command(help="Toggle the 'PokeBotAnnouncements' role. Usage: !togglepokebots")
     async def togglepokebots(self, ctx):
-        await self.ToggleRole(ctx, "Poke Bot Announcements")
+        await self.ToggleRole(ctx, "Poke Bot Announcements", "ping")
 
 def setup(bot):
     bot.add_cog(ToggleRoles(bot))

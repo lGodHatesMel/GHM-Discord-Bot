@@ -5,6 +5,7 @@ from pathlib import Path
 from discord.ext import commands
 import asyncio
 import logging
+import traceback
 
 class StickyMessages(commands.Cog):
     hidden = True
@@ -86,8 +87,11 @@ class StickyMessages(commands.Cog):
         if not message.author.bot:
             try:
                 await self.StickyMessages(message)
+            except discord.errors.NotFound:
+                print("The (sticky_message) was not found and could not be deleted.")
             except Exception as e:
                 logging.error(f"An error occurred in on_message (sticky_message): {e}")
+                traceback.print_exc()
 
     async def StickyMessages(self, message):
         OriginalStickyData = self.StickyMsg.get(message.channel.id)

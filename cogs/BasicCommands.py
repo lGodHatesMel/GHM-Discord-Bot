@@ -3,6 +3,7 @@ from discord.ext import commands
 from datetime import datetime, timezone
 import json
 import utils.utils as utils
+from utils.Paginator import Paginator
 import logging
 from googletrans import Translator
 from sympy import sympify
@@ -33,7 +34,7 @@ class BasicCommands(commands.Cog):
     async def ping(self, ctx):
         await ctx.message.reply('Pong')
 
-    @commands.command(help="Shows bot's latency")
+    @commands.command(help="Shows bot's latency", hidden=True)
     @commands.is_owner()
     async def botping(self, ctx):
         try:
@@ -58,6 +59,102 @@ class BasicCommands(commands.Cog):
                 print("Failed to send bot ping message.")
         except Exception as e:
             logging.error(f"An error occurred while trying to get the bot's ping: {e}")
+
+    @commands.command(help="Shows all custom emojis added to bot", hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def showemojis(self, ctx):
+        embeds = []
+        embed = discord.Embed(title="Custom Emojis", color=discord.Color.random())
+        for i, (name, emoji) in enumerate(utils.custom_emojis.items(), start=1):
+            if i % 25 == 0:
+                embeds.append(embed)
+                embed = discord.Embed(title="Custom Emojis", color=discord.Color.random())
+            embed.add_field(name=name, value=emoji, inline=True)
+        embeds.append(embed)
+
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
+
+    @commands.command(help="<name> <emoji>", hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def addemoji(self, ctx, name: str, emoji: str):
+        utils.custom_emojis[name] = emoji
+        with open('Data/CustomEmojis.json', 'w') as f:
+            json.dump(utils.custom_emojis, f)
+        await ctx.message.reply(f"Emoji {name} added.")
+
+    @commands.command(help="<name>", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def removeemoji(self, ctx, name: str):
+        if name in utils.custom_emojis:
+            del utils.custom_emojis[name]
+            with open('Data/CustomEmojis.json', 'w') as f:
+                json.dump(utils.custom_emojis, f)
+            await ctx.message.reply(f"Emoji {name} removed.")
+        else:
+            await ctx.message.reply(f"Emoji {name} not found.")
+
+    # Set to staff for now
+    @commands.command(help="Shows all PKM Facts", hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def showallfacts(self, ctx):
+        with open('Data/PKMFacts.txt', 'r') as file:
+            PKMFacts = file.read().splitlines()
+        embeds = []
+        author_name = "Pokemon Facts"
+        icon_url = "https://raw.githubusercontent.com/lGodHatesMel/RandomResources/main/Images/pkm_facts.png"
+        base_chars = len(author_name) + len(icon_url)
+        embed = discord.Embed(color=discord.Color.random())
+        embed.set_author(name=author_name, icon_url=icon_url)
+        fact_count = 0
+        for fact in PKMFacts:
+            fact_chars = len(fact) + len("\u200b") + len("inline=False")
+            if fact_chars > 1024 or fact_count == 25 or base_chars + fact_chars > 6000:
+                embeds.append(embed)
+                embed = discord.Embed(color=discord.Color.random())
+                embed.set_author(name=author_name, icon_url=icon_url)
+                base_chars = len(author_name) + len(icon_url)
+                fact_count = 0
+            embed.add_field(name="\u200b", value=fact, inline=False)
+            base_chars += fact_chars
+            fact_count += 1
+        if base_chars > 0:
+            embeds.append(embed)
+
+        for i, embed in enumerate(embeds):
+            footer_text = f"Page {i+1} of {len(embeds)} - Use the reactions to navigate between pages."
+            embed.set_footer(text=footer_text)
+
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
+
+    @commands.command(help="Adds a new PKM Fact", hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def addfact(self, ctx, *, fact):
+        if len(fact) > 1024:
+            await ctx.message.reply("Fact is too long. Please limit it to 1024 characters.")
+            return
+
+        with open('Data/PKMFacts.txt', 'a') as file:
+            file.write(fact + '\n')
+        await ctx.message.reply("Fact added successfully!")
+
+    @commands.command(help="Deletes a PKM Fact", hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def deletefact(self, ctx, *, fact):
+        with open('Data/PKMFacts.txt', 'r') as file:
+            facts = file.readlines()
+
+        fact += '\n'
+        if fact not in facts:
+            await ctx.send("Fact not found.")
+            return
+
+        facts.remove(fact)
+
+        with open('Data/PKMFacts.txt', 'w') as file:
+            file.writelines(facts)
+        await ctx.message.reply("Fact deleted successfully!")
 
     @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
