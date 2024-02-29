@@ -770,7 +770,7 @@ class Moderation(commands.Cog):
             self.conn.commit()
 
             try:
-                kick_message = f"You are about to be kicked from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
+                kick_message = f"You have been kicked from {ctx.guild.name} for the following reason:\n\n{reason}\n\nYou may join back but please learn from your mistakes. Permanent invite link: https://discord.gg/SrREp2BbkS"
                 await user.send(kick_message)
             except discord.Forbidden:
                 await ctx.send(f"Failed to send a kick message to {user.mention} due to permission or privacy settings.")
@@ -1210,6 +1210,35 @@ class Moderation(commands.Cog):
 
         paginator = Paginator(ctx, embeds)
         await paginator.start()
+
+    @commands.command(help='Display Server Info', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def serverinfo(self, ctx):
+        guild = ctx.guild
+        embed = discord.Embed(
+            title=f"{guild.name} Server Information",
+            color=discord.Color.random()
+        )
+        embed.set_thumbnail(url=guild.icon_url)
+        if guild.banner_url:
+            embed.set_image(url=guild.banner_url)
+        embed.add_field(name="Server Name", value=guild.name, inline=False)
+        embed.add_field(name="Server ID", value=guild.id, inline=True)
+        embed.add_field(name="Owner", value=guild.owner, inline=True)
+        embed.add_field(name="Region", value=str(guild.region), inline=True)
+        embed.add_field(name="Members", value=guild.member_count, inline=True)
+        embed.add_field(name="Roles", value=len(guild.roles), inline=True)
+        embed.add_field(name="Channels", value=len(guild.channels), inline=True)
+        embed.add_field(name="Emojis", value=len(guild.emojis), inline=True)
+        embed.add_field(name="Created At", value=guild.created_at.astimezone(utils.GetLocalTime().tzinfo).strftime('%m-%d-%y'), inline=False)
+        embed.add_field(name="Boost Level", value=guild.premium_tier, inline=True)
+        embed.add_field(name="Boosts", value=guild.premium_subscription_count, inline=True)
+        embed.add_field(name="Verification Level", value=str(guild.verification_level), inline=True)
+        embed.add_field(name="Default Role", value=guild.default_role, inline=True)
+        if guild.afk_channel:
+            embed.add_field(name="AFK Channel", value=guild.afk_channel.name, inline=False)
+            embed.add_field(name="AFK Timeout", value=f"{guild.afk_timeout//60} minutes", inline=False)
+        await ctx.send(embed=embed)
 
 
 
