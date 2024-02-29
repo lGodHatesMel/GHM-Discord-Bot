@@ -29,28 +29,34 @@ class Paginator:
         def check(reaction, user):
             return user == self.ctx.author and str(reaction.emoji) in self.get_reactions()
 
-        timeout = 45.0
+        timeout = 60.0
         while True:
-            try:
-                done, pending = await asyncio.wait([
-                    self.ctx.bot.wait_for('reaction_add', timeout=timeout, check=check),
-                    self.ctx.bot.wait_for('reaction_remove', timeout=timeout, check=check)
-                ], return_when=asyncio.FIRST_COMPLETED)
-            except asyncio.TimeoutError:
-                print(f'No response after {timeout} seconds. No more reactions will be processed.')
-                break  # Break the loop if a timeout occurs
+            reaction_add_task = self.ctx.bot.loop.create_task(
+                self.ctx.bot.wait_for('reaction_add', check=check)
+            )
+            reaction_remove_task = self.ctx.bot.loop.create_task(
+                self.ctx.bot.wait_for('reaction_remove', check=check)
+            )
+
+            done, pending = await asyncio.wait(
+                [reaction_add_task, reaction_remove_task],
+                timeout=timeout,
+                return_when=asyncio.FIRST_COMPLETED
+            )
+
+            for task in pending:
+                task.cancel()
+
+            if not done:
+                break
 
             try:
                 reaction, _ = done.pop().result()
-            except asyncio.TimeoutError:
-                return
+            except asyncio.CancelledError:
+                continue
 
-            for future in done:
-                future.exception()
-
-            for future in pending:
-                future.cancel()
-                future.exception()
+            for task in done:
+                task.exception()
 
             if str(reaction.emoji) == '⬅️' and self.current_page > 0:
                 self.current_page -= 1
