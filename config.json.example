@@ -25,7 +25,12 @@
         "DMLogs": CHANNEL_ID_HERE,
         "GiveawayChannel": CHANNEL_ID_HERE,
         "TwitterUpdates": CHANNEL_ID_HERE,
+        "TicketChannel": CHANNEL_ID_HERE,
         "BlacklistedChannels": []
+    },
+
+    "category_ids": {
+        "Tickets": CHANNEL_ID_HERE
     },
 
     "ignore_scripts": [],

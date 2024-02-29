@@ -37,7 +37,7 @@ class Games(commands.Cog):
     @commands.command(aliases=["dice", "rolldice"], help="<sides> <# of rolls>")
     async def roll(self, ctx, sides: int, num_rolls: int):
         if sides < 2 or num_rolls < 1:
-            await ctx.send("Invalid input. Please use !roll <sides> <num_rolls>.")
+            await ctx.message.reply("Invalid input. Please use !roll <sides> <num_rolls>.")
             return
 
         results = []
@@ -50,14 +50,14 @@ class Games(commands.Cog):
         image_path = os.path.join("images", "rb_dice.png")
 
         if not os.path.exists(image_path):
-            await ctx.send("Dice image not found.")
+            await ctx.message.reply("Dice image not found.")
             return
 
         embed = discord.Embed(title="Dice Roll", color=discord.Color.random())
         embed.set_thumbnail(url=f"attachment://{os.path.basename(image_path)}")
         embed.add_field(name="Result", value=f"You Rolled: **{result_text}**\nTotal: **{total}**", inline=False)
 
-        await ctx.send(embed=embed, file=discord.File(image_path, filename=os.path.basename(image_path)))
+        await ctx.message.reply(embed=embed, file=discord.File(image_path, filename=os.path.basename(image_path)))
 
     @commands.command(aliases=['gimmighoulcoin', 'gcoin', 'flip'])
     async def flipcoin(self, ctx):
@@ -67,7 +67,7 @@ class Games(commands.Cog):
         tails_image_path = os.path.join('images', 'tails.png')
 
         if not (os.path.exists(heads_image_path) and os.path.exists(tails_image_path)):
-            await ctx.send("Error: Missing coin images.")
+            await ctx.message.reply("Error: Missing coin images.")
             return
 
         image_path = heads_image_path if result == 'Heads' else tails_image_path
@@ -81,7 +81,7 @@ class Games(commands.Cog):
         embed.add_field(name="Result", value=f"You flipped {result.lower()}", inline=False)
         embed.set_image(url="attachment://gimmighoul_coin.png")
 
-        await ctx.send(embed=embed, file=discord.File(image_buffer, 'gimmighoul_coin.png'))
+        await ctx.message.reply(embed=embed, file=discord.File(image_buffer, 'gimmighoul_coin.png'))
 
     ## Hangman
     @commands.command(pass_context=True)
@@ -97,9 +97,7 @@ class Games(commands.Cog):
         MaxGuesses = 8
         self.games[ctx.author.id] = {"word": word, "HiddenWord": HiddenWord, "WrongGuesses": WrongGuesses, "MaxGuesses": MaxGuesses}
 
-        # Add spaces between the characters
         SpaceOutWord = ' '.join(self.games[ctx.author.id]['HiddenWord'])
-
         embed = discord.Embed(title=f"{ctx.author.name}'s Hangman game has begun!", color=discord.Color.blue())
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed.add_field(name="Word", value=SpaceOutWord, inline=False)
@@ -107,7 +105,6 @@ class Games(commands.Cog):
         embed.add_field(name="Number of letters", value=len(word), inline=False)
         embed.set_footer(text=f"Guesses remaining: {MaxGuesses}")
         await ctx.send(embed=embed)
-
         await self.PlayHangman(ctx, MaxGuesses)
 
     async def PlayHangman(self, ctx, RemainingGuesses):
@@ -137,9 +134,7 @@ class Games(commands.Cog):
                 self.games[ctx.author.id]["WrongGuesses"].append(guess)
                 RemainingGuesses -= 1
 
-            # Add spaces between the characters
             SpaceOutWord = ' '.join(self.games[ctx.author.id]['HiddenWord'])
-
             embed = discord.Embed(title=f"{ctx.author.name}'s Hangman game", color=discord.Color.blue())
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             embed.add_field(name="Word", value=SpaceOutWord, inline=False)

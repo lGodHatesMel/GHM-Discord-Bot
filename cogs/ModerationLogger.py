@@ -13,7 +13,7 @@ class ModerationLogger(commands.Cog):
         with open('config.json') as f:
             self.config = json.load(f)
 
-        self.AllowedRoles = ['Owner', 'Admin', 'Moderator', 'Helper', "Bypass"]
+        self.AllowedRoles = ['Owner', 'Admin', 'Moderator', 'Helper', "Bypass", "🤫"]
         self.BadEmojis = [] # ex: "🚫", "❌"
         with open('Data/BadWordList.txt', 'r') as file:
             self.BadWords = [word.strip() for word in file.read().split(',')]
@@ -78,10 +78,13 @@ class ModerationLogger(commands.Cog):
         else:
             self.AllowedLinks = []
 
+        # Extract all URLs from the message content
+        urls = re.findall('(http[s]?://|www\.)[^ ]+', message.content)
+
         # Check for blacklisted words
         for word in self.BadWords:
             if word in message.content.lower():
-                if not any(role.name in self.AllowedRoles for role in message.author.roles):
+                if not any(role.name in self.AllowedRoles for role in message.author.roles) and not any(allowed_link in url for allowed_link in self.AllowedLinks for url in urls):
                     await message.delete()
                     reason = f"Contains banned word: `{word}`\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
                     await utils.LogAction(
@@ -94,10 +97,9 @@ class ModerationLogger(commands.Cog):
                     )
 
         # Check for links
-        if 'http://' in message.content or 'https://' in message.content:
+        if 'http://' in message.content or 'https://' in message.content or 'www.' in message.content:
             if not any(role.name in self.AllowedRoles for role in message.author.roles):
-                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
-                if not any(url in self.AllowedLinks for url in urls):
+                if not any(any(url.startswith(allowed_link) for url in urls) for allowed_link in self.AllowedLinks):
                     await message.delete()
                     url_message = "Message included a link:\n" + ", ".join(urls) if urls else "No links in message"
                     reason = f"{url_message}\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
@@ -150,10 +152,10 @@ class ModerationLogger(commands.Cog):
                         config=self.config
                     )
 
-        if 'http://' in after.content or 'https://' in after.content:
+        if 'http://' in after.content or 'https://' in after.content or 'www.' in after.content:
             if not any(role.name.lower() in self.AllowedRoles for role in after.author.roles):
-                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', after.content)
-                if not any(url in self.AllowedLinks for url in urls):
+                urls = re.findall('(http[s]?://|www\.)[^ ]+', after.content)
+                if not any(any(url.startswith(allowed_link) for url in urls) for allowed_link in self.AllowedLinks):
                     await after.delete()
                     url_message = "Message was edited to include a link:\n" + ", ".join(urls) if urls else "No links in message"
                     reason = f"{url_message}\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
@@ -170,7 +172,7 @@ class ModerationLogger(commands.Cog):
             if emoji in after.content:
                 if not any(role.name in self.AllowedRoles for role in after.author.roles):
                     await after.delete()
-                    reason = f"Message was edited to include banned word: `**{word}**`\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
+                    reason = f"Message was edited to include banned emoji: `**{emoji}**`\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
                     await utils.LogAction(
                         after.guild,
                         "AutoMod",
@@ -212,7 +214,12 @@ class ModerationLogger(commands.Cog):
         timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
         embed = discord.Embed(color=discord.Color.red())
         embed.set_author(name=f"{message.author.name}", icon_url=message.author.avatar_url)
-        embed.description = f"Message deleted in {message.channel.mention}"
+        
+        # Check if the message is from a DMChannel or TextChannel
+        if isinstance(message.channel, discord.DMChannel):
+            embed.description = f"Message deleted in DM with {message.author.name}"
+        else:
+            embed.description = f"Message deleted in {message.channel.mention}"
 
         # Truncate the message if it's longer than 1024 characters
         if len(message.content) > 1024:
@@ -222,7 +229,6 @@ class ModerationLogger(commands.Cog):
 
         embed.add_field(name="Deleted Message", value=truncated_message, inline=False)
         embed.set_footer(text=f"👤 UID: `{message.author.id}` | 🕒 `{timestamp}`")
-        # embed.set_footer(text=f"👤 UID: `{message.author.id}` | 📄 ID: `{message.id}` | 🕒 `{timestamp}`")
         await LoggingChannel.send(embed=embed)
 
     @staticmethod

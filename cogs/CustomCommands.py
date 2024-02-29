@@ -33,7 +33,7 @@ class CustomCommands(commands.Cog):
             # Register the custom commands to the bot
             for CommandName, command_response in CustomName:
                 async def custom_command(ctx, response=command_response):
-                    await ctx.send(response)
+                    await ctx.message.reply(response)
                 self.bot.add_command(commands.Command(custom_command, name=CommandName))
         except Exception as e:
             print(f'An error occurred while loading custom commands: {str(e)}')
@@ -53,7 +53,7 @@ class CustomCommands(commands.Cog):
         # Register updated custom commands
         for CommandName, command_response in CustomName:
             async def custom_command(ctx, response=command_response):
-                await ctx.send(response)
+                await ctx.message.reply(response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
     @commands.command(help='Refresh custom commands', hidden=True)
@@ -61,9 +61,9 @@ class CustomCommands(commands.Cog):
     async def refreshcommands(self, ctx):
         try:
             self.RefreshCustomCommands()
-            await ctx.send('Custom commands refreshed successfully.')
+            await ctx.message.reply('Custom commands refreshed successfully.')
         except Exception as e:
-            await ctx.send(f'An error occurred: {str(e)}')
+            await ctx.message.reply(f'An error occurred: {str(e)}')
 
     @commands.command(help='<command_name> <reply_message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -78,7 +78,7 @@ class CustomCommands(commands.Cog):
             result = c.fetchone()
 
             if result is not None:
-                await ctx.send(f'Command "{CommandName}" already exists.')
+                await ctx.message.reply(f'Command "{CommandName}" already exists.')
                 return
 
             # Replace '/n' with '\n' to correctly interpret newlines
@@ -89,12 +89,12 @@ class CustomCommands(commands.Cog):
             conn.close()
 
             async def custom_command(ctx):
-                await ctx.send(command_response)
+                await ctx.semessage.replynd(command_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
-            await ctx.send(f'Command "{CommandName}" added successfully.')
+            await ctx.message.reply(f'Command "{CommandName}" added successfully.')
         except Exception as e:
-            await ctx.send(f'An error occurred: {str(e)}')
+            await ctx.message.reply(f'An error occurred: {str(e)}')
 
     @commands.command(help='<command_name> <reply_message>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -104,28 +104,26 @@ class CustomCommands(commands.Cog):
             c = conn.cursor()
 
             CommandName = CommandName.lower()
-
             c.execute(f'select * from {self.table_name} where command_name = ?', (CommandName,))
             result = c.fetchone()
 
             if result is None:
-                await ctx.send(f'Command "{CommandName}" does not exist.')
+                await ctx.message.reply(f'Command "{CommandName}" does not exist.')
                 return
 
             # Replace '/n' with '\n' to correctly interpret newlines
             new_response = new_response.replace('/n', '\n')
-
             c.execute(f'update {self.table_name} set command_response = ? where command_name = ?', (new_response, CommandName))
             conn.commit()
             conn.close()
 
             async def custom_command(ctx):
-                await ctx.send(new_response)
+                await ctx.message.reply(new_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
-            await ctx.send(f'Command "{CommandName}" updated successfully.')
+            await ctx.message.reply(f'Command "{CommandName}" updated successfully.')
         except Exception as e:
-            await ctx.send(f'An error occurred: {str(e)}')
+            await ctx.message.reply(f'An error occurred: {str(e)}')
 
     @commands.command(help='<command_name>>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -148,9 +146,9 @@ class CustomCommands(commands.Cog):
 
             self.bot.remove_command(CommandName)
 
-            await ctx.send(f'Command "{CommandName}" deleted successfully.')
+            await ctx.message.reply(f'Command "{CommandName}" deleted successfully.')
         except Exception as e:
-            await ctx.send(f'An error occurred: {str(e)}')
+            await ctx.message.reply(f'An error occurred: {str(e)}')
 
     @commands.command(help="Shows the staff commands", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -198,7 +196,7 @@ class CustomCommands(commands.Cog):
     async def addlink(self, ctx, link):
         with open('Data/AllowedLinks.txt', 'a') as file:
             file.write(link + '\n')
-        await ctx.send(f'Added {link} to the list of allowed links.')
+        await ctx.message.reply(f'Added {link} to the list of allowed links.')
 
     @commands.command(hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")

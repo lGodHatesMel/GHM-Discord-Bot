@@ -42,19 +42,19 @@ class PKMStuff(commands.Cog):
                     color=discord.Color.random()
                 )
                 embed.set_image(url=ImageURL)
-                await ctx.send(embed=embed)
+                await ctx.message.reply(embed=embed)
             else:
-                await ctx.send("Failed to fetch file list from GitHub.")
+                await ctx.message.reply("Failed to fetch file list from GitHub.")
         except Exception as e:
             logging.error(e)
-            await ctx.send("An error occurred while fetching Pokémon facts.")
+            await ctx.message.reply("An error occurred while fetching Pokémon facts.")
 
     @commands.command(aliases=['showdownset'], help='<Game: sv, swsh, pla, bdsp> <Pokemon Name>')
     async def showdown(self, ctx, game, PokemonName):
         try:
             file_path = self.GetFilePath(game, PokemonName)
             if not os.path.exists(file_path):
-                await ctx.send(f"No sets found for {PokemonName} [{game}].")
+                await ctx.message.reply(f"No sets found for {PokemonName} [{game}].")
                 return
 
             with open(file_path, 'r') as file:
@@ -69,14 +69,14 @@ class PKMStuff(commands.Cog):
                     description=RandomSet,
                     color=discord.Color.blue()
                 )
-                await ctx.send(embed=embed)
+                await ctx.message.reply(embed=embed)
             else:
-                await ctx.send(f"No sets found for {PokemonName.capitalize()} [{game.upper()}].")
+                await ctx.message.reply(f"No sets found for {PokemonName.capitalize()} [{game.upper()}].")
         except ValueError as e:
-            await ctx.send(str(e))
+            await ctx.message.reply(str(e))
         except Exception as e:
             logging.error(e)
-            await ctx.send("An error occurred while fetching Pokémon sets.")
+            await ctx.message.reply("An error occurred while fetching Pokémon sets.")
 
     @commands.command(help='<Game: sv, swsh, pla, bdsp> <PokemonName> <ShowdownSetDetails>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -88,12 +88,12 @@ class PKMStuff(commands.Cog):
             with open(file_path, 'a') as file:
                 file.write(f"\n===\n{FormatedSet}")
 
-            await ctx.send(f"New set added for {PokemonName.capitalize()} [{game.upper()}].")
+            await ctx.message.reply(f"New set added for {PokemonName.capitalize()} [{game.upper()}].")
         except ValueError as e:
-            await ctx.send(str(e))
+            await ctx.message.reply(str(e))
         except Exception as e:
             logging.error(e)
-            await ctx.send("An error occurred while adding the set.")
+            await ctx.message.reply("An error occurred while adding the set.")
 
 def setup(bot):
     bot.add_cog(PKMStuff(bot))

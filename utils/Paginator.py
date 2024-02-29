@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+from utils.utils import custom_emojis
 
 class Paginator:
     def __init__(self, ctx, embeds):
@@ -8,9 +9,15 @@ class Paginator:
         self.embeds = embeds
         self.current_page = 0
         self.message = None
+        self.guild_emojis = [str(emoji) for emoji in ctx.guild.emojis]
 
     def get_reactions(self):
-        return ['🏠', '⬅️', '➡️', '<:Last_Page:1211360319352479754>', '🗑️'] # '📄'
+        reactions = ['🏠', '⬅️', '➡️', '🗑️']
+        if custom_emojis['last_page'] in self.guild_emojis:
+            reactions.append(custom_emojis['last_page'])
+        else:
+            reactions.append('📄')
+        return reactions
 
     async def start(self):
         self.message = await self.ctx.send(embed=self.embeds[self.current_page])
@@ -22,26 +29,34 @@ class Paginator:
         def check(reaction, user):
             return user == self.ctx.author and str(reaction.emoji) in self.get_reactions()
 
+        timeout = 60.0
         while True:
+            reaction_add_task = self.ctx.bot.loop.create_task(
+                self.ctx.bot.wait_for('reaction_add', check=check)
+            )
+            reaction_remove_task = self.ctx.bot.loop.create_task(
+                self.ctx.bot.wait_for('reaction_remove', check=check)
+            )
+
+            done, pending = await asyncio.wait(
+                [reaction_add_task, reaction_remove_task],
+                timeout=timeout,
+                return_when=asyncio.FIRST_COMPLETED
+            )
+
+            for task in pending:
+                task.cancel()
+
+            if not done:
+                break
+
             try:
-                done, pending = await asyncio.wait([
-                    self.ctx.bot.wait_for('reaction_add', timeout=60.0, check=check),
-                    self.ctx.bot.wait_for('reaction_remove', timeout=60.0, check=check)
-                ], return_when=asyncio.FIRST_COMPLETED)
-            except asyncio.TimeoutError:
-                print('The task took too long to complete.')
+                reaction, _ = done.pop().result()
+            except asyncio.CancelledError:
                 continue
 
-            try:
-                reaction, user = done.pop().result()
-            except asyncio.TimeoutError:
-                return
-
-            for future in done:
-                future.exception()
-
-            for future in pending:
-                future.cancel()
+            for task in done:
+                task.exception()
 
             if str(reaction.emoji) == '⬅️' and self.current_page > 0:
                 self.current_page -= 1
@@ -52,7 +67,7 @@ class Paginator:
                     self.current_page = 0
             elif str(reaction.emoji) == '🏠':
                 self.current_page = 0
-            elif str(reaction.emoji) == '<:Last_Page:1211360319352479754>':
+            elif str(reaction.emoji) == custom_emojis.get('last_page', '📄'):
                 self.current_page = len(self.embeds) - 1
             elif str(reaction.emoji) == '🗑️':
                 await self.message.delete()
