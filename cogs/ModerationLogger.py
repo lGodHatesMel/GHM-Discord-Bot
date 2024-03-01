@@ -138,9 +138,11 @@ class ModerationLogger(commands.Cog):
         else:
             self.AllowedLinks = []
 
+        urls = re.findall('(http[s]?://|www\.)[^ ]+', after.content)
+
         for word in self.BadWords:
             if word in after.content.lower():
-                if not any(role.name in self.AllowedRoles for role in after.author.roles):
+                if not any(role.name in self.AllowedRoles for role in after.author.roles) and not any(allowed_link in url for allowed_link in self.AllowedLinks for url in urls):
                     await after.delete()
                     reason = f"Message was edited to include banned word: `**{word}**`\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"
                     await utils.LogAction(
@@ -153,8 +155,7 @@ class ModerationLogger(commands.Cog):
                     )
 
         if 'http://' in after.content or 'https://' in after.content or 'www.' in after.content:
-            if not any(role.name.lower() in self.AllowedRoles for role in after.author.roles):
-                urls = re.findall('(http[s]?://|www\.)[^ ]+', after.content)
+            if not any(role.name in self.AllowedRoles for role in after.author.roles):
                 if not any(any(url.startswith(allowed_link) for url in urls) for allowed_link in self.AllowedLinks):
                     await after.delete()
                     url_message = "Message was edited to include a link:\n" + ", ".join(urls) if urls else "No links in message"
