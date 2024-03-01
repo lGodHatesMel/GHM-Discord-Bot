@@ -35,7 +35,7 @@ class Todo(commands.Cog):
         embed.add_field(name=f"`{prefix}removesubtask [id] [name]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to remove.*", inline=False)
         embed.add_field(name=f"`{prefix}completesubtask [id] [name]`", value="*Marks a subtask as completed. Replace [id] with the ID of the task and [subtask] with the subtask you want to mark as completed.*", inline=False)
         embed.add_field(name=f"`{prefix}cancelsubtask [id] [name]`", value="*Cancels a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to cancel.*", inline=False)
-        embed.add_field(name=f"`{prefix}prioritizesubtask [id] [name]`", value="*Prioritizes a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to prioritize.*", inline=False)
+        embed.add_field(name=f"`{prefix}setsubstatus [id] [name] [action]`", value="*Set status of a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to prioritize.*", inline=False)
         await ctx.send(embed=embed)
 
     @commands.command(help="<id>", hidden=True)
@@ -212,19 +212,27 @@ class Todo(commands.Cog):
             embed = discord.Embed(description=f"{X_EMOJI} Cancelled subtask `{subtask}` in task with ID `{unique_id}`.", color=discord.Color.green())
         await ctx.message.reply(embed=embed)
 
-    @commands.command(help='<ID> <Subtask>', hidden=True)
+    @commands.command(help='<ID> <Subtask> <Action>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def prioritizesubtask(self, ctx: commands.Context, unique_id: int, *, subtask: str):
+    async def setsubstatus(self, ctx: commands.Context, unique_id: int, subtask: str, action: str):
         user_id = str(ctx.author.id)
         self.cursor.execute("SELECT user_id, subtasks FROM todo WHERE unique_id = ?", (unique_id,))
         res = self.cursor.fetchone()
         if res is None or (res[0] != user_id and not await self.bot.is_owner(ctx.author)):
-            embed = discord.Embed(description="Task not found or you don't have permission to prioritize this subtask!", color=discord.Color.red())
+            embed = discord.Embed(description="Task not found or you don't have permission to modify this subtask!", color=discord.Color.red())
         else:
-            subtasks = res[1].replace(f"☐ {subtask}", f"{TODO_ARROW_EMOJI} ☐ {subtask}")
-            self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
-            self.conn.commit()
-            embed = discord.Embed(description=f"{TODO_ARROW_EMOJI} Prioritized subtask `{subtask}` in task with ID `{unique_id}`.", color=discord.Color.green())
+            if action.lower() == "prioritize":
+                subtasks = res[1].replace(f"☐ {subtask}", f"☐ {subtask} ⭐")
+                self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
+                self.conn.commit()
+                embed = discord.Embed(description=f"⭐ Prioritized subtask `{subtask}` in task with ID `{unique_id}`.", color=discord.Color.green())
+            elif action.lower() == "testing":
+                subtasks = res[1].replace(f"☐ {subtask}", f"☐ {subtask} 🧪")
+                self.cursor.execute("UPDATE todo SET subtasks = ? WHERE unique_id = ?", (subtasks, unique_id))
+                self.conn.commit()
+                embed = discord.Embed(description=f"🧪 Set subtask `{subtask}` to testing in task with ID `{unique_id}`.", color=discord.Color.green())
+            else:
+                embed = discord.Embed(description="Invalid action! Please specify either 'prioritize' or 'testing'.", color=discord.Color.red())
         await ctx.message.reply(embed=embed)
 
 def setup(bot: commands.Bot):
