@@ -99,7 +99,7 @@ class ModerationLogger(commands.Cog):
         # Check for links
         if 'http://' in message.content or 'https://' in message.content or 'www.' in message.content:
             if not any(role.name in self.AllowedRoles for role in message.author.roles):
-                if not any(any(url.startswith(allowed_link) for url in urls) for allowed_link in self.AllowedLinks):
+                if not any(any(allowed_link in url for url in urls) for allowed_link in self.AllowedLinks):
                     await message.delete()
                     url_message = "Message included a link:\n" + ", ".join(urls) if urls else "No links in message"
                     reason = f"{url_message}\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
@@ -156,7 +156,7 @@ class ModerationLogger(commands.Cog):
 
         if 'http://' in after.content or 'https://' in after.content or 'www.' in after.content:
             if not any(role.name in self.AllowedRoles for role in after.author.roles):
-                if not any(any(url.startswith(allowed_link) for url in urls) for allowed_link in self.AllowedLinks):
+                if not any(any(allowed_link in url for url in urls) for allowed_link in self.AllowedLinks):
                     await after.delete()
                     url_message = "Message was edited to include a link:\n" + ", ".join(urls) if urls else "No links in message"
                     reason = f"{url_message}\n\n**Original Message Content:** \n```{before.content}```\n\n**Edited Message Content:** \n```{after.content}```\n\n**Channel:** {after.channel.mention}"

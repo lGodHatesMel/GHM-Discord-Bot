@@ -60,6 +60,8 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if isinstance(message.channel, discord.DMChannel):
+            if message.author == self.bot.user:
+                return
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
             print(f"{Fore.BLUE}Received DM from {message.author.name} at {timestamp}: {message.content}{Style.RESET_ALL}")
             await utils.LogAction(
@@ -185,9 +187,9 @@ class Moderation(commands.Cog):
                         await utils.LogAction(
                             server,
                             "ModLogs",
-                            "Ban",
+                            "Previously Banned",
                             member,
-                            f"User is still banned: {ban_info['reason']}",
+                            f"Previously banned for: {ban_info['reason']}",
                             config=config,
                         )
 
