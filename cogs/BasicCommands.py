@@ -2,13 +2,13 @@ import discord
 from discord.ext import commands
 from datetime import datetime, timezone
 import json
+import asyncio
 import utils.utils as utils
 from utils.Paginator import Paginator
 import logging
 from googletrans import Translator
 from sympy import sympify
 
-EMOJI_OPTIONS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣']
 
 class BasicCommands(commands.Cog):
     def __init__(self, bot):
@@ -211,12 +211,31 @@ class BasicCommands(commands.Cog):
         await channel.send(embed=embed)
         await ctx.message.reply(f"Announcement sent to {channel.mention}.")
 
-    @commands.command(help='"Poll Title" "option1" "option2" <add_more_if_needed> "Your Message Here"', description='Creates a poll with multiple options', hidden=True)
+    @commands.command(
+        help='<#channel> "Poll Title" "option1" "option2" "Your Message Here" <duration> <duration_unit>',
+        description="Creates a poll with multiple options",
+        hidden=True,
+    )
     @commands.has_any_role("Moderator", "Admin")
-    async def poll(self, ctx, pollTitle, *options: str):
+    async def createpoll(self, ctx, channel, pollTitle, *options_duration_unit: str):
+        channel_id = int(channel[2:-1])
+        channel = self.bot.get_channel(channel_id)
+
+        duration_unit = options_duration_unit[-1]
+        duration = int(options_duration_unit[-2])
+        options = options_duration_unit[:-2]
+
+        if duration_unit.lower() == "days":
+            duration = duration * 24 * 60 * 60
+        elif duration_unit.lower() == "hours":
+            duration = duration * 60 * 60
+        else:
+            await ctx.send("Invalid duration unit! Please specify either 'days' or 'hours'.")
+            return
+
         optionsDescription = ""
         for i, option in enumerate(options[:-1]):
-            optionsDescription += f"{EMOJI_OPTIONS[i]} {option}\n"
+            optionsDescription += f"{utils.EmojiNumbers[i]} {option}\n"
 
         embed = discord.Embed(
             title=pollTitle,
@@ -224,13 +243,26 @@ class BasicCommands(commands.Cog):
             color=discord.Color.red()
         )
 
-        pollMessage = await ctx.send(embed=embed)
+        pollMessage = await channel.send(embed=embed)
         for i in range(len(options) - 1):
-            await pollMessage.add_reaction(EMOJI_OPTIONS[i])
+            await pollMessage.add_reaction(utils.EmojiNumbers[i])
 
         message = options[-1]
         if message is not None:
             await ctx.send(message)
+
+        await asyncio.sleep(duration)
+
+        pollMessage = await pollMessage.channel.fetch_message(pollMessage.id)
+        reactions = pollMessage.reactions
+        winner = max(reactions, key=lambda r: r.count)
+
+        embed = discord.Embed(
+            title="Poll ended",
+            description=f"The option {winner.emoji} won the poll.",
+            color=discord.Color.green()
+        )
+        await channel.send(embed=embed)
 
     @commands.command(help='<Target Language> <Text To Translate>')
     async def translate(self, ctx, TargetLanguage, *, TextToTranslate):

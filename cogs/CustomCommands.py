@@ -210,9 +210,10 @@ class CustomCommands(commands.Cog):
         chunks = [links[i:i + 10] for i in range(0, len(links), 10)]
         embeds = []
         for i, chunk in enumerate(chunks):
+            description = "\n".join(f"{idx + 1}. {link}" for idx, link in enumerate(chunk))
             embed = discord.Embed(
                 title=f"🔗 Allowed Links - Page {i + 1} 🔗",
-                description="\n".join(chunk),
+                description=description,
                 color=discord.Color.blue()
             )
             embed.set_author(name="God's Eye", icon_url=ctx.guild.me.avatar_url)

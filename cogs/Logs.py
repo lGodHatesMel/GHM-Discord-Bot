@@ -91,10 +91,10 @@ class Logs(commands.Cog):
                     changes.append(f"{target_type} override for {target_mention}")
 
                     # Iterate over all permissions
-                    for perm in discord.Permissions.ALL_PERMISSIONS:
-                        if perm in overwrite:
-                            emoji = ":white_check_mark:" if overwrite[perm] else ":x:"
-                            changes.append(f"{perm.replace('_', ' ').title()}: {emoji}")
+                    for name, value in vars(overwrite).items():
+                        if value is not None:
+                            emoji = ":white_check_mark:" if value else ":x:"
+                            changes.append(f"{name.replace('_', ' ').title()}: {emoji}")
 
                 change_message = "\n".join(changes)
                 if change_message:
