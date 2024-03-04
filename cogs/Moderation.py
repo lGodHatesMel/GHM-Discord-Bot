@@ -1,12 +1,12 @@
 import discord
 from discord.ext import commands
 import utils.utils as utils
+from utils.botdb import create_connection
 from utils.Paginator import Paginator
 import json
 import asyncio
 import sqlite3
 from sqlite3 import Error
-import random
 from typing import Union
 from colorama import Fore, Style
 
@@ -17,447 +17,9 @@ with open('config.json', 'r') as config_file:
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = self.create_connection('Database/DBInfo.db')
-        self.WelcomeChannelID = config.get('channel_ids', {}).get('WelcomeChannel')
+        self.conn = create_connection('Database/DBInfo.db')
 
-    def create_connection(self, database):
-        conn = None
-        try:
-            conn = sqlite3.connect(database)
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS UserInfo (
-                    uid TEXT PRIMARY KEY,
-                    info TEXT NOT NULL
-                );
-            """)
-            return conn
-        except Error as e:
-            print(e)
-        return conn
-
-    @commands.Cog.listener()
-    async def on_member_update(self, before, after):
-        if before.roles != after.roles:
-            added_roles = [role.name for role in after.roles if role not in before.roles]
-            removed_roles = [role.name for role in before.roles if role not in after.roles]
-            uid = str(after.id)
-            username = after.name
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                user_info = json.loads(user[1])
-                user_info["info"]["roles"] = [role.name for role in after.roles]
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-                self.conn.commit()
-            print(f"{Fore.MAGENTA}Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
-            if added_roles:
-                print(f"{Fore.GREEN}Added roles: {', '.join(added_roles)}{Style.RESET_ALL}")
-            if removed_roles:
-                print(f"{Fore.RED}Removed roles: {', '.join(removed_roles)}{Style.RESET_ALL}")
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if isinstance(message.channel, discord.DMChannel):
-            if message.author == self.bot.user:
-                return
-            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-            print(f"{Fore.BLUE}Received DM from {message.author.name} at {timestamp}: {message.content}{Style.RESET_ALL}")
-            await utils.LogAction(
-                guild=self.bot.get_guild(config['guild_id']),
-                channel_name='DMLogs',
-                action=f'BOT DM',
-                target=message.author,
-                reason=f"Message Received from {message.author.name} (UID: {message.author.id}) at {timestamp}\n\n**Message Content:**\n{message.content}.",
-                config=config
-            )
-        elif not message.author.bot:
-            uid = str(message.author.id)
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                user_info = json.loads(user[1])
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-            self.conn.commit()
-
-    @commands.command(help='<username> or <UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def updateuser(self, ctx, new_username: str):
-        uid = str(ctx.author.id)
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-        user = cursor.fetchone()
-        if user:
-            user_info = json.loads(user[1])
-            old_username = user_info["username"]
-            user_info["username"] = new_username
-            cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-            self.conn.commit()
-            await ctx.send(f"Updated username to {new_username}.")
-            print(f"{Fore.YELLOW}Updated username from {old_username} to {new_username} for user {uid} in the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
-        else:
-            await ctx.send("User not found in the database.")
-
-    @commands.Cog.listener()
-    async def on_user_update(self, before, after):
-        if before.avatar_url != after.avatar_url:
-            uid = str(after.id)
-            username = after.name
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                user_info = json.loads(user[1])
-                old_avatar_url = user_info["info"]["avatar_url"]
-                new_avatar_url = str(after.avatar_url)
-                user_info["info"]["avatar_url"] = new_avatar_url
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-                self.conn.commit()
-                print(f"Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                # print(f"Updated avatar URL from {old_avatar_url} to {new_avatar_url}")
-
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        channel = self.bot.get_channel(int(self.WelcomeChannelID))
-
-        if channel:
-            server = member.guild
-            member_count = sum(1 for member in server.members if not member.bot)
-            member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-            random_color = random.randint(0, 0xFFFFFF)
-
-            uid = str(member.id)
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                print(f"User ({member.name} : {uid}) is already in the database and has joined back @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                user_info = json.loads(user[1])
-                print(f"User left at {user_info['info']['Left']}")
-                user_info["info"]["Left"] = None
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-                embed = discord.Embed(
-                    title="Welcome Back!",
-                    description=f"Welcome back to GodHatesMe Gaming Centre {member.mention}, you are our {member_number}!\n\n"
-                                f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
-                    color=random_color,
-                )
-            else:
-                user_info = {
-                    "info": {
-                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
-                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
-                        "Left": None,
-                        "username": member.name,
-                        "avatar_url": str(member.avatar_url),
-                    },
-                    "moderation": {
-                        "warns": [],
-                        "notes": [],
-                        "banned": [],
-                        "kick_reason": [],
-                        "kicks_amount": 0
-                    }
-                }
-                print(f"{Fore.GREEN}Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
-                print(f"{Fore.BLUE}User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}{Style.RESET_ALL}")
-                if not member.bot:
-                    user_info["info"]["roles"] = [role.name for role in member.roles]
-                cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-                embed = discord.Embed(
-                    title="Welcome!",
-                    description=f"Welcome to GodHatesMe Gaming Centre {member.mention}, you are our {member_number}!\n\n"
-                                f"Don't forget to read <#956760032232484884> and to get your Roles go to <#956769501607755806>!",
-                    color=random_color,
-                )
-
-            embed.set_thumbnail(url=member.avatar_url)
-            embed.set_footer(text=member.name)
-            await channel.send(embed=embed)
-            self.conn.commit()
-
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if user:
-                user_info = json.loads(user[1])
-                if user_info["moderation"].get("banned"):
-                    for ban_info in user_info["moderation"]["banned"]:
-                        await utils.LogAction(
-                            server,
-                            "ModLogs",
-                            "Previously Banned",
-                            member,
-                            f"Previously banned for: {ban_info['reason']}",
-                            config=config,
-                        )
-
-    @commands.Cog.listener()
-    async def on_member_remove(self, member):
-        # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
-
-        channel = self.bot.get_channel(int(self.WelcomeChannelID))
-        if channel:
-            server = member.guild
-            member_count = sum(1 for member in server.members if not member.bot)
-            member_number = f"{member_count}{'th' if 11 <= member_count % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(member_count % 10, 'th')} member"
-            random_color = random.randint(0, 0xFFFFFF)
-            goodbye = {
-                "title": "Goodbye!",
-                "description": f"We are sad to see you go, {member.mention}. You were our {member_number}.\n\n"
-                            f"We hope you enjoyed your stay at GodHatesMe Gaming Centre!",
-                "color": random_color,
-            }
-
-            embed = discord.Embed(**goodbye)
-            embed.set_thumbnail(url=member.avatar_url)
-            embed.set_footer(text=member.name)
-
-            await channel.send(embed=embed)
-
-            uid = str(member.id)
-            print(f"({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            left_datetime = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-            if user:
-                user_info = json.loads(user[1])
-                print(f"{Fore.YELLOW}User ({member.name} : {uid}) left the server as the {member_number} @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
-                print(f"{Fore.GREEN}User joined at {user_info['info']['Joined']}{Style.RESET_ALL} and {Fore.RED}account was created at {user_info['info']['Account_Created']}{Style.RESET_ALL}")
-                if "Left" in user_info["info"] and user_info["info"]["Left"] is not None:
-                    user_info["info"]["Left"].append(left_datetime)
-                else:
-                    user_info["info"]["Left"] = [left_datetime]
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
-            else:
-                user_info = {
-                    "info": {
-                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
-                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
-                        "Left": None,
-                        "username": member.name,
-                        "avatar_url": str(member.avatar_url),
-                        "roles": [role.name for role in member.roles]
-                    },
-                    "moderation": {
-                        "warns": [],
-                        "notes": [],
-                        "banned": [],
-                        "kick_reason": [],
-                        "kicks_amount": 0
-                    }
-                }
-                print(f"{Fore.GREEN}Added new user ({member.name} : {uid}) to the database  @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
-                print(f"{Fore.BLUE}User joined at {user_info['info']['Joined']} and account was created at {user_info['info']['Account_Created']}{Style.RESET_ALL}")
-                cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-            self.conn.commit()
-
-    # Good to use if you are using this after already having alot of members in your server
-    @commands.command(hidden=True)
-    @commands.has_permissions(administrator=True)
-    async def addalluserstodb(self, ctx):
-        guild = ctx.guild
-        cursor = self.conn.cursor()
-
-        added_count = 0
-
-        for member in guild.members:
-            uid = str(member.id)
-            cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-            user = cursor.fetchone()
-            if not user:
-                user_info = {
-                    "info": {
-                        "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
-                        "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
-                        "Left": None,
-                        "username": member.name,
-                        "avatar_url": str(member.avatar_url),
-                        "roles": [role.name for role in member.roles]
-                    },
-                    "moderation": {
-                        "warns": [],
-                        "notes": [],
-                        "banned": [],
-                        "kick_reason": [],
-                        "kicks_amount": 0
-                    }
-                }
-                cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
-                print(f"Added ({member.name} : {uid}) to the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                added_count += 1  # Increment the counter when a user is added
-
-        self.conn.commit()
-        await ctx.send(f"Database updated with all server members! {added_count} new users were added.")
-
-    @commands.command(hidden=True)
-    @commands.has_permissions(administrator=True)
-    async def forcesavedb(self, ctx):
-        self.conn.commit()
-        await ctx.send("Database saved successfully!")
-        print(f"Forced saved database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-
-    @commands.command(help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def info(self, ctx, user: discord.User):
-        uid = user.id
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
-        user = cursor.fetchone()
-        if user:
-            user_info = json.loads(user[1])
-            # print(f"User info: {user_info}")
-            join_date = user_info["info"]["Joined"] if "Joined" in user_info["info"] else "N/A"
-            leave_date = user_info["info"]["Left"] if "Left" in user_info["info"] else "N/A"
-
-            embeds = []
-            embed = discord.Embed(
-                title=f"User Info for {user_info['info']['username']}",
-                color=0x00ff00
-            )
-
-            embed.set_thumbnail(url=user_info["info"]["avatar_url"])
-            embed.add_field(name="Join Date", value=join_date, inline=True)
-            embed.add_field(name="Leave Date", value=leave_date, inline=True)
-            roles = ", ".join(user_info["info"]["roles"])
-            embed.add_field(name="Roles", value=roles, inline=False)
-
-            if "warns" in user_info["moderation"] and user_info["moderation"]["warns"]:
-                total_warnings = len(user_info["moderation"]["warns"])
-                embed.add_field(name="Warnings", value=total_warnings, inline=True)
-            if "kicks_amount" in user_info["moderation"]:
-                total_kicks = user_info["moderation"]["kicks_amount"]
-                embed.add_field(name="Kicks", value=total_kicks, inline=True)
-            if "notes" in user_info["moderation"] and user_info["moderation"]["notes"]:
-                total_notes = len(user_info["moderation"]["notes"])
-                embed.add_field(name="Notes", value=total_notes, inline=True)
-            if "banned" in user_info and user_info["moderation"]["banned"]:
-                embed.add_field(name="Banned", value="Yes", inline=True)
-            else:
-                embed.add_field(name="Banned", value="No", inline=True)
-            embeds.append(embed)
-
-            if "warns" in user_info["moderation"]:
-                embed = discord.Embed(title="Warnings:", color=0xff0000)
-                for warn in user_info["moderation"]["warns"]:
-                    warn_content = f"**Date/Time:** {warn['timestamp']}\n" \
-                                f"**Issuer:** {warn['issuer']}\n" \
-                                f"**Warning:** {warn['warning']}"
-                                # f"Number: {warn['number']}\n" \
-                    embed.add_field(name=f"Warning {warn['number']}", value=warn_content, inline=False)
-                embeds.append(embed)
-
-            if "notes" in user_info["moderation"]:
-                embed = discord.Embed(title="Notes:", color=0x0000ff)
-                for note in user_info["moderation"]["notes"]:
-                    note_content = f"**Author:** {note['author']}\n" \
-                                f"**Content:** {note['content']}"
-                                # f"Number: {note['number']}\n" \
-                                    # f"Date/Time: {note['timestamp']}\n" \
-                    embed.add_field(name=f"Note {note['number']}", value=note_content, inline=False)
-                embeds.append(embed)
-
-            if "ban_reason" in user_info["moderation"]:
-                embed = discord.Embed(title="Bans:", color=0xff0000)
-                for ban in user_info["moderation"]["ban_reason"]:
-                    ban_content = f"**Date/Time:** {ban['timestamp']}\n" \
-                                f"**Issuer:** {ban['issuer']}\n" \
-                                f"**Reason:** {ban['reason']}"
-                                # f"Number: {ban['number']}\n" \
-                    embed.add_field(name=f"Ban {ban['number']}", value=ban_content, inline=False)
-                embeds.append(embed)
-
-            if "kick_reason" in user_info["moderation"]:
-                embed = discord.Embed(title="Kicks:", color=0xff0000)
-                for kick in user_info["moderation"]["kick_reason"]:
-                    kick_content = f"**Date/Time:** {kick['timestamp']}\n" \
-                                f"**Issuer:** {kick['issuer']}\n" \
-                                f"**Reason:** {kick['reason']}"
-                    embed.add_field(name=f"Kick {kick['number']}", value=kick_content, inline=False)
-                embeds.append(embed)
-
-            if "banned" in user_info["moderation"]:
-                embed = discord.Embed(title="Unbans:", color=0x00ff00)
-                for ban in user_info["moderation"]["banned"]:
-                    if ban.get("lifted", False):
-                        unban_content = f"**Date/Time:** {ban['timestamp']}\n" \
-                                        f"**Issuer:** {ban['issuer']}\n" \
-                                        f"**Unban Reason:** {ban['unban_reason']}"
-                        embed.add_field(name=f"Unban {ban['number']}", value=unban_content, inline=False)
-                embeds.append(embed)
-
-            paginator = Paginator(ctx, embeds)
-            await paginator.start()
-        else:
-            await ctx.send("User not found in the database.")
-
-    @commands.command(help='<user_id> <key> <value>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def updateinfo(self, ctx, uid: int, key: str, *, value: str):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
-        user = cursor.fetchone()
-        if user:
-            user_info = json.loads(user[1])
-            if key in user_info:
-                user_info[key] = value
-                cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), str(uid)))
-                self.conn.commit()
-                await ctx.send(f"Updated {key} for user {uid} to {value}.")
-            else:
-                await ctx.send("Key does not exist.")
-        else:
-            await ctx.send("User not found in the database.")
-
-    @commands.command(help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def addusertodb(self, ctx, user: discord.User):
-        uid = user.id
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
-        user = cursor.fetchone()
-        if not user:
-            try:
-                member = await utils.GetMember(ctx, uid)
-            except ValueError:
-                await ctx.send("User not found in the server.")
-                return
-
-            user_info = {
-                "info": {
-                    "Joined": member.joined_at.strftime('%m-%d-%y %H:%M'),
-                    "Account_Created": member.created_at.strftime('%m-%d-%y %H:%M'),
-                    "Left": None,
-                    "username": member.name,
-                    "avatar_url": str(member.avatar_url),
-                    "roles": [role.name for role in member.roles]
-                },
-                "moderation": {
-                    "warns": [],
-                    "notes": [],
-                    "banned": [],
-                    "kick_reason": [],
-                    "kicks_amount": 0
-                }
-            }
-            cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (str(uid), json.dumps(user_info)))
-            self.conn.commit()
-            await ctx.send(f"User with ID `{uid}` (username: `{member.name}`) added to the database.")
-            await utils.LogAction(
-                ctx.guild,
-                "ModLogs",
-                "Database",
-                member,
-                f"User added to the database by {ctx.author.name}",
-                config=config,
-            )
-        else:
-            await ctx.send(f"User with ID {uid} already exists in the database.")
-        print(f"Adding ({member.name} : {uid}) to the Database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-
+    ## NOTES
     @commands.command(help='<@username or UID> <Note>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def addnote(self, ctx, user: discord.User, *, note_content: str):
@@ -554,6 +116,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
+    ## WARNINGS
     @commands.command(aliases=['warn'], help='<@username or UID> <Reason>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def addwarning(self, ctx, user: discord.User, *, warning: str):
@@ -687,7 +250,7 @@ class Moderation(commands.Cog):
                 cursor.execute("UPDATE UserInfo SET info=? WHERE uid=?", (json.dumps(user_info), uid))
                 self.conn.commit()
             except Exception as e:
-                print(f"Error updating database: {e}")
+                print(f"{Fore.RED}Error updating database: {e}{Style.RESET_ALL}")
             await ctx.send(f"⚠️ **Warned**: {ctx.author.mention} warned {user.mention} (warn #{warning_number})\n**Warning Message**:\n{warning}")
         else:
             await ctx.send("User not found in the database.")
@@ -730,6 +293,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
+    ## KICKS
     @commands.command(help='<@username or UID> <Reason>', hidden=True)
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, user: Union[discord.Member, discord.User], *, reason: str):
@@ -798,6 +362,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
+    ## BANS
     @commands.command(help='<@username or UID> <Reason>', hidden=True)
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, discord_user: discord.User, *, reason: str = None):
@@ -1037,46 +602,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
 
-    @commands.command(help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def accountage(self, ctx, member: discord.Member = None):
-        if member is None:
-            member = ctx.author
-        else:
-            try:
-                member = await utils.GetMember(ctx, member.id)
-            except ValueError:
-                return await ctx.send("⚠ Unable to get user info as they are not in the server.")
-
-        AccountCreatedDate = member.created_at
-        AccountAge = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-        if AccountAge < utils.TimeDelta(days=30):
-            color = discord.Color.red()  # Red for less than 1 month old
-        elif AccountAge < utils.TimeDelta(days=365):
-            color = discord.Color.blue()  # Blue for 1 month to 1 year old
-        else:
-            color = discord.Color.green()  # Green for 1 year or older
-
-        embed = discord.Embed(title=f"{member.name}'s Account Info", color=color)
-        embed.add_field(name="Account Creation Date", value=AccountCreatedDate.strftime('%Y-%m-%d'), inline=False)
-        embed.set_thumbnail(url=member.avatar_url)
-        await ctx.send(embed=embed)
-
-    @commands.command(help='<@username or UID> <NewName', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
-    async def changenickname(self, ctx, member: discord.Member, *, new_name: str):
-        try:
-            await member.edit(nick=new_name)
-            await ctx.message.reply(f"Nickname changed for {member.mention} to {new_name}.")
-        except discord.Forbidden:
-            await ctx.message.reply("Failed to change the nickname due to permission settings.")
-    
-    @commands.command(help="Set the bot's nickname", hidden=True)
-    @commands.is_owner()
-    async def setbotnickname(self, ctx, *, nickname):
-        await ctx.guild.me.edit(nick=nickname)
-        await ctx.message.reply(f"Nickname was changed to **{nickname}**")
-
+    ## DM BOT
     @commands.command(help="<@username or UID> <Message>", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def dm(self, ctx, user_id: int, *, message: str):
@@ -1087,7 +613,7 @@ class Moderation(commands.Cog):
         try:
             await user.send(message)
             timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-            print(f"At {timestamp} {ctx.author} sent a DM to {user.name}. \nMessage content: '{{{message}}}'")
+            print(f"{Fore.GREEN}At {timestamp} {ctx.author} sent a DM to {user.name}. \nMessage content: '{{{message}}}'{Style.RESET_ALL}")
             await utils.LogAction(
                 guild=ctx.guild,
                 channel_name='DMLogs',
@@ -1100,21 +626,7 @@ class Moderation(commands.Cog):
         except discord.Forbidden:
             await ctx.message.reply("I'm not able to DM that user.")
 
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def mergeroles(self, ctx, old_role: discord.Role, new_role: discord.Role):
-        try:
-            count = 0
-            for member in ctx.guild.members:
-                if old_role in member.roles:
-                    await member.remove_roles(old_role)
-                    await member.add_roles(new_role)
-                    await asyncio.sleep(1)
-                    count += 1
-            await ctx.send(f"Roles merged: {old_role.name} -> {new_role.name}. {count} members affected.")
-        except Exception as e:
-            await ctx.send(f"An error occurred: {e}")
-
+    ## COMMANDS INFO
     @commands.command(help='Displays a list of ban reason', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def banshortcuts(self, ctx):
@@ -1240,135 +752,6 @@ class Moderation(commands.Cog):
             embed.add_field(name="AFK Channel", value=guild.afk_channel.name, inline=False)
             embed.add_field(name="AFK Timeout", value=f"{guild.afk_timeout//60} minutes", inline=False)
         await ctx.send(embed=embed)
-
-
-
-
-    ## NOT USED ANYMORE DO TO EVERYTHING BEING ADDED TO THE INFO COMMAND
-    # @commands.command(help='<@username or UID>', hidden=True)
-    # @commands.has_any_role("Helpers", "Moderator", "Admin")
-    # async def checkbans(self, ctx, discord_user: discord.User):
-    #     uid = str(discord_user.id)
-    #     cursor = self.conn.cursor()
-    #     cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-    #     user_row = cursor.fetchone()
-    #     if user_row:
-    #         user_info = json.loads(user_row[1])
-    #         bans = user_info["moderation"].get("banned", [])
-
-    #         if bans:
-    #             embed = discord.Embed(
-    #                 title=f"Bans for {user_info['info']['username']} (UID: {uid})",
-    #                 color=0xFF0000,
-    #             )
-
-    #             embed.add_field(name="Username", value=user_info["info"]["username"], inline=False)
-    #             for index, ban_info in enumerate(bans, start=1):
-    #                 timestamp = ban_info["timestamp"]
-    #                 issuer = ban_info["issuer"]
-    #                 reason = ban_info["reason"]
-    #                 unban_reason = ban_info.get("unban_reason", "N/A")
-    #                 embed.add_field(
-    #                     name=f"Ban #{index}",
-    #                     value=f"Date/Time: {timestamp}\nIssuer: {issuer}\nReason: {reason}\nUnban Reason: {unban_reason}",
-    #                     inline=False
-    #                 )
-    #             await ctx.send(embed=embed)
-    #         else:
-    #             await ctx.send(f"No bans found for user {uid}.")
-    #     else:
-    #         await ctx.send("User not found in the database.")
-
-    # @commands.command(aliases=["notes", "checknotes"], help='<@username or UID>', hidden=True)
-    # @commands.has_any_role("Helper", "Moderator", "Admin")
-    # async def listnotes(self, ctx, user: discord.User):
-    #     uid = user.id
-    #     cursor = self.conn.cursor()
-    #     cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
-    #     user = cursor.fetchone()
-    #     if user:
-    #         user_info = json.loads(user[1])
-    #         notes = user_info["moderation"].get("notes", [])
-    #         if notes:
-    #             embed = discord.Embed(
-    #                 title=f"Notes for {user_info['info']['username']} (UID: {uid})",
-    #                 color=0x00ff00,
-    #             )
-    #             embed.add_field(name="Username", value=user_info["info"]["username"], inline=False)
-    #             for note in notes:
-    #                 embed.add_field(
-    #                     name=f"Note #{note['number']} - {note['timestamp']} - {note['author']}:",
-    #                     value=note['content'],
-    #                     inline=False
-    #                 )
-    #             await ctx.send(embed=embed)
-    #         else:
-    #             await ctx.send(f"No notes found for user {uid}.")
-    #     else:
-    #         await ctx.send("User not found in the database.")
-
-    # @commands.command(aliases=["listkicks", "checkkicks"], help='<@username or UID>', hidden=True)
-    # @commands.has_any_role("Helper", "Moderator", "Admin")
-    # async def listkickreasons(self, ctx, user: discord.User):
-    #     uid = str(user.id)
-    #     cursor = self.conn.cursor()
-    #     cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
-    #     user = cursor.fetchone()
-    #     if user:
-    #         user_info = json.loads(user[1])
-    #         kicks = user_info.get("kick_reason", [])
-
-    #         if kicks:
-    #             embed = discord.Embed(
-    #                 title=f"Kick Reasons for {user_info['username']} (UID: {uid})",
-    #                 color=0x00ff00,
-    #             )
-    #             embed.add_field(name="Username", value=user_info["username"], inline=False)
-    #             for kick in kicks:
-    #                 embed.add_field(
-    #                     name=f"Kick #{kick['number']} - {kick['timestamp']} - {kick['issuer']}:",
-    #                     value=kick['reason'],
-    #                     inline=False
-    #                 )
-    #             await ctx.send(embed=embed)
-    #         else:
-    #             await ctx.send(f"No kick reasons found for user {uid}.")
-    #     else:
-    #         await ctx.send("User not found in the database.")
-
-    # @commands.command(aliases=["listwarnings", "listwarns"], help='<@username or UID> <Warning #>', hidden=True)
-    # @commands.has_any_role("Helper", "Moderator", "Admin")
-    # async def checkwarnings(self, ctx, user: discord.User, warning_number: Union[int, None]):
-    #     uid = str(user.id)
-    #     if warning_number is None:
-    #         await ctx.send("Please provide a warning number after the user ID.")
-    #         return
-
-    #     uid = str(user.id)
-    #     cursor = self.conn.cursor()
-    #     cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
-    #     user = cursor.fetchone()
-    #     if user:
-    #         user_info = json.loads(user[1])
-    #         warnings = user_info.get("warns", [])
-
-    #         found_warning = None
-    #         for warning in warnings:
-    #             if warning.get("number") == warning_number:
-    #                 found_warning = warning
-    #                 break
-    #         if found_warning:
-    #             timestamp = found_warning.get("timestamp", "N/A")
-    #             issuer = found_warning.get("issuer", "N/A")
-    #             warning_text = found_warning.get("warning", "N/A")
-    #             await ctx.send(f"**Warning #{warning_number} for {user.mention}:**\n"
-    #                         f"Time: {timestamp}\n"
-    #                         f"Issuer: {issuer}\n"
-    #                         f"Warning: {warning_text}")
-    #         else:
-    #             await ctx.send(f"Warning #{warning_number} not found for this user.")
-    #     else:
-    #         await ctx.send("User not found in the database.")
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

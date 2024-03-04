@@ -5,6 +5,10 @@ import pytz
 import random
 import json
 
+def load_config():
+    with open('config.json', 'r') as f:
+        return json.load(f)
+config = load_config()
 
 def load_emojis():
     with open('Data/CustomEmojis.json', 'r') as f:
@@ -14,10 +18,11 @@ custom_emojis = load_emojis()
 # Currently used with Polls
 EmojiNumbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
 
-
 def GenerateNumber():
     return random.randint(1, 9999)
 
+def TruncateText(text, length):
+    return text[:length]
 
 def GetLocalTime():
     utc_now = datetime.now(timezone.utc)
@@ -42,6 +47,12 @@ async def GetMember(ctx, user_id):
     if member is None:
         raise ValueError("Member not found in this server.")
     return member
+
+def GetMention(target):
+    if isinstance(target, (discord.Role, discord.User)):
+        return target.mention
+    else:
+        return target.name
 
 
 ACTIONS = {
@@ -103,6 +114,37 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
                 value=f"Date/Time: {timestamp}\nIssuer: {ban['issuer']}\nReason: {ban['reason']}\nLifted: {ban['lifted']}\nUnban Reason: {ban.get('unban_reason', 'N/A')}",
                 inline=False,
             )
+    await channel.send(embed=embed)
+
+
+async def LogUserChange(config, user, change_message):
+    MemberLogChannelId = config['channel_ids'].get('MemberLogs', None)
+    if MemberLogChannelId:
+        ModLogsChannelID = user.guild.get_channel(int(MemberLogChannelId))
+        if ModLogsChannelID:
+            embed = discord.Embed(
+                title="User Changes",
+                description=f"User: {user.mention}",
+                color=discord.Color.green(),
+            )
+            embed.set_author(name=f"{user.name}", icon_url=user.avatar_url)
+            change_message = change_message.replace("Roles added: ", "Roles Added:\n")
+            change_message = change_message.replace("Roles removed: ", "Roles Removed:\n")
+            change_message = change_message.replace(", ", "\n")
+            embed.add_field(name="**Updated Details**", value=change_message, inline=False)
+            timestamp = GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+            embed.set_footer(text=f"UID: {user.id} • {timestamp}")
+            await ModLogsChannelID.send(embed=embed)
+
+async def LogBlacklistedWords(channel, action, target, reason, user_id):
+    timestamp = GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+    embed = discord.Embed(color=discord.Color.red())
+    embed.set_author(name=f"{target.name}", icon_url=target.avatar_url)
+    embed.description = f"{action} in {channel.mention}"
+    embed.add_field(name=f"{action} Message", value=reason, inline=False)
+    embed.set_footer(text=f"UID: {user_id} • {timestamp}")
+    if len(embed.fields) > 25:
+        embed.fields = embed.fields[:25]
     await channel.send(embed=embed)
 
 

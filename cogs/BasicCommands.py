@@ -8,6 +8,7 @@ from utils.Paginator import Paginator
 import logging
 from googletrans import Translator
 from sympy import sympify
+# from config import logo_url
 
 
 class BasicCommands(commands.Cog):
@@ -33,32 +34,6 @@ class BasicCommands(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def ping(self, ctx):
         await ctx.message.reply('Pong')
-
-    @commands.command(help="Shows bot's latency", hidden=True)
-    @commands.is_owner()
-    async def botping(self, ctx):
-        try:
-            BotLatency = self.bot.latency * 1000
-
-            embed = discord.Embed(
-                title="Server Ping",
-                description=f"Server ping is currently {BotLatency:.2f}ms",
-                color=discord.Color.red(),
-            )
-            avatar_url = (
-                ctx.author.avatar.url
-                if isinstance(ctx.author.avatar, discord.Asset)
-                else "https://www.gravatar.com/avatar/?d=retro&s=32"
-            )
-            embed.set_thumbnail(url=avatar_url)
-
-            reply = await ctx.message.reply(embed=embed)
-            if reply:
-                print("Bot ping message sent successfully.")
-            else:
-                print("Failed to send bot ping message.")
-        except Exception as e:
-            logging.error(f"An error occurred while trying to get the bot's ping: {e}")
 
     @commands.command(help="Shows all custom emojis added to bot", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -210,6 +185,20 @@ class BasicCommands(commands.Cog):
 
         await channel.send(embed=embed)
         await ctx.message.reply(f"Announcement sent to {channel.mention}.")
+
+    # @commands.command(help='<#Channel> <Title> <Message>', hidden=True)
+    # @commands.has_any_role("Moderator", "Admin")
+    # async def announcement(self, ctx, channel: discord.TextChannel, title, *, message):
+    #     embed = discord.Embed(
+    #         title=title,
+    #         description=message,
+    #         color=discord.Color.random()
+    #     )
+    #     embed.set_thumbnail(url=logo_url)  # use logo_url from config.py
+    #     embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+
+    #     await channel.send(embed=embed)
+    #     await ctx.message.reply(f"Announcement sent to {channel.mention}.")
 
     @commands.command(
         help='<#channel> "Poll Title" "option1" "option2" "Your Message Here" <duration> <duration_unit>',
