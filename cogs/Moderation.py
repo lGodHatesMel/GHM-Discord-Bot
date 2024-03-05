@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 import utils.utils as utils
-from utils.botdb import create_connection
+from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
+from config import channel_ids
 import json
 import asyncio
 import sqlite3
@@ -11,13 +12,11 @@ from typing import Union
 from colorama import Fore, Style
 
 
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = create_connection('Database/DBInfo.db')
+        self.conn = CreateUserDatabase('Database/DBInfo.db')
+        self.config = {'channel_ids': channel_ids}
 
     ## NOTES
     @commands.command(help='<@username or UID> <Note>', hidden=True)
@@ -79,7 +78,7 @@ class Moderation(commands.Cog):
             "Note",
             user,
             f"Note added by {ctx.author.name}\n\n Note: {note_content}",
-            config=config,
+            config=self.config,
         )
 
     @commands.command(aliases=["removenote", "delnote"], help='<@username or UID> <Note #>', hidden=True)
@@ -109,7 +108,7 @@ class Moderation(commands.Cog):
                     "Note",
                     ctx.author,
                     f"**Note Removed**: {ctx.author.name} removed a note for {uid}\n(#{note_number}) - {deleted_content}",
-                    config=config,
+                    config=self.config,
                 )
             else:
                 await ctx.send(f"Note #{note_number} not found for this user.")
@@ -197,7 +196,7 @@ class Moderation(commands.Cog):
                 user,
                 f"Warning #{warning_number}\n\n**Warning:**\n{warning}",
                 issuer=ctx.author,
-                config=config,
+                config=self.config,
             )
 
             # Get the Member object for the user in the guild
@@ -215,7 +214,7 @@ class Moderation(commands.Cog):
                     user,
                     f"3rd Warning (Warning #{warning_number}): {warning}",
                     issuer=ctx.author,
-                    config=config,
+                    config=self.config,
                 )
                 user_info["moderation"]["kicks_amount"] = user_info.get("kicks_amount", 0) + 1
 
@@ -241,7 +240,7 @@ class Moderation(commands.Cog):
                     user,
                     f"5th Warning (Warning #{warning_number}): {warning}",
                     issuer=ctx.author,
-                    config=config,
+                    config=self.config,
                 )
 
             warnings.append(new_warning)
@@ -286,7 +285,7 @@ class Moderation(commands.Cog):
                     warning,
                     warning_number,
                     ctx.author,
-                    config=config,
+                    config=self.config,
                 )
             else:
                 await ctx.send(f"Warning #{warning_number} not found for this user.")
@@ -353,7 +352,7 @@ class Moderation(commands.Cog):
                     user,
                     reason,
                     issuer=ctx.author,
-                    config=config,
+                    config=self.config,
                 )
             except discord.Forbidden:
                 await ctx.send(f"Failed to kick {user.mention} due to permission settings.")
@@ -480,7 +479,7 @@ class Moderation(commands.Cog):
                 reason,
                 issuer=ctx.author,
                 user_data=user_info,
-                config=config,
+                config=self.config,
                 embed=embed,
             )
             await ctx.send(f"{user_with_uid} has been banned for the following reason: {reason}")
@@ -526,7 +525,7 @@ class Moderation(commands.Cog):
                         reason,
                         issuer=ctx.author,
                         user_data=user_info,
-                        config=config,
+                        config=self.config,
                     )
                 except discord.errors.NotFound:
                     await ctx.send(f"No ban found for user {user.name} in the Discord server.")
@@ -594,7 +593,7 @@ class Moderation(commands.Cog):
                     member,
                     reason,
                     issuer=ctx.author,
-                    config=config,
+                    config=self.config,
                 )
                 await ctx.send(f"{member.mention} has been soft-banned.")
             except discord.Forbidden:
@@ -621,7 +620,7 @@ class Moderation(commands.Cog):
                 target=user,
                 reason=f"**Message Sent:**\n{message}",
                 issuer=ctx.author,
-                config=config
+                config=self.config
             )
         except discord.Forbidden:
             await ctx.message.reply("I'm not able to DM that user.")

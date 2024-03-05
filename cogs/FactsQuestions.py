@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import sqlite3
-import json
+from config import channel_ids
 import random
 
 class FactsQuestions(commands.Cog):
@@ -29,16 +29,16 @@ class FactsQuestions(commands.Cog):
 
     async def UpdateFAQ(self, ctx):
         self.SetupDatabase()
-        FAQChannelID = self.bot.config['channel_ids'].get('FAQChannel')
+        FAQChannelID = channel_ids.get('FAQChannel')
 
         if FAQChannelID is None:
-            await ctx.send("⚠ FAQ channel ID is not set in config.json. Set it to a valid channel ID to use this feature.")
+            await ctx.send("⚠ FAQ channel ID is not set in config.py. Set it to a valid channel ID to use this feature.")
             return
 
         FAQChannel = ctx.guild.get_channel(FAQChannelID)
 
         if not FAQChannel:
-            await ctx.send("⚠ FAQ channel not found. Make sure to set the 'FAQChannel' in the 'channel_ids' section of the config.json file to a valid channel.")
+            await ctx.send("⚠ FAQ channel not found. Make sure to set the 'FAQChannel' in the 'channel_ids' section of the config.py file to a valid channel.")
             return
 
         async for msg in FAQChannel.history(limit=None):
@@ -107,16 +107,16 @@ class FactsQuestions(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addfaq(self, ctx):
-        FAQChannelID = self.bot.config['channel_ids'].get('FAQChannel')
+        FAQChannelID = channel_ids.get('FAQChannel')
 
         if FAQChannelID is None:
-            await ctx.send("⚠ FAQ channel ID is not set in config.json. Set it to a valid channel ID to use this feature.")
+            await ctx.send("⚠ FAQ channel ID is not set in config.py. Set it to a valid channel ID to use this feature.")
             return
 
         FAQChannel = ctx.guild.get_channel(FAQChannelID)
 
         if not FAQChannel:
-            await ctx.send("⚠ FAQ channel not found. Make sure to set the 'FAQChannel' in the 'channel_ids' section of the config.json file to a valid channel.")
+            await ctx.send("⚠ FAQ channel not found. Make sure to set the 'FAQChannel' in the 'channel_ids' section of the config.py file to a valid channel.")
             return
 
         await ctx.send("Type the bot command name for this FAQ entry (no spaces or special characters), or type `cancel` to cancel:")

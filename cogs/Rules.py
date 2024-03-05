@@ -1,25 +1,20 @@
-import json
-import os
-import asyncio
 import discord
 from discord.ext import commands
 import sqlite3
+from config import channel_ids
+import asyncio
+
 
 class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = self.load_config()
         self.conn = sqlite3.connect('Database/rules.db')
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS rules
                     (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
 
-    def load_config(self):
-        with open('config.json', 'r') as f:
-            return json.load(f)
-
     async def update_rules(self):
-        RulesChannelID = self.config['channel_ids']['RulesChannel']  # Modified this line
+        RulesChannelID = channel_ids['RulesChannel']
         self.c.execute("SELECT * FROM rules")
         rules_data = self.c.fetchall()
 

@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import json
 from datetime import datetime
 import utils.utils as utils
 from utils.Paginator import Paginator
@@ -8,8 +7,6 @@ from utils.Paginator import Paginator
 class ModerationLogger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        with open('config.json') as f:
-            self.config = json.load(f)
         with open('Data/BadWordList.txt', 'r') as file:
             self.BadWords = file.read().splitlines()
 
@@ -24,7 +21,7 @@ class ModerationLogger(commands.Cog):
     @commands.command(help="Show current bad word list",hidden=True)
     @commands.has_any_role('Admin', 'Moderator')
     async def badwordlist(self, ctx):
-        words_per_page = 50  # Adjust as needed
+        words_per_page = 50
         bad_words = [self.BadWords[i:i + words_per_page] for i in range(0, len(self.BadWords), words_per_page)]
         embeds = [discord.Embed(title="Bad Words List", description=", ".join(words), color=0x3498db) for words in bad_words]
         

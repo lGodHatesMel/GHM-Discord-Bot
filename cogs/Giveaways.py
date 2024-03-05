@@ -2,9 +2,8 @@ import discord
 from discord.ext import commands
 import utils.utils as utils
 from utils.Paginator import Paginator
-import json
+from config import channel_ids, logo_url
 import sqlite3
-import json
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import random
@@ -36,9 +35,7 @@ class Giveaway(commands.Cog):
         conn.commit()
         conn.close()
 
-        with open('config.json') as f:
-            config = json.load(f)
-        self.channel_id = int(config['channel_ids']['GiveawayChannel'])
+        self.channel_id = channel_ids.get('GiveawayChannel')
 
     @commands.command(help="<title> <description> <days from now> <end time in 24-hour HH:MM format>", hidden=True)
     async def startgiveaway(self, ctx, title: str, description: str, days_from_now: int, end_time: str):
@@ -47,20 +44,6 @@ class Giveaway(commands.Cog):
         end_date = start_time + utils.TimeDelta(days=days_from_now)
         end_hour, end_minute = map(int, end_time.split(":"))
         end_datetime = end_date.replace(hour=end_hour, minute=end_minute)
-
-        with open('config.json') as f:
-            config = json.load(f)
-        logo_url = config['logo_url']
-
-        days, remainder = divmod(days_from_now * 24 * 60, 1440)
-        hours, minutes = divmod(remainder, 60)
-        duration_str = ""
-        if days > 0:
-            duration_str += f"{days} days "
-        if hours > 0:
-            duration_str += f"{hours} hours "
-        if minutes > 0:
-            duration_str += f"{minutes} minutes"
 
         embed = discord.Embed(title=f"🎉 **GIVEAWAY: {title}** 🎉", description="", color=0x00ff00)
         embed.add_field(name="Description", value=description, inline=False)
@@ -168,10 +151,6 @@ class Giveaway(commands.Cog):
         c.execute("SELECT * FROM giveaways")
         giveaways = c.fetchall()
         logging.debug(f'Fetched {len(giveaways)} giveaways from the database')
-
-        with open('config.json') as f:
-            config = json.load(f)
-        logo_url = config['logo_url']
 
         embeds = []
         for giveaway in giveaways:

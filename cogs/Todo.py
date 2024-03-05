@@ -1,9 +1,10 @@
-import time
-import json
-import sqlite3
 import discord
 from discord.ext import commands
 from utils.Paginator import Paginator
+from config import prefix
+import time
+import sqlite3
+
 
 TICK_EMOJI = "✅"
 X_EMOJI = "❌"
@@ -20,10 +21,6 @@ class Todo(commands.Cog):
     @commands.command(help="Shows todo commands.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def todocommands(self, ctx: commands.Context):
-        with open('config.json') as f:
-            config = json.load(f)
-        prefix = config['prefix']
-
         embed = discord.Embed(title="Todo Commands", color=discord.Color.blue())
         embed.add_field(name=f"`{prefix}showalltasks`", value="*Shows all tasks from database.*", inline=False)
         embed.add_field(name=f"`{prefix}showallmytasks`", value="*Shows all your tasks from the todo list.*", inline=False)

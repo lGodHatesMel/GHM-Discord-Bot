@@ -2,8 +2,8 @@ import asyncio
 import os
 import discord
 from discord.ext import commands
-import json
 import importlib
+import config
 import sys
 import traceback
 
@@ -14,6 +14,9 @@ class ExtensionManagement(commands.Cog):
     def cog_unload(self):
         # Cleanup code if needed
         pass
+
+    # def cog_unload(self):
+    #     self.my_background_task.cancel()
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -84,12 +87,10 @@ class ExtensionManagement(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def refreshconfig(self, ctx):
-        with open('config.json', 'r') as config_file:
-            config = json.load(config_file)
-
-        self.bot.config = config
         try:
-            await ctx.send(":white_check_mark: Config.json has been refreshed!")
+            importlib.reload(config)
+            self.bot.config = vars(config)
+            await ctx.send(":white_check_mark: Config.py has been refreshed!")
         except Exception as e:
             await ctx.send(f":x: Operation failed!\n\n{type(e).__name__}: {e}")
             traceback.print_exc()

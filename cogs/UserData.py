@@ -1,23 +1,20 @@
 import discord
 from discord.ext import commands
 import utils.utils as utils
-from utils.botdb import create_connection
+from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
+from config import channel_ids
 import json
-import asyncio
 import sqlite3
 from sqlite3 import Error
 from typing import Union
 from colorama import Fore, Style
 
-
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
 class UserData(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = create_connection('Database/DBInfo.db')
+        self.conn = CreateUserDatabase('Database/DBInfo.db')
+        self.config = {'channel_ids': channel_ids}
 
     @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -95,7 +92,7 @@ class UserData(commands.Cog):
                 "Database",
                 member,
                 f"User added to the database by {ctx.author.name}",
-                config=config,
+                config=self.config,
             )
         else:
             await ctx.send(f"User with ID {uid} already exists in the database.")

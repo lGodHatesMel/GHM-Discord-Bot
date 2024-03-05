@@ -8,7 +8,7 @@ from utils.Paginator import Paginator
 import logging
 from googletrans import Translator
 from sympy import sympify
-# from config import logo_url
+from config import logo_url
 
 
 class BasicCommands(commands.Cog):
@@ -171,10 +171,6 @@ class BasicCommands(commands.Cog):
     @commands.command(help='<#Channel> <Title> <Message>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
     async def announcement(self, ctx, channel: discord.TextChannel, title, *, message):
-        with open('config.json') as f:
-            config = json.load(f)
-
-        logo_url = config.get('logo_url')
         embed = discord.Embed(
             title=title,
             description=message,
@@ -185,20 +181,6 @@ class BasicCommands(commands.Cog):
 
         await channel.send(embed=embed)
         await ctx.message.reply(f"Announcement sent to {channel.mention}.")
-
-    # @commands.command(help='<#Channel> <Title> <Message>', hidden=True)
-    # @commands.has_any_role("Moderator", "Admin")
-    # async def announcement(self, ctx, channel: discord.TextChannel, title, *, message):
-    #     embed = discord.Embed(
-    #         title=title,
-    #         description=message,
-    #         color=discord.Color.random()
-    #     )
-    #     embed.set_thumbnail(url=logo_url)  # use logo_url from config.py
-    #     embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-
-    #     await channel.send(embed=embed)
-    #     await ctx.message.reply(f"Announcement sent to {channel.mention}.")
 
     @commands.command(
         help='<#channel> "Poll Title" "option1" "option2" "Your Message Here" <duration> <duration_unit>',

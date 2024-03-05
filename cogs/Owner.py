@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import utils.utils as utils
-from utils.botdb import create_connection
+from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
 import json
 import asyncio
@@ -14,7 +14,7 @@ import logging
 class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = create_connection('Database/DBInfo.db')
+        self.conn = CreateUserDatabase('Database/DBInfo.db')
 
     @commands.command(help="Shows bot's latency", hidden=True)
     @commands.is_owner()

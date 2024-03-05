@@ -3,6 +3,7 @@ import json
 import discord
 from discord.ext import commands, tasks
 import utils.utils as utils
+from config import token_refresher_enabled
 
 class TokenRefresher(commands.Cog):
     def __init__(self, bot):
@@ -18,9 +19,7 @@ class TokenRefresher(commands.Cog):
             return json.load(file)
 
     def RunTokenRefresher(self):
-        with open('config.json', 'r') as file:
-            config = json.load(file)
-        return config.get('token_refresher_enabled', False)
+        return token_refresher_enabled
 
     @tasks.loop(hours=3)
     async def RefreshToken(self):

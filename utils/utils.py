@@ -1,14 +1,11 @@
 import discord
 from discord.ext import commands
+from config import channel_ids
 from datetime import datetime, timezone, timedelta
 import pytz
 import random
 import json
 
-def load_config():
-    with open('config.json', 'r') as f:
-        return json.load(f)
-config = load_config()
 
 def load_emojis():
     with open('Data/CustomEmojis.json', 'r') as f:
@@ -73,7 +70,7 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
     if not config:
         raise ValueError("config is required for LogAction")
 
-    ChannelID = config['channel_ids'].get(channel_name)
+    ChannelID = channel_ids.get(channel_name)
     if not ChannelID:
         raise ValueError(f"{channel_name} is not defined in the config")
 
@@ -117,8 +114,8 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
     await channel.send(embed=embed)
 
 
-async def LogUserChange(config, user, change_message):
-    MemberLogChannelId = config['channel_ids'].get('MemberLogs', None)
+async def LogUserChange(user, change_message):
+    MemberLogChannelId = channel_ids.get('MemberLogs', None)
     if MemberLogChannelId:
         ModLogsChannelID = user.guild.get_channel(int(MemberLogChannelId))
         if ModLogsChannelID:

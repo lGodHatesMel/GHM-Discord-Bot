@@ -1,16 +1,15 @@
 import discord
 from discord import Embed
 from discord.ext import commands
-import json
+from config import channel_ids, category_ids
 
 class Tickets(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        with open('config.json') as f:
-            self.config = json.load(f)
+        self.config = {'channel_ids': channel_ids, 'category_ids': category_ids}
         self.ticket_category_id = self.config['category_ids']['Tickets']
         if self.ticket_category_id is None:
-            raise ValueError("Ticket category ID is not set in config.json")
+            raise ValueError("Ticket category ID is not set in config.py")
         self.ticket_message_id = None
         self.ticket_types = {
             "🎫": "General Support",
@@ -31,7 +30,7 @@ class Tickets(commands.Cog):
     async def on_ready(self):
         channel_id = self.config['channel_ids']['TicketChannel']
         if channel_id is None:
-            raise ValueError("Ticket channel ID is not set in config.json")
+            raise ValueError("Ticket channel ID is not set in config.py")
         channel = self.bot.get_channel(channel_id)
         embed = Embed(title="Ticket Creation", description="React to create a ticket!", color=0x00ff00)
         embed.add_field(name="🎫", value="General Support", inline=False)

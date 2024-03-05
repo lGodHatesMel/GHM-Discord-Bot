@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 import utils.utils as utils
-from utils.botdb import create_connection
+from utils.botdb import CreateUserDatabase
 from utils.utils import custom_emojis
+from config import channel_ids
 import os
 import json
 import sqlite3
@@ -12,12 +13,11 @@ import re
 from colorama import Fore, Style
 
 
-class Logs(commands.Cog):
+class Logger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = create_connection('Database/DBInfo.db')
-        with open('config.json', 'r') as config_file:
-            self.config = json.load(config_file)
+        self.conn = CreateUserDatabase('Database/DBInfo.db')
+        self.config = {'channel_ids': channel_ids}
         self.AllowedRoles = ['Owner', 'Admin', 'Moderator', 'Helper', "Bypass", "🤫"]
         self.BadEmojis = [] # ex: "🚫", "❌"
         with open('Data/BadWordList.txt', 'r') as file:
@@ -27,7 +27,8 @@ class Logs(commands.Cog):
     ## ON_MEMBERS
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        channel = self.bot.get_channel(int(self.WelcomeChannelID))
+        WelcomeChannelID = channel_ids.get('Welcome', None)
+        channel = self.bot.get_channel(int(WelcomeChannelID))
 
         if channel:
             server = member.guild
@@ -103,7 +104,8 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
-        channel = self.bot.get_channel(int(self.WelcomeChannelID))
+        WelcomeChannelID = channel_ids.get('Welcome', None)
+        channel = self.bot.get_channel(int(WelcomeChannelID))
         if channel:
             server = member.guild
             member_count = sum(1 for member in server.members if not member.bot)
@@ -164,7 +166,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
         if before.name != after.name:
-            await utils.LogUserChange(utils.config, after, f"Username changed from {before.name} to {after.name}")
+            await utils.LogUserChange(after, f"Username changed from {before.name} to {after.name}")
 
         if before.roles != after.roles:
             added_roles = [role.name for role in after.roles if role not in before.roles]
@@ -181,15 +183,15 @@ class Logs(commands.Cog):
                 self.conn.commit()
             print(f"{Fore.MAGENTA}Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
             if added_roles:
-                await utils.LogUserChange(utils.config, after, f"Roles added: {', '.join([role.name for role in added_roles])}")
+                await utils.LogUserChange(after, f"Roles added: {', '.join([role.name for role in added_roles])}")
                 print(f"{Fore.GREEN}Added roles: {', '.join(added_roles)}{Style.RESET_ALL}")
             if removed_roles:
-                await utils.LogUserChange(utils.config, after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
+                await utils.LogUserChange(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
                 print(f"{Fore.RED}Removed roles: {', '.join(removed_roles)}{Style.RESET_ALL}")
 
         if before.premium_since is None and after.premium_since is not None:
-            channel_id = self.bot.config["channel_ids"]["ServerAnnocementChannel"]
-            channel = self.bot.get_channel(channel_id)
+            ServerAnnocementChannelID = channel_ids.get('ServerAnnocement', None)
+            channel = self.bot.get_channel(ServerAnnocementChannelID)
             
             # Use custom emojis if available, otherwise use a default string
             nitroboost_emoji = custom_emojis.get('nitroboost', ':nitroboost:')
@@ -316,9 +318,9 @@ class Logs(commands.Cog):
                         config=self.config
                     )
 
-        MessageLoggerChannelID = self.config['channel_ids'].get('MessageLogs', None)
+        MessageLoggerChannelID = channel_ids.get('MessageLogs', None)
         if not MessageLoggerChannelID:
-            print("Message logger channel ID is not set in config.json.")
+            print("Message logger channel ID is not set in config.py.")
             return
 
         LoggingChannel = self.bot.get_channel(MessageLoggerChannelID)
@@ -339,9 +341,9 @@ class Logs(commands.Cog):
         if message.author.bot:
             return
 
-        MessageLoggerChannelID = self.config['channel_ids'].get('MessageLogs', None)
+        MessageLoggerChannelID = channel_ids.get('MessageLogs', None)
         if not MessageLoggerChannelID:
-            print("Message logger channel ID is not set in config.json.")
+            print("Message logger channel ID is not set in config.py.")
             return
 
         LoggingChannel = self.bot.get_channel(MessageLoggerChannelID)
@@ -387,7 +389,7 @@ class Logs(commands.Cog):
     ## ON_GUILD
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
-        ServerLogsChannelID = self.config['channel_ids'].get('ServerLogs', None)
+        ServerLogsChannelID = channel_ids.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))
@@ -426,7 +428,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
-        ServerLogsChannelID = self.config['channel_ids'].get('ServerLogs', None)
+        ServerLogsChannelID = channel_ids.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = after.guild.get_channel(int(ServerLogsChannelID))
@@ -465,7 +467,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
-        ServerLogsChannelID = self.config['channel_ids'].get('ServerLogs', None)
+        ServerLogsChannelID = channel_ids.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))
@@ -487,4 +489,4 @@ class Logs(commands.Cog):
                 await ServerLogsChannel.send(embed=embed)
 
 def setup(bot):
-    bot.add_cog(Logs(bot))
+    bot.add_cog(Logger(bot))
