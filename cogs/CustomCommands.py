@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import os
 import sqlite3
-import asyncio
 from utils.Paginator import Paginator
 
 class CustomCommands(commands.Cog):
@@ -89,7 +88,7 @@ class CustomCommands(commands.Cog):
             conn.close()
 
             async def custom_command(ctx):
-                await ctx.semessage.replynd(command_response)
+                await ctx.message.reply(command_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
             await ctx.message.reply(f'Command "{CommandName}" added successfully.')
@@ -210,9 +209,10 @@ class CustomCommands(commands.Cog):
         chunks = [links[i:i + 10] for i in range(0, len(links), 10)]
         embeds = []
         for i, chunk in enumerate(chunks):
+            description = "\n".join(f"{idx + 1}. {link}" for idx, link in enumerate(chunk))
             embed = discord.Embed(
                 title=f"🔗 Allowed Links - Page {i + 1} 🔗",
-                description="\n".join(chunk),
+                description=description,
                 color=discord.Color.blue()
             )
             embed.set_author(name="God's Eye", icon_url=ctx.guild.me.avatar_url)

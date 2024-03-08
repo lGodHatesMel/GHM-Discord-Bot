@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 import tweepy
 import asyncio
-import json
 import sqlite3
+from config import TWITTER, CHANNEL_IDS
 
 conn = sqlite3.connect('twitter.db')
 c = conn.cursor()
@@ -15,16 +15,12 @@ class TwitterCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        with open('config.json') as f:
-            config = json.load(f)
+        consumer_key = TWITTER['consumer_key']
+        consumer_secret = TWITTER['consumer_secret']
+        access_token = TWITTER['access_token']
+        access_token_secret = TWITTER['access_token_secret']
 
-        twitter_config = config['twitter']
-        consumer_key = twitter_config['consumer_key']
-        consumer_secret = twitter_config['consumer_secret']
-        access_token = twitter_config['access_token']
-        access_token_secret = twitter_config['access_token_secret']
-
-        self.channel_id = int(config['channel_ids']['TwitterUpdates'])
+        self.channel_id = int(CHANNEL_IDS['TwitterUpdates'])
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)

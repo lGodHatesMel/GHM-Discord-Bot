@@ -1,24 +1,20 @@
 import discord
 from discord.ext import commands
 from utils.utils import custom_emojis
-import json
+from config import CHANNEL_IDS
 import random
+
 
 class ToggleRoles(commands.Cog):
     hidden = True
 
     def __init__(self, bot):
         self.bot = bot
-        self.load_config()
-        self.RoleChannelID = self.config['channel_ids'].get('RoleChannel')
-
-    def load_config(self):
-        with open('config.json', 'r') as config_file:
-            self.config = json.load(config_file)
+        self.RoleChannelID = CHANNEL_IDS.get('RoleChannel')
 
     async def ToggleRole(self, ctx, RoleName, emoji_name=None):
         if ctx.channel.id != self.RoleChannelID:
-            await ctx.send(f"You can only use this command in the <#{self.config['channel_ids']['RoleChannel']}> channel.")
+            await ctx.send(f"You can only use this command in the <#{CHANNEL_IDS['RoleChannel']}> channel.")
             return
 
         role = discord.utils.get(ctx.guild.roles, name=RoleName)

@@ -1,0 +1,51 @@
+TOKEN = "your-bot-token"
+PREFIX = "your-command-prefix"
+main_GUILD_ID = 0  # your main guild ID
+dev_GUILD_ID = 0  # your dev guild ID
+BOT_ID = 0  # your bot ID
+dev_BOT_ID = 0  # your dev bot ID
+OWNER_ID = 0  # your owner ID
+LOGO_URL = "your-logo-url"
+BACKGROUND_URL = "your-background-url"
+STREAM_NAME = "your-stream-name"
+STREAM_URL = "your-stream-url"
+
+CHANNEL_IDS = {
+    "WelcomeChannel": 0,
+    "RulesChannel": 0,
+    "FAQChannel": 0,
+    "RoleChannel": 0,
+    "StarBoardChannel": 0,
+    "AutoMod": 0,
+    "HelperChannel": 0,
+    "StaffChannel": 0,
+    "ModLogs": 0,
+    "MemberLogs": 0,
+    "ServerLogs": 0,
+    "MessageLogs": 0,
+    "StreamChannel": 0,
+    "TodoChannel": 0,
+    "ServerAnnocementChannel": 0,
+    "DMLogs": 0,
+    "BotTestingChannel": 0,
+    "GiveawayChannel": 0,
+    "TwitterUpdates": 0,
+    "TicketChannel": 0,
+}
+
+blacklisted_channels = [
+    # list of blacklisted channel IDs
+]
+
+IGNORE_SCRIPTS = [
+    # list of scripts to ignore
+]
+
+TOKEN_REFRESHER_ENABLED = False
+ENABLE_COUNTDOWN = False
+
+TWITCH = {
+    "twitch_username": "your-twitch-username",
+    "twitch_client_id": "your-twitch-client-id",
+    "twitch_oauth_token": "your-twitch-oauth-token"
+}
