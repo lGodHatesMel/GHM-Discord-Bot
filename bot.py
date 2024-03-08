@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from config import prefix, owner_id
+from config import PREFIX, OWNER_ID
 from utils.Paginator import Paginator
 
 ## Intents
@@ -8,9 +8,6 @@ intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
 intents.dm_messages = True
-intents.dm_reactions = True
-intents.message_content = True
-intents.typing = True
 
 class EmbedHelpCommand(commands.HelpCommand):
     def __init__(self):
@@ -56,10 +53,10 @@ class EmbedHelpCommand(commands.HelpCommand):
 
 ## Bot Setup
 bot = commands.Bot(
-    command_prefix=prefix,
+    command_prefix=PREFIX,
     case_insensitive=True,
     intents=intents,
-    owner_ids=[owner_id],
+    owner_ids=[OWNER_ID],
     help_command=EmbedHelpCommand(),
     description="Custom bot for our Discord server."
 )

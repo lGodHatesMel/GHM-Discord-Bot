@@ -1,23 +1,23 @@
 import discord
 from discord.ext import commands
 from discord.ext import tasks
-from config import twitch, owner_id, channel_ids
+from config import TWITCH, OWNER_ID, CHANNEL_IDS
 import aiohttp
 
 class LiveNotification(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.twitchIcon = 'https://raw.githubusercontent.com/lGodHatesMel/RandomResources/main/Images/twitchicon.png'
-        self.youtubeIcon = 'https://raw.githubusercontent.com/lGodHatesMel/RandomResources/main/Images/youtubeicon.png'
+        # self.youtubeIcon = 'https://raw.githubusercontent.com/lGodHatesMel/RandomResources/main/Images/youtubeicon.png'
         self.is_live = False
         self.check_live.start()
 
-    @tasks.loop(minutes=15.0)
+    @tasks.loop(minutes=20.0)
     async def check_live(self):
-        TwitchAPI = f'https://api.twitch.tv/helix/streams?user_login={twitch["twitch_username"]}'
+        TwitchAPI = f'https://api.twitch.tv/helix/streams?user_login={TWITCH["twitch_username"]}'
         headers = {
-            'Client-ID': twitch["twitch_client_id"],
-            'Authorization': f'Bearer {twitch["twitch_oauth_token"]}'
+            'Client-ID': TWITCH["twitch_client_id"],
+            'Authorization': f'Bearer {TWITCH["twitch_oauth_token"]}'
         }
 
         async with aiohttp.ClientSession() as session:
@@ -26,14 +26,14 @@ class LiveNotification(commands.Cog):
                     data = await response.json()
                     if data['data'] and not self.is_live:
                         self.is_live = True
-                        user = await self.bot.fetch_user(owner_id)
+                        user = await self.bot.fetch_user(OWNER_ID)
                         game_id = data['data'][0]['game_id']
                         title = data['data'][0]['title']
                         game_name = await self.get_game_name(game_id, headers)
                         await self.LiveEmbedNotification(
-                            self.bot.get_channel(channel_ids['StreamChannel']),
+                            self.bot.get_channel(CHANNEL_IDS['StreamChannel']),
                             f'Hey everyone! {user.mention} is now live on Twitch!',
-                            f'https://www.twitch.tv/{twitch["twitch_username"]}',
+                            f'https://www.twitch.tv/{TWITCH["twitch_username"]}',
                             self.twitchIcon,
                             game_name,
                             title
@@ -44,34 +44,6 @@ class LiveNotification(commands.Cog):
     @check_live.before_loop
     async def before_check_live(self):
         await self.bot.wait_until_ready()
-
-    async def TwitchLiveNotification(self, ctx):
-        TwitchAPI = f'https://api.twitch.tv/helix/streams?user_login={twitch["twitch_username"]}'
-        headers = {
-            'Client-ID': twitch["twitch_client_id"],
-            'Authorization': f'Bearer {twitch["twitch_oauth_token"]}'
-        }
-
-        async with aiohttp.ClientSession() as session:
-            async with session.get(TwitchAPI, headers=headers) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    if data['data'] and not self.is_live:
-                        self.is_live = True
-                        user = await self.bot.fetch_user(owner_id)
-                        game_id = data['data'][0]['game_id']
-                        title = data['data'][0]['title']
-                        game_name = await self.get_game_name(game_id, headers)
-                        await self.LiveEmbedNotification(
-                            self.bot.get_channel(channel_ids['StreamChannel']),
-                            f'Hey everyone! {user.mention} is now live on Twitch!',
-                            f'https://www.twitch.tv/{twitch["twitch_username"]}',
-                            self.twitchIcon,
-                            game_name,
-                            title
-                        )
-                    elif not data['data']:
-                        self.is_live = False
 
     async def get_game_name(self, game_id, headers):
         TwitchAPI = f'https://api.twitch.tv/helix/games?id={game_id}'
@@ -85,7 +57,7 @@ class LiveNotification(commands.Cog):
         return None
 
     async def LiveEmbedNotification(self, ctx, message, streamlink, icon, game_name, title):
-        streamlink = f'https://www.twitch.tv/{twitch["twitch_username"]}'
+        streamlink = f'https://www.twitch.tv/{TWITCH["twitch_username"]}'
         embed = discord.Embed(
             title='Twitch Live Stream Notification',
             description=message,
@@ -98,13 +70,5 @@ class LiveNotification(commands.Cog):
         embed.add_field(name='Watch Now', value=f'[Stream Link]({streamlink})', inline=True)
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def islive(self, ctx):
-        try:
-            await self.TwitchLiveNotification(ctx)
-        except Exception as e:
-            await ctx.message.reply(f'An error occurred: {e}')
-
 def setup(bot):
     bot.add_cog(LiveNotification(bot))
-    

@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import sqlite3
-from config import channel_ids
+from config import CHANNEL_IDS
 import random
 
 class FactsQuestions(commands.Cog):
@@ -29,7 +29,7 @@ class FactsQuestions(commands.Cog):
 
     async def UpdateFAQ(self, ctx):
         self.SetupDatabase()
-        FAQChannelID = channel_ids.get('FAQChannel')
+        FAQChannelID = CHANNEL_IDS.get('FAQChannel')
 
         if FAQChannelID is None:
             await ctx.send("⚠ FAQ channel ID is not set in config.py. Set it to a valid channel ID to use this feature.")
@@ -107,7 +107,7 @@ class FactsQuestions(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addfaq(self, ctx):
-        FAQChannelID = channel_ids.get('FAQChannel')
+        FAQChannelID = CHANNEL_IDS.get('FAQChannel')
 
         if FAQChannelID is None:
             await ctx.send("⚠ FAQ channel ID is not set in config.py. Set it to a valid channel ID to use this feature.")

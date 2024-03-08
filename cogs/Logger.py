@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.utils as utils
 from utils.botdb import CreateUserDatabase
 from utils.utils import custom_emojis
-from config import channel_ids
+from config import CHANNEL_IDS
 import os
 import json
 import sqlite3
@@ -17,7 +17,7 @@ class Logger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = CreateUserDatabase('Database/DBInfo.db')
-        self.config = {'channel_ids': channel_ids}
+        self.config = {'CHANNEL_IDS': CHANNEL_IDS}
         self.AllowedRoles = ['Owner', 'Admin', 'Moderator', 'Helper', "Bypass", "🤫"]
         self.BadEmojis = [] # ex: "🚫", "❌"
         with open('Data/BadWordList.txt', 'r') as file:
@@ -27,7 +27,7 @@ class Logger(commands.Cog):
     ## ON_MEMBERS
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        WelcomeChannelID = channel_ids.get('Welcome', None)
+        WelcomeChannelID = CHANNEL_IDS.get('Welcome', None)
         channel = self.bot.get_channel(int(WelcomeChannelID))
 
         if channel:
@@ -104,7 +104,7 @@ class Logger(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
-        WelcomeChannelID = channel_ids.get('Welcome', None)
+        WelcomeChannelID = CHANNEL_IDS.get('Welcome', None)
         channel = self.bot.get_channel(int(WelcomeChannelID))
         if channel:
             server = member.guild
@@ -183,14 +183,14 @@ class Logger(commands.Cog):
                 self.conn.commit()
             print(f"{Fore.MAGENTA}Updated user ({username} : {uid}) @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}{Style.RESET_ALL}")
             if added_roles:
-                await utils.LogUserChange(after, f"Roles added: {', '.join([role.name for role in added_roles])}")
+                await utils.LogUserChange(after, f"Roles added: {', '.join(added_roles)}")
                 print(f"{Fore.GREEN}Added roles: {', '.join(added_roles)}{Style.RESET_ALL}")
             if removed_roles:
-                await utils.LogUserChange(after, f"Roles removed: {', '.join([role.name for role in removed_roles])}")
+                await utils.LogUserChange(after, f"Roles removed: {', '.join(removed_roles)}")
                 print(f"{Fore.RED}Removed roles: {', '.join(removed_roles)}{Style.RESET_ALL}")
 
         if before.premium_since is None and after.premium_since is not None:
-            ServerAnnocementChannelID = channel_ids.get('ServerAnnocement', None)
+            ServerAnnocementChannelID = CHANNEL_IDS.get('ServerAnnocement', None)
             channel = self.bot.get_channel(ServerAnnocementChannelID)
             
             # Use custom emojis if available, otherwise use a default string
@@ -221,7 +221,7 @@ class Logger(commands.Cog):
             if word in message.content.lower():
                 if not any(role.name in self.AllowedRoles for role in message.author.roles) and not any(allowed_link in url for allowed_link in self.AllowedLinks for url in urls):
                     await message.delete()
-                    reason = f"Contains banned word: `{word}`\n\n**Message Content:** \n```{message.content}```\n\n**Channel:** {message.channel.mention}"
+                    reason = f"Contains banned word: `{word}`\n\n**Message Content:** \n```{message.content}```\n**Channel:** {message.channel.mention}"
                     await utils.LogAction(
                         message.guild,
                         "AutoMod",
@@ -234,6 +234,7 @@ class Logger(commands.Cog):
         # Check for links
         if 'http://' in message.content or 'https://' in message.content or 'www.' in message.content:
             if not any(role.name in self.AllowedRoles for role in message.author.roles):
+                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
                 if not any(allowed_link in url for allowed_link in self.AllowedLinks for url in urls):
                     await message.delete()
                     url_message = "Message included a link:\n" + ", ".join(urls) if urls else "No links in message"
@@ -318,7 +319,7 @@ class Logger(commands.Cog):
                         config=self.config
                     )
 
-        MessageLoggerChannelID = channel_ids.get('MessageLogs', None)
+        MessageLoggerChannelID = CHANNEL_IDS.get('MessageLogs', None)
         if not MessageLoggerChannelID:
             print("Message logger channel ID is not set in config.py.")
             return
@@ -341,7 +342,7 @@ class Logger(commands.Cog):
         if message.author.bot:
             return
 
-        MessageLoggerChannelID = channel_ids.get('MessageLogs', None)
+        MessageLoggerChannelID = CHANNEL_IDS.get('MessageLogs', None)
         if not MessageLoggerChannelID:
             print("Message logger channel ID is not set in config.py.")
             return
@@ -389,7 +390,7 @@ class Logger(commands.Cog):
     ## ON_GUILD
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
-        ServerLogsChannelID = channel_ids.get('ServerLogs', None)
+        ServerLogsChannelID = CHANNEL_IDS.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))
@@ -428,7 +429,7 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
-        ServerLogsChannelID = channel_ids.get('ServerLogs', None)
+        ServerLogsChannelID = CHANNEL_IDS.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = after.guild.get_channel(int(ServerLogsChannelID))
@@ -467,7 +468,7 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
-        ServerLogsChannelID = channel_ids.get('ServerLogs', None)
+        ServerLogsChannelID = CHANNEL_IDS.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))

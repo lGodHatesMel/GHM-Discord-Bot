@@ -6,10 +6,8 @@ from PIL import Image, ImageTk
 import subprocess
 import os
 import time
+from config import LOGO_URL
 
-
-with open('config.json') as f:
-    config = json.load(f)
 
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -58,7 +56,7 @@ window = tk.Tk()
 window.title("GHM Discord Bot")
 window.geometry("300x200")
 window.configure(bg="#222222")
-response = requests.get(config['logo_url'])
+response = requests.get(LOGO_URL)
 logo_image = Image.open(BytesIO(response.content))
 
 global logo_photo

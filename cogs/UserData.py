@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.utils as utils
 from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
-from config import channel_ids
+from config import CHANNEL_IDS
 import json
 import sqlite3
 from sqlite3 import Error
@@ -14,7 +14,7 @@ class UserData(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = CreateUserDatabase('Database/DBInfo.db')
-        self.config = {'channel_ids': channel_ids}
+        self.config = {'CHANNEL_IDS': CHANNEL_IDS}
 
     @commands.command(help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")

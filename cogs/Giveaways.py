@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import utils.utils as utils
 from utils.Paginator import Paginator
-from config import channel_ids, logo_url
+from config import CHANNEL_IDS, LOGO_URL
 import sqlite3
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -35,7 +35,7 @@ class Giveaway(commands.Cog):
         conn.commit()
         conn.close()
 
-        self.channel_id = channel_ids.get('GiveawayChannel')
+        self.channel_id = CHANNEL_IDS.get('GiveawayChannel')
 
     @commands.command(help="<title> <description> <days from now> <end time in 24-hour HH:MM format>", hidden=True)
     async def startgiveaway(self, ctx, title: str, description: str, days_from_now: int, end_time: str):
@@ -48,12 +48,12 @@ class Giveaway(commands.Cog):
         embed = discord.Embed(title=f"🎉 **GIVEAWAY: {title}** 🎉", description="", color=0x00ff00)
         embed.add_field(name="Description", value=description, inline=False)
         embed.set_footer(text=f"React with 🎉 to enter! - Start Time: {start_time.strftime('%m-%d-%y %I:%M %p')} - End Time: {end_datetime.strftime('%m-%d-%y %I:%M %p')}")
-        embed.set_thumbnail(url=logo_url)
+        embed.set_thumbnail(url=LOGO_URL)
 
         embed = discord.Embed(title=f"🎉 **GIVEAWAY** 🎉", description="", color=0x00ff00)
         embed.add_field(name=f"🎉 __**{title}**__ 🎉", value=description, inline=False)
         embed.set_footer(text=f"React with 🎉 to enter! - Start Time: {start_time.strftime('%m-%d-%y %I:%M %p')} - End Time: {end_datetime.strftime('%m-%d-%y %I:%M %p')}")
-        embed.set_thumbnail(url=logo_url)
+        embed.set_thumbnail(url=LOGO_URL)
 
         message = await self.bot.get_channel(self.channel_id).send(embed=embed)
         await message.add_reaction(self.emoji)
@@ -179,7 +179,7 @@ class Giveaway(commands.Cog):
                     description=f"🎉 __**{title}**__ 🎉\n\n**Description:**\n{description}\n\n**End Time:**\n{end_time}\n\n**Status:** {status}\n\n{participants_field}",
                     color=0x00FF00,
                 )
-                embed.set_thumbnail(url=logo_url)
+                embed.set_thumbnail(url=LOGO_URL)
                 embed.set_footer(text="Use the reactions to navigate through the giveaways.")
                 embeds.append(embed)
         conn.close()

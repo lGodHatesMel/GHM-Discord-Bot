@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from config import channel_ids
+from config import CHANNEL_IDS
 from datetime import datetime, timezone, timedelta
 import pytz
 import random
@@ -70,7 +70,7 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
     if not config:
         raise ValueError("config is required for LogAction")
 
-    ChannelID = channel_ids.get(channel_name)
+    ChannelID = CHANNEL_IDS.get(channel_name)
     if not ChannelID:
         raise ValueError(f"{channel_name} is not defined in the config")
 
@@ -115,7 +115,7 @@ async def LogAction(guild, channel_name, action, target, reason, issuer=None, us
 
 
 async def LogUserChange(user, change_message):
-    MemberLogChannelId = channel_ids.get('MemberLogs', None)
+    MemberLogChannelId = CHANNEL_IDS.get('MemberLogs', None)
     if MemberLogChannelId:
         ModLogsChannelID = user.guild.get_channel(int(MemberLogChannelId))
         if ModLogsChannelID:

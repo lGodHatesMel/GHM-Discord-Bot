@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import os
 import sqlite3
-import asyncio
 from utils.Paginator import Paginator
 
 class CustomCommands(commands.Cog):
@@ -89,7 +88,7 @@ class CustomCommands(commands.Cog):
             conn.close()
 
             async def custom_command(ctx):
-                await ctx.semessage.replynd(command_response)
+                await ctx.message.reply(command_response)
             self.bot.add_command(commands.Command(custom_command, name=CommandName))
 
             await ctx.message.reply(f'Command "{CommandName}" added successfully.')

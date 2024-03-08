@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord import Embed
 import utils.utils as utils
 from utils.Paginator import Paginator
-from config import enable_countdown
+from config import ENABLE_COUNTDOWN
 import asyncio
 from datetime import datetime, timezone
 
@@ -29,7 +29,7 @@ class Countdown(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        if not enable_countdown:
+        if not ENABLE_COUNTDOWN:
             return
 
         self.cursor.execute('SELECT id FROM countdowns')

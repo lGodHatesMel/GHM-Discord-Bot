@@ -20,6 +20,9 @@ class Paginator:
         return reactions
 
     async def start(self):
+        if not self.embeds or self.current_page >= len(self.embeds):
+            return
+
         self.message = await self.ctx.send(embed=self.embeds[self.current_page])
         if len(self.embeds) > 1:
             await asyncio.sleep(1)

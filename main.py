@@ -1,10 +1,12 @@
 import os
 import traceback
+import asyncio
 from bot import bot
-from config import IgnoreScripts, stream_name, stream_url, token
+from config import TOKEN, IGNORE_SCRIPTS, STREAM_NAME, STREAM_URL
 import discord
 from discord.ext import commands
 import utils.utils as utils
+
 
 ## Run scripts from folders
 folders = ['cogs']
@@ -12,7 +14,7 @@ for folder in folders:
     for filename in os.listdir(folder):
         if filename.endswith('.py'):
             script_name = filename[:-3]
-            if script_name in IgnoreScripts:
+            if script_name in IGNORE_SCRIPTS:
                 print(f'Ignored extension: {folder}.{script_name}')
                 continue
             try:
@@ -21,7 +23,7 @@ for folder in folders:
                 print(f'Loaded extension: {extension}')
             except Exception as e:
                 print(f'Failed to load extension {extension}: {str(e)}')
-                traceback.print_exc()
+
 
 ## Events
 @bot.event
@@ -33,11 +35,18 @@ async def on_ready():
     print(f'===   Bot UID: {bot.user.id}')
     print(f'===   Joined Server at: {joined_time}')
     print(f'=====================================================')
-    print(f'Enabled Intents:')
-    for intent, enabled in bot.intents.to_dict().items():
+    print('Enabled Intents:')
+    intents = [
+        'messages', 'reactions', 'members', 'guilds', 'emojis', 'integrations', 
+        'webhooks', 'invites', 'voice_states', 'presences', 'guild_messages', 
+        'dm_messages', 'guild_reactions', 'dm_reactions', 'guild_typing', 'dm_typing'
+    ]
+    for intent in intents:
+        enabled = getattr(bot.intents, intent)
         print(f'{intent}: {"Enabled" if enabled else "Disabled"}')
+    print(bot.intents)
     print(f'=====================================================')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Streaming(name=stream_name, url=stream_url))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Streaming(name=STREAM_NAME, url=STREAM_URL))
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -65,7 +74,7 @@ async def on_command_error(ctx, error):
 ## Run the bot
 if __name__ == "__main__":
     try:
-        bot.run(token)
+        bot.run(TOKEN)
     except discord.LoginFailure:
         print("Error: Invalid bot token. Check your token configuration.")
     except discord.HTTPException as e:

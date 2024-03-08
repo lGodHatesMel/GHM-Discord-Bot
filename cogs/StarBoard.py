@@ -2,7 +2,7 @@ import discord
 from discord import RawReactionActionEvent, Embed, File
 from discord.ext import commands
 import utils.utils as utils
-from config import channel_ids, logo_url, ignore_channel
+from config import CHANNEL_IDS, LOGO_URL, IGNORE_CHANNELS
 import sqlite3
 import asyncio
 
@@ -36,7 +36,7 @@ class Starboard(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, reaction_event: RawReactionActionEvent):
-        if reaction_event.channel_id in ignore_channel:
+        if reaction_event.channel_id in IGNORE_CHANNELS:
             return
 
         if str(reaction_event.emoji) in ['⭐', '🌟', '✨', '💫', '🌠']:
@@ -54,7 +54,7 @@ class Starboard(commands.Cog):
             self.c.execute("SELECT * FROM starboard_table WHERE message_id=?", (message.id,))
             result = self.c.fetchone()
             if result[2] >= 3: # Min star count per message
-                StarboardChannelID = channel_ids.get('StarBoardChannel')
+                StarboardChannelID = CHANNEL_IDS.get('StarBoardChannel')
                 starboard_channel = self.bot.get_channel(StarboardChannelID)
                 if result[3] is None:
                     embed = Embed(
@@ -71,7 +71,7 @@ class Starboard(commands.Cog):
                     if message.attachments:
                         embed.add_field(name="Attachment", value=f"[Link]({message.attachments[0].url})", inline=False)
                     embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                    embed.set_thumbnail(url=logo_url)
+                    embed.set_thumbnail(url=LOGO_URL)
                     starboard_message = await starboard_channel.send(embed=embed)
                     embed.set_footer(text=f"Starboard ID: {starboard_message.id} | {result[5]}")
                     await starboard_message.edit(embed=embed)
@@ -87,7 +87,7 @@ class Starboard(commands.Cog):
                     if message.attachments:
                         embed.add_field(name="Attachment", value=f"[Link]({message.attachments[0].url})", inline=False)
                     embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                    embed.set_thumbnail(url=logo_url)
+                    embed.set_thumbnail(url=LOGO_URL)
                     embed.set_footer(text=f"Starboard ID: {starboard_message.id} | {result[5]}")
                     await starboard_message.edit(embed=embed)
                 self.conn.commit()
@@ -100,7 +100,7 @@ class Starboard(commands.Cog):
         if result is not None:
             self.c.execute("UPDATE starboard_table SET star_count = star_count + 1 WHERE starboard_id=?", (starboard_id,))
             self.conn.commit()
-            StarboardChannelID = channel_ids["StarBoardChannel"]
+            StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
@@ -120,7 +120,7 @@ class Starboard(commands.Cog):
         if result is not None:
             self.c.execute("UPDATE starboard_table SET star_count = star_count - 1 WHERE starboard_id=?", (starboard_id,))
             self.conn.commit()
-            StarboardChannelID = channel_ids["StarBoardChannel"]
+            StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
@@ -138,7 +138,7 @@ class Starboard(commands.Cog):
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
-            StarboardChannelID = channel_ids["StarBoardChannel"]
+            StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             await starboard_message.delete()
@@ -152,7 +152,7 @@ class Starboard(commands.Cog):
     @commands.command(help="Delete all starboards", hidden=True)
     @commands.is_owner()
     async def deleteallstarboards(self, ctx):
-        StarboardChannelID = channel_ids["StarBoardChannel"]
+        StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
         self.c.execute("SELECT starboard_id FROM starboard_table")
@@ -171,7 +171,7 @@ class Starboard(commands.Cog):
     @commands.command(help="Refresh all starboards", hidden=True)
     @commands.is_owner()
     async def refreshstarboards(self, ctx):
-        StarboardChannelID = channel_ids["StarBoardChannel"]
+        StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
         self.c.execute("SELECT * FROM starboard_table")
@@ -193,8 +193,8 @@ class Starboard(commands.Cog):
                     color=0xFFD700
                 )
                 embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                # embed.set_thumbnail(url=logo_url)
-                embed.set_thumbnail(url=logo_url)
+                # embed.set_thumbnail(url=LOGO_URL)
+                embed.set_thumbnail(url=LOGO_URL)
                 embed.set_footer(text=f"Starboard ID: {record[3]} | {record[5]}")
                 starboard_message = await starboard_channel.send(embed=embed)
                 self.c.execute("UPDATE starboard_table SET starboard_id = ? WHERE message_id=?", (starboard_message.id, message.id))

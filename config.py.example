@@ -1,16 +1,16 @@
-token = "your-bot-token"
-prefix = "your-command-prefix"
-main_guild_id = 0  # your main guild ID
-dev_guild_id = 0  # your dev guild ID
-bot_id = 0  # your bot ID
-dev_bot_id = 0  # your dev bot ID
-owner_id = 0  # your owner ID
-logo_url = "your-logo-url"
-background_url = "your-background-url"
-stream_name = "your-stream-name"
-stream_url = "your-stream-url"
+TOKEN = "your-bot-token"
+PREFIX = "your-command-prefix"
+main_GUILD_ID = 0  # your main guild ID
+dev_GUILD_ID = 0  # your dev guild ID
+BOT_ID = 0  # your bot ID
+dev_BOT_ID = 0  # your dev bot ID
+OWNER_ID = 0  # your owner ID
+LOGO_URL = "your-logo-url"
+BACKGROUND_URL = "your-background-url"
+STREAM_NAME = "your-stream-name"
+STREAM_URL = "your-stream-url"
 
-channel_ids = {
+CHANNEL_IDS = {
     "WelcomeChannel": 0,
     "RulesChannel": 0,
     "FAQChannel": 0,
@@ -37,14 +37,14 @@ blacklisted_channels = [
     # list of blacklisted channel IDs
 ]
 
-ignore_scripts = [
+IGNORE_SCRIPTS = [
     # list of scripts to ignore
 ]
 
-token_refresher_enabled = False
-enable_countdown = False
+TOKEN_REFRESHER_ENABLED = False
+ENABLE_COUNTDOWN = False
 
-twitch = {
+TWITCH = {
     "twitch_username": "your-twitch-username",
     "twitch_client_id": "your-twitch-client-id",
     "twitch_oauth_token": "your-twitch-oauth-token"

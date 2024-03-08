@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.utils as utils
 from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
-from config import channel_ids
+from config import CHANNEL_IDS
 import json
 import asyncio
 import sqlite3
@@ -16,7 +16,7 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = CreateUserDatabase('Database/DBInfo.db')
-        self.config = {'channel_ids': channel_ids}
+        self.config = {'CHANNEL_IDS': CHANNEL_IDS}
 
     ## NOTES
     @commands.command(help='<@username or UID> <Note>', hidden=True)
@@ -77,7 +77,8 @@ class Moderation(commands.Cog):
             "ModLogs",
             "Note",
             user,
-            f"Note added by {ctx.author.name}\n\n Note: {note_content}",
+            f"Note:\n{note_content}",
+            issuer=ctx.author,
             config=self.config,
         )
 
@@ -370,14 +371,14 @@ class Moderation(commands.Cog):
             await ctx.send("Please provide a reason for the ban.")
             return
 
-        if 'cheating' in reason:
-            reason += " The ban reason involves cheating or exploiting game mechanics."
-        elif 'harassment' in reason:
+        # if 'cheating' in reason:
+        #     reason += " The ban reason involves cheating or exploiting game mechanics."
+        if 'harassment' in reason:
             reason += " The ban reason involves harassment of other members."
         elif 'impersonation' in reason:
             reason += " The ban reason involves impersonating other members or staff."
         elif 'nsfw' in reason:
-            reason += " The ban reason involves sharing NSFW content in non-NSFW channels."
+            reason += " The ban reason involves sharing NSFW content."
         elif 'hatespeech' in reason:
             reason += " The ban reason involves hate speech or discriminatory language."
         elif 'threats' in reason:
@@ -630,10 +631,10 @@ class Moderation(commands.Cog):
     @commands.has_any_role("Moderator", "Admin")
     async def banshortcuts(self, ctx):
         shortcuts = {
-            'cheating': '🎮 The ban reason involves cheating or exploiting game mechanics.',
+            # 'cheating': '🎮 The ban reason involves cheating or exploiting game mechanics.',
             'harassment': '👥 The ban reason involves harassment of other members.',
             'impersonation': '🎭 The ban reason involves impersonating other members or staff.',
-            'nsfw': '🔞 The ban reason involves sharing NSFW content in non-NSFW channels.',
+            'nsfw': '🔞 The ban reason involves sharing NSFW content.',
             'hatespeech': '🚫 The ban reason involves hate speech or discriminatory language.',
             'threats': '⚠️ The ban reason involves threats towards other members or staff.',
             'doxing': '🔒 The ban reason involves sharing personal information of others without consent.',
@@ -737,7 +738,7 @@ class Moderation(commands.Cog):
             embed.set_image(url=guild.banner_url)
         embed.add_field(name="Server Name", value=guild.name, inline=False)
         embed.add_field(name="Server ID", value=guild.id, inline=False)
-        embed.add_field(name="Owner", value=guild.owner, inline=True)
+        embed.add_field(name="Owner", value=guild.owner.name, inline=True)
         embed.add_field(name="Server Creation Date", value=guild.created_at.astimezone(utils.GetLocalTime().tzinfo).strftime('%m-%d-%y'), inline=False)
         embed.add_field(name="Members", value=guild.member_count, inline=False)
         embed.add_field(name="Roles", value=len(guild.roles), inline=True)

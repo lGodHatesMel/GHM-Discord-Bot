@@ -8,7 +8,7 @@ from utils.Paginator import Paginator
 import logging
 from googletrans import Translator
 from sympy import sympify
-from config import logo_url
+from config import LOGO_URL
 
 
 class BasicCommands(commands.Cog):
@@ -176,7 +176,7 @@ class BasicCommands(commands.Cog):
             description=message,
             color=discord.Color.random()
         )
-        embed.set_thumbnail(url=logo_url)
+        embed.set_thumbnail(url=LOGO_URL)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
 
         await channel.send(embed=embed)

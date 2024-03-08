@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import sqlite3
-from config import channel_ids
+from config import CHANNEL_IDS
 import asyncio
 
 
@@ -14,7 +14,7 @@ class Rules(commands.Cog):
                     (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
 
     async def update_rules(self):
-        RulesChannelID = channel_ids['RulesChannel']
+        RulesChannelID = CHANNEL_IDS['RulesChannel']
         self.c.execute("SELECT * FROM rules")
         rules_data = self.c.fetchall()
 
@@ -27,27 +27,11 @@ class Rules(commands.Cog):
             )
             messages.append(embed)
 
-        counter = 0
-        try:
-            msg = await self.bot.get_channel(RulesChannelID).fetch_message(RulesChannelID)
-        except discord.errors.NotFound:
-            msg = None
-        async for message in self.bot.get_channel(RulesChannelID).history(limit=100, oldest_first=True, after=msg).filter(lambda m: m.author == self.bot.user):
-            if counter < len(messages):
-                if message.embeds and message.embeds[0].title == messages[counter].title \
-                    and message.embeds[0].description == messages[counter].description:
-                    counter += 1
-                    continue
-                await message.delete()
-                await self.bot.get_channel(RulesChannelID).send(embed=messages[counter])
-                counter += 1
-                await asyncio.sleep(1)
-            else:
-                await message.delete()
-                await asyncio.sleep(1)
-        for message_info in messages[counter:]:
-            embed = message_info
-            await self.bot.get_channel(RulesChannelID).send(embed=embed)
+        rules_channel = self.bot.get_channel(RulesChannelID)
+        await rules_channel.purge()
+        await asyncio.sleep(0.5)
+        for embed in messages:
+            await rules_channel.send(embed=embed)
             await asyncio.sleep(1)
 
     @commands.command(hidden=True)

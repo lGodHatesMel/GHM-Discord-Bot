@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from utils.Paginator import Paginator
-from config import prefix
+from config import PREFIX
 import time
 import sqlite3
 
@@ -22,41 +22,18 @@ class Todo(commands.Cog):
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def todocommands(self, ctx: commands.Context):
         embed = discord.Embed(title="Todo Commands", color=discord.Color.blue())
-        embed.add_field(name=f"`{prefix}showalltasks`", value="*Shows all tasks from database.*", inline=False)
-        embed.add_field(name=f"`{prefix}showallmytasks`", value="*Shows all your tasks from the todo list.*", inline=False)
-        embed.add_field(name=f"`{prefix}showtask [id]`", value="*Shows your todo list. Each task has an ID which is used for other commands.*", inline=False)
-        embed.add_field(name=f"`{prefix}addtask [name]`", value="*Adds a task to your todo list. Replace [task] with the task you want to add.*", inline=False)
-        embed.add_field(name=f"`{prefix}removetask [id]`", value="*Removes a task from your todo list using its ID. Replace [id] with the ID of the task you want to remove.*", inline=False)
-        embed.add_field(name=f"`{prefix}clearmytasks`", value="*Clears your todo list. This will remove all tasks from your list.*", inline=False)
-        embed.add_field(name=f"`{prefix}addsubtask [id] [name] | [note]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to add.*", inline=False)
-        embed.add_field(name=f"`{prefix}removesubtask [id] [name]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to remove.*", inline=False)
-        embed.add_field(name=f"`{prefix}completesubtask [id] [name]`", value="*Marks a subtask as completed. Replace [id] with the ID of the task and [subtask] with the subtask you want to mark as completed.*", inline=False)
-        embed.add_field(name=f"`{prefix}cancelsubtask [id] [name]`", value="*Cancels a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to cancel.*", inline=False)
-        embed.add_field(name=f"`{prefix}setsubstatus [id] [name] [action]`", value="*Set status of a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to prioritize.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}showalltasks`", value="*Shows all tasks from database.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}showallmytasks`", value="*Shows all your tasks from the todo list.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}showtask [id]`", value="*Shows your todo list. Each task has an ID which is used for other commands.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}addtask [name]`", value="*Adds a task to your todo list. Replace [task] with the task you want to add.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}removetask [id]`", value="*Removes a task from your todo list using its ID. Replace [id] with the ID of the task you want to remove.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}clearmytasks`", value="*Clears your todo list. This will remove all tasks from your list.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}addsubtask [id] [name] | [note]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to add.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}removesubtask [id] [name]`", value="*Adds a subtask to a task. Replace [id] with the ID of the task and [subtask] with the subtask you want to remove.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}completesubtask [id] [name]`", value="*Marks a subtask as completed. Replace [id] with the ID of the task and [subtask] with the subtask you want to mark as completed.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}cancelsubtask [id] [name]`", value="*Cancels a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to cancel.*", inline=False)
+        embed.add_field(name=f"`{PREFIX}setsubstatus [id] [name] [action]`", value="*Set status of a subtask. Replace [id] with the ID of the task and [subtask] with the subtask you want to prioritize.*", inline=False)
         await ctx.send(embed=embed)
-
-    @commands.command(help="<id>", hidden=True)
-    @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def showtask(self, ctx: commands.Context, unique_id: int):
-        user_id = str(ctx.author.id)
-        self.cursor.execute("SELECT * FROM todo WHERE unique_id = ?", (unique_id,))
-        res = self.cursor.fetchone()
-        if not res or (res[1] != user_id and not await self.bot.is_owner(ctx.author)):
-            embed = discord.Embed(description="Task not found or you don't have permission to view this task!", color=discord.Color.red())
-        else:
-            task = "__" + res[3] + "__"
-            subtasks = res[4]
-            creator_id = res[1]
-            creator = self.bot.get_user(int(creator_id))
-            if subtasks:
-                subtasks_list = subtasks.split(", ")
-                formatted_subtasks = "\n".join(subtasks_list)
-                task += "\n\n**Check List:**\n" + formatted_subtasks
-            task = task[:256]
-            embed = discord.Embed(title=task, description="", color=discord.Color.green())
-            embed.set_author(name=f"Task created by {creator.name}", icon_url=creator.avatar_url)
-            embed.set_footer(text=f"Task ID: {res[0]}")
-        await ctx.message.reply(embed=embed)
 
     @commands.command(help="Shows all tasks from your todo list.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -78,6 +55,29 @@ class Todo(commands.Cog):
                 embed.add_field(name=f"ID: {row[0]}", value=f"Task: {task}\nCreator: {creator_name}", inline=False)
         await ctx.message.reply(embed=embed)
 
+    @commands.command(help="<id>", hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def showtask(self, ctx: commands.Context, unique_id: int):
+        user_id = str(ctx.author.id)
+        self.cursor.execute("SELECT * FROM todo WHERE unique_id = ?", (unique_id,))
+        res = self.cursor.fetchone()
+        if not res or (res[1] != user_id and not await self.bot.is_owner(ctx.author)):
+            embed = discord.Embed(description="Task not found or you don't have permission to view this task!", color=discord.Color.red())
+        else:
+            task = "__" + res[3] + "__"
+            subtasks = res[4]
+            creator_id = res[1]
+            creator = self.bot.get_user(int(creator_id))
+            if subtasks:
+                subtasks_list = subtasks.split(", ")
+                formatted_subtasks = "\n".join(subtasks_list)
+                task += "\n\n**Check List:**\n" + formatted_subtasks
+            task = task[:1024]
+            embed = discord.Embed(title=task, description="", color=discord.Color.green())
+            embed.set_author(name=f"Task created by {creator.name}", icon_url=creator.avatar_url)
+            embed.set_footer(text=f"Task ID: {res[0]}")
+        await ctx.message.reply(embed=embed)
+
     @commands.command(help="Shows all your tasks from the todo list.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
     async def showallmytasks(self, ctx: commands.Context):
@@ -92,11 +92,11 @@ class Todo(commands.Cog):
             for i, row in enumerate(res):
                 task = "__" + row[3] + "__"
                 subtasks = row[4]
+                task = task[:1024]
                 if subtasks:
                     subtasks_list = subtasks.split(", ")
-                    formatted_subtasks = "\n".join(subtasks_list)
+                    formatted_subtasks = "\n".join(subtasks_list)[:1024]
                     task += "\n\n**Check List:**\n" + formatted_subtasks
-                task = task[:256]
                 embed = discord.Embed(title=f"ID: {row[0]}", description=task, color=discord.Color.green())
                 embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
                 if len(res) > 1:
