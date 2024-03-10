@@ -81,8 +81,8 @@ class ImageEditor(commands.Cog):
             if len(images) >= 2:
                 merged_image = self.merge_images(images)
                 if not discord_only:
-                    merged_image.save(f'images/{save_name}.png')  # Save the image to the bot's files
-                await ctx.message.reply(file=discord.File(f'images/{save_name}.png'))  # Send the image to the Discord channel
+                    merged_image.save(f'images/{save_name}.png')
+                await ctx.message.reply(file=discord.File(f'images/{save_name}.png'))
             else:
                 await ctx.message.reply('Please attach at least two images to merge.')
         else:

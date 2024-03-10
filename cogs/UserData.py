@@ -1,9 +1,11 @@
 import discord
 from discord.ext import commands
+from discord_slash import cog_ext, SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_option
 import utils.utils as utils
 from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
-from config import CHANNEL_IDS
+from config import CHANNEL_IDS, GUILDID, ROLEIDS
 import json
 import sqlite3
 from sqlite3 import Error
@@ -16,9 +18,17 @@ class UserData(commands.Cog):
         self.conn = CreateUserDatabase('Database/DBInfo.db')
         self.config = {'CHANNEL_IDS': CHANNEL_IDS}
 
-    @commands.command(help='<username> or <UID>', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="updateuser", description="Update a user's username",
+        options=[create_option(name="new_username", description="New username", option_type=3, required=True)], guild_ids=[GUILDID])
+    @commands.command(name="updateuser", help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def updateuser(self, ctx, new_username: str):
+    async def updateuser(self, ctx: Union[commands.Context, SlashContext], new_username: str):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         uid = str(ctx.author.id)
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (uid,))
@@ -52,9 +62,17 @@ class UserData(commands.Cog):
     #     else:
     #         await ctx.send("User not found in the database.")
 
-    @commands.command(help='<@username or UID>', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="addusertodb", description="Add a user to the database",
+        options=[create_option(name="user", description="User to add", option_type=6, required=True)], guild_ids=[GUILDID])
+    @commands.command(name="addusertodb", help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def addusertodb(self, ctx, user: discord.User):
+    async def addusertodb(self, ctx: Union[commands.Context, SlashContext], user: discord.User):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         uid = user.id
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
@@ -98,18 +116,37 @@ class UserData(commands.Cog):
             await ctx.send(f"User with ID {uid} already exists in the database.")
         print(f"Adding ({member.name} : {uid}) to the Database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
-    @commands.command(help='<@username or UID> <NewName', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="changenickname", description="Change a user's nickname",
+        options=[
+            create_option(name="member", description="Member to change nickname for", option_type=6, required=True),
+            create_option(name="new_name", description="New nickname", option_type=3, required=True)
+        ],guild_ids=[GUILDID])
+    @commands.command(name="changenickname", help='<@username or UID> <NewName>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def changenickname(self, ctx, member: discord.Member, *, new_name: str):
+    async def changenickname(self, ctx: Union[commands.Context, SlashContext], member: discord.Member, *, new_name: str):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         try:
             await member.edit(nick=new_name)
-            await ctx.message.reply(f"Nickname changed for {member.mention} to {new_name}.")
+            await ctx.send(f"Nickname changed for {member.mention} to {new_name}.")
         except discord.Forbidden:
-            await ctx.message.reply("Failed to change the nickname due to permission settings.")
+            await ctx.send("Failed to change the nickname due to permission settings.")
 
-    @commands.command(help='<@username or UID>', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="accountage", description="Get a user's account age",
+        options=[create_option(name="member", description="@username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
+    @commands.command(name="accountage", help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def accountage(self, ctx, member: discord.Member = None):
+    async def accountage(self, ctx: Union[commands.Context, SlashContext], member: discord.Member = None):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         if member is None:
             member = ctx.author
         else:
@@ -132,9 +169,17 @@ class UserData(commands.Cog):
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
 
+    @cog_ext.cog_subcommand(base="Staff", name="info", description="Get a user's info",
+        options=[create_option(name="user", description="Username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def info(self, ctx, user: discord.User):
+    async def info(self, ctx: Union[commands.Context, SlashContext], user: discord.User):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Helper"], ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         uid = user.id
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM UserInfo WHERE uid=?", (str(uid),))
@@ -220,7 +265,6 @@ class UserData(commands.Cog):
                                         f"**Unban Reason:** {ban['unban_reason']}"
                         embed.add_field(name=f"Unban {ban['number']}", value=unban_content, inline=False)
                 embeds.append(embed)
-
             paginator = Paginator(ctx, embeds)
             await paginator.start()
         else:

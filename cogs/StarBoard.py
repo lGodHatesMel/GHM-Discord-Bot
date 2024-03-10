@@ -1,10 +1,14 @@
 import discord
-from discord import RawReactionActionEvent, Embed, File
+from discord import RawReactionActionEvent, Embed
 from discord.ext import commands
+from discord_slash import cog_ext, SlashContext
+from discord_slash.utils.manage_commands import create_option
 import utils.utils as utils
-from config import CHANNEL_IDS, LOGO_URL, IGNORE_CHANNELS
+from config import CHANNEL_IDS, LOGO_URL, IGNORE_CHANNELS, GUILDID, ROLEIDS
 import sqlite3
 import asyncio
+from typing import Union
+
 
 @staticmethod
 def star_level(star_count):
@@ -92,9 +96,16 @@ class Starboard(commands.Cog):
                     await starboard_message.edit(embed=embed)
                 self.conn.commit()
 
-    @commands.command(help='<starboard_id>', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="addstar", description="Add a star to a starboard message",
+        options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
+    @commands.command(name="addstar", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Admin")
-    async def addstar(self, ctx, starboard_id: int):
+    async def addstar(self, ctx: Union[commands.Context, SlashContext], starboard_id: int):
+        AllowedRoles = [ROLEIDS["Admin"]]
+        if isinstance(ctx, SlashContext):
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send("You are not authorized to use this command.")
+                return
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
@@ -112,9 +123,16 @@ class Starboard(commands.Cog):
             embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
             await starboard_message.edit(embed=embed)
 
-    @commands.command(help='<starboard_id>', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="removestar", description="Remove a star from a starboard message",
+        options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
+    @commands.command(name="removestar", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def removestar(self, ctx, starboard_id: int):
+    async def removestar(self, ctx: Union[commands.Context, SlashContext], starboard_id: int):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if isinstance(ctx, SlashContext):
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send("You are not authorized to use this command.")
+                return
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
@@ -132,9 +150,16 @@ class Starboard(commands.Cog):
             embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
             await starboard_message.edit(embed=embed)
 
-    @commands.command(help='<starboard_id>', hidden=True)
+    @cog_ext.cog_subcommand(base="Staff", name="deletestarboard", description="Delete a starboard message",
+        options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
+    @commands.command(name="deletestarboard", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def deletestarboard(self, ctx, starboard_id: int):
+    async def deletestarboard(self, ctx: Union[commands.Context, SlashContext], starboard_id: int):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if isinstance(ctx, SlashContext):
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send("You are not authorized to use this command.")
+                return
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
@@ -149,9 +174,12 @@ class Starboard(commands.Cog):
         else:
             await ctx.send(f"No starboard found with ID {starboard_id}.")
 
-    @commands.command(help="Delete all starboards", hidden=True)
-    @commands.is_owner()
-    async def deleteallstarboards(self, ctx):
+    @cog_ext.cog_subcommand(base="Staff", name="deleteallstarboards", description="Delete all starboards", guild_ids=[GUILDID], options=[])
+    async def deleteallstarboards(self, ctx: Union[commands.Context, SlashContext]):
+        if isinstance(ctx, SlashContext):
+            if not await self.bot.is_owner(ctx.author):
+                await ctx.send("Only the bot owner can use this command.")
+                return
         StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
@@ -168,9 +196,12 @@ class Starboard(commands.Cog):
         self.conn.commit()
         await ctx.send("All starboards have been deleted.")
 
-    @commands.command(help="Refresh all starboards", hidden=True)
-    @commands.is_owner()
-    async def refreshstarboards(self, ctx):
+    @cog_ext.cog_subcommand(base="Staff", name="refreshstarboards", description="Refresh all starboards", guild_ids=[GUILDID], options=[])
+    async def refreshstarboards(self, ctx: Union[commands.Context, SlashContext]):
+        if isinstance(ctx, SlashContext):
+            if not await self.bot.is_owner(ctx.author):
+                await ctx.send("Only the bot owner can use this command.")
+                return
         StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
@@ -193,7 +224,6 @@ class Starboard(commands.Cog):
                     color=0xFFD700
                 )
                 embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                # embed.set_thumbnail(url=LOGO_URL)
                 embed.set_thumbnail(url=LOGO_URL)
                 embed.set_footer(text=f"Starboard ID: {record[3]} | {record[5]}")
                 starboard_message = await starboard_channel.send(embed=embed)

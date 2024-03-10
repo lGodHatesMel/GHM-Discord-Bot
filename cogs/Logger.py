@@ -27,7 +27,7 @@ class Logger(commands.Cog):
     ## ON_MEMBERS
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        WelcomeChannelID = CHANNEL_IDS.get('Welcome', None)
+        WelcomeChannelID = CHANNEL_IDS.get('WelcomeChannel', None)
         channel = self.bot.get_channel(int(WelcomeChannelID))
 
         if channel:
@@ -104,7 +104,7 @@ class Logger(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
-        WelcomeChannelID = CHANNEL_IDS.get('Welcome', None)
+        WelcomeChannelID = CHANNEL_IDS.get('WelcomeChannel', None)
         channel = self.bot.get_channel(int(WelcomeChannelID))
         if channel:
             server = member.guild
@@ -446,7 +446,7 @@ class Logger(commands.Cog):
                     if target not in before.overwrites or before.overwrites[target] != overwrite:
                         # Check if the target is a role or a user
                         target_type = "Role" if isinstance(target, discord.Role) else "User"
-                        target_mention = utils.get_mention(target)
+                        target_mention = utils.GetMention(target)
                         changes.append(f"{target_type} override for {target_mention}")
 
                         # Iterate over the permissions in the overwrite

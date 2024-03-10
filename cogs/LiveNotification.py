@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext import tasks
-from config import TWITCH, OWNER_ID, CHANNEL_IDS
+from config import TWITCH, ROLEIDS, CHANNEL_IDS
 import aiohttp
 
 class LiveNotification(commands.Cog):
@@ -26,7 +26,7 @@ class LiveNotification(commands.Cog):
                     data = await response.json()
                     if data['data'] and not self.is_live:
                         self.is_live = True
-                        user = await self.bot.fetch_user(OWNER_ID)
+                        user = await self.bot.fetch_user(ROLEIDS["OWNERID"])
                         game_id = data['data'][0]['game_id']
                         title = data['data'][0]['title']
                         game_name = await self.get_game_name(game_id, headers)

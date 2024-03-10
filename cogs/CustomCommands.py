@@ -1,8 +1,12 @@
 import discord
 from discord.ext import commands
+from discord_slash import cog_ext, SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_option
+from typing import Union
 import os
 import sqlite3
 from utils.Paginator import Paginator
+from config import GUILDID, ROLEIDS
 
 class CustomCommands(commands.Cog):
     def __init__(self, bot):
@@ -82,7 +86,6 @@ class CustomCommands(commands.Cog):
 
             # Replace '/n' with '\n' to correctly interpret newlines
             command_response = command_response.replace('/n', '\n')
-
             c.execute(f'insert into {self.table_name} values (?, ?)', (CommandName, command_response))
             conn.commit()
             conn.close()
@@ -160,7 +163,6 @@ class CustomCommands(commands.Cog):
         await paginator.start()
 
     def create_embeds(self, commands):
-        """Creates embeds for the given commands."""
         embeds = []
         total_pages = (len(commands) + 24) // 25
         embed = discord.Embed(title="__**Staff Commands**__", description="*These are the available staff commands.*", color=discord.Color.green())
@@ -190,16 +192,30 @@ class CustomCommands(commands.Cog):
         embeds.append(embed)
         return embeds
 
+    @cog_ext.cog_subcommand(base="Staff", name="addlink", description="Adds a new allowed link",
+        options=[create_option(name="link", description="The link to add", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def addlink(self, ctx, link):
+    async def addlink(self, ctx: Union[commands.Context, SlashContext], link: str):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         with open('Data/AllowedLinks.txt', 'a') as file:
             file.write(link + '\n')
-        await ctx.message.reply(f'Added {link} to the list of allowed links.')
+        await ctx.send(f'Added {link} to the list of allowed links.')
 
+    @cog_ext.cog_subcommand(base="Staff", name="showlinks", description="Shows all allowed links", guild_ids=[GUILDID], options=[])
     @commands.command(hidden=True)
-    @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def showlinks(self, ctx):
+    async def showlinks(self, ctx: Union[commands.Context, SlashContext]):
+        if isinstance(ctx, SlashContext):
+            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+                await ctx.send('You do not have permission to use this command.')
+                return
+
         if os.path.exists('Data/AllowedLinks.txt'):
             with open('Data/AllowedLinks.txt', 'r') as file:
                 links = [line.strip() for line in file.readlines()]

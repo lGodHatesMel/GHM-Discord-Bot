@@ -1,13 +1,22 @@
-import requests
 import discord
 from discord.ext import commands
+from discord_slash import cog_ext, SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_option
+from config import GUILDID
+from typing import Union
+import requests
 
 class GitHub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @cog_ext.cog_slash(name="github", description="Get information about a GitHub repository",
+        options=[
+            create_option(name="owner", description="Owner of the repository", option_type=3, required=True),
+            create_option(name="repo", description="Name of the repository", option_type=3, required=True)
+        ], guild_ids=[GUILDID])
     @commands.command()
-    async def github(self, ctx, owner: str, repo: str):
+    async def github(self, ctx: Union[commands.Context, SlashContext], owner: str, repo: str):
         response = requests.get(f'https://api.github.com/repos/{owner}/{repo}')
         data = response.json()
 
