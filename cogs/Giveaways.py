@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import utils.utils as utils
 from utils.Paginator import Paginator
+from utils.botdb import GiveawaysDatabase, CreateGiveawaysEntries
 from config import CHANNEL_IDS, LOGO_URL
 import sqlite3
 import asyncio
@@ -14,27 +15,16 @@ logging.debug('This message should go to the log file')
 
 scheduler = AsyncIOScheduler()
 
-conn = sqlite3.connect('Database/giveaways.db')
-c = conn.cursor()
-c.execute('''CREATE TABLE IF NOT EXISTS giveaways (title text, description text, end_time text, message_id integer)''')
-c.execute("PRAGMA table_info(giveaways)")
-columns = c.fetchall()
-if not any(column[1] == 'winner_id' for column in columns):
-    c.execute("ALTER TABLE giveaways ADD COLUMN winner_id INTEGER")
-conn.commit()
-conn.close()
-
 class Giveaway(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emoji = '🎉'
-
         conn = sqlite3.connect('Database/giveaways.db')
         c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS giveaway_entries (message_id integer, user_id integer)''')
+        GiveawaysDatabase(c)
+        CreateGiveawaysEntries(c)
         conn.commit()
         conn.close()
-
         self.channel_id = CHANNEL_IDS.get('GiveawayChannel')
 
     @commands.command(help="<title> <description> <days from now> <end time in 24-hour HH:MM format>", hidden=True)

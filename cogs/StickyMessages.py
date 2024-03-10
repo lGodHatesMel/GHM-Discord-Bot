@@ -1,8 +1,9 @@
+import discord
+from discord.ext import commands
+from utils.botdb import CreateStickyNotesDatabase
 import os
 import sqlite3
-import discord
 from pathlib import Path
-from discord.ext import commands
 import asyncio
 import logging
 import traceback
@@ -15,6 +16,10 @@ class StickyMessages(commands.Cog):
         self.StickyMsg = {}
         self.database_folder = 'Database'
         self.database_file = os.path.join(self.database_folder, 'sticky_notes.db')
+        self.conn = sqlite3.connect(self.database_file)
+        self.cursor = self.conn.cursor()
+        CreateStickyNotesDatabase(self.cursor)
+        self.conn.commit()
 
     async def load_sticky_notes(self):
         file = Path(self.database_file)
@@ -47,19 +52,13 @@ class StickyMessages(commands.Cog):
         conn.close()
 
     async def SaveStickyNotes(self):
-        conn = sqlite3.connect(self.database_file)
-        c = conn.cursor()
-        c.execute(
-            "CREATE TABLE IF NOT EXISTS sticky_notes (channel_id INTEGER, author_id INTEGER, content TEXT, message INTEGER)"
-        )
-        c.execute("DELETE FROM sticky_notes")
+        self.cursor.execute("DELETE FROM sticky_notes")
         for channel_id, data in self.StickyMsg.items():
-            c.execute(
+            self.cursor.execute(
                 "INSERT INTO sticky_notes VALUES (?,?,?,?)",
                 (channel_id, data["author_id"], data["content"], data["message"].id),
             )
-        conn.commit()
-        conn.close()
+        self.conn.commit()
 
     @commands.Cog.listener()
     async def on_ready(self):

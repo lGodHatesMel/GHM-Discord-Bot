@@ -7,24 +7,14 @@ from utils.Paginator import Paginator
 from config import ENABLE_COUNTDOWN
 import asyncio
 from datetime import datetime, timezone
-
-def GetLocalTime():
-    return datetime.now(timezone.utc)
+from utils.botdb import CreateCountdownDatabase
 
 class Countdown(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = sqlite3.connect('Database/countdowns.db')
         self.cursor = self.conn.cursor()
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS countdowns (
-                id INTEGER PRIMARY KEY,
-                message TEXT,
-                end_message TEXT,
-                end_timestamp INTEGER,
-                channel_id INTEGER
-            )
-        ''')
+        CreateCountdownDatabase(self.cursor)
         self.conn.commit()
 
     @commands.Cog.listener()

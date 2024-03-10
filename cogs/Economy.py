@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import utils.utils as utils
 from utils.utils import custom_emojis
-from utils.botdb import CreateUserDatabase
+from utils.botdb import CreateEconomyDatabase
 from utils.Paginator import Paginator
 import sqlite3
 
@@ -11,8 +11,7 @@ class Economy(commands.Cog):
         self.bot = bot
         self.conn = sqlite3.connect('Database/Economy.db')
         self.c = self.conn.cursor()
-        self.c.execute('''CREATE TABLE IF NOT EXISTS economy
-                    (user_id text, balance real)''')
+        CreateEconomyDatabase(self.c)
         self.conn.commit()
 
     @commands.command()

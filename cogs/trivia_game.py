@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands, tasks
+from utils.botdb import CreateTriviaDatabase
 import asyncio
 import random
-import os
-import json
-import datetime
 import sqlite3
 
 class TriviaGame(commands.Cog):
@@ -14,8 +12,7 @@ class TriviaGame(commands.Cog):
         self.question_message = None
         self.conn = sqlite3.connect('Database/coins.db')
         self.cursor = self.conn.cursor()
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS user_coins
-                (user_id TEXT PRIMARY KEY, right_count INTEGER, wrong_count INTEGER, total_coins INTEGER)''')
+        CreateTriviaDatabase(self.cursor)
         self.conn.commit()
         self.trivia_questions = []
         self.min_question_interval = 1

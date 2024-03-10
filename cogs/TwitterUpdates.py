@@ -4,12 +4,7 @@ import tweepy
 import asyncio
 import sqlite3
 from config import TWITTER, CHANNEL_IDS
-
-conn = sqlite3.connect('twitter.db')
-c = conn.cursor()
-c.execute('''CREATE TABLE IF NOT EXISTS twitter_users (user_id text)''')
-conn.commit()
-conn.close()
+from utils.botdb import TwitterDatabase
 
 class TwitterCog(commands.Cog):
     def __init__(self, bot):
@@ -19,7 +14,6 @@ class TwitterCog(commands.Cog):
         consumer_secret = TWITTER['consumer_secret']
         access_token = TWITTER['access_token']
         access_token_secret = TWITTER['access_token_secret']
-
         self.channel_id = int(CHANNEL_IDS['TwitterUpdates'])
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -28,8 +22,10 @@ class TwitterCog(commands.Cog):
 
         conn = sqlite3.connect('twitter.db')
         c = conn.cursor()
+        TwitterDatabase(c)
         c.execute('SELECT * FROM twitter_users')
         twitter_user_ids = [row[0] for row in c.fetchall()]
+        conn.commit()
         conn.close()
 
         # Set up Twitter stream for each user

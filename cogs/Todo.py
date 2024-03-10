@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from utils.Paginator import Paginator
+from utils.botdb import CreateTodoDatabase
 from config import PREFIX
 import time
 import sqlite3
@@ -15,8 +16,12 @@ class Todo(commands.Cog):
         self.bot = bot
         self.conn = sqlite3.connect('Database/todo.db')
         self.cursor = self.conn.cursor()
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS todo
-            (unique_id integer primary key, user_id text, time text, task text, subtasks text)''')
+        CreateTodoDatabase(self.cursor)
+        self.conn.commit()
+
+    def __del__(self):
+        if self.conn:
+            self.conn.close()
 
     @commands.command(help="Shows todo commands.", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")

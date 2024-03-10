@@ -4,23 +4,15 @@ import asyncio
 import sqlite3
 from config import CHANNEL_IDS
 import random
+from utils.botdb import createFAQDatabase, CreateFAQAliasesTable
 
 class FactsQuestions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.conn = None
-        self.cursor = None
-        self.c = None
-        self.SetupDatabase()
-
-    def SetupDatabase(self):
         self.conn = sqlite3.connect('Database/faq.db')
         self.cursor = self.conn.cursor()
-        self.c = self.conn.cursor()
-        self.c.execute('''CREATE TABLE IF NOT EXISTS faq
-                        (name TEXT PRIMARY KEY, question TEXT, answer TEXT)''')
-        self.c.execute('''CREATE TABLE IF NOT EXISTS faq_aliases
-                        (alias TEXT PRIMARY KEY, faq_name TEXT)''')
+        createFAQDatabase(self.cursor)
+        CreateFAQAliasesTable(self.cursor)
         self.conn.commit()
 
     def __del__(self):

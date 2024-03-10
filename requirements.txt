@@ -1,5 +1,5 @@
 discord.py==1.7.3
-discord-py-slash-command==2.0.2
+discord-py-slash-command==2.4.0
 pytz
 pillow
 requests
