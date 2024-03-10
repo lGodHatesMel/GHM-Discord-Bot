@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from utils.botdb import CreateRulesDatabase
 import sqlite3
 from config import CHANNEL_IDS
 import asyncio
@@ -10,8 +11,8 @@ class Rules(commands.Cog):
         self.bot = bot
         self.conn = sqlite3.connect('Database/rules.db')
         self.c = self.conn.cursor()
-        self.c.execute('''CREATE TABLE IF NOT EXISTS rules
-                    (id INTEGER PRIMARY KEY, rule TEXT, description TEXT)''')
+        CreateRulesDatabase(self.c)
+        self.conn.commit()
 
     async def update_rules(self):
         RulesChannelID = CHANNEL_IDS['RulesChannel']

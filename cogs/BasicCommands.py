@@ -50,7 +50,7 @@ class BasicCommands(commands.Cog):
     #         return
     #     await ctx.send(f'Hello, {name}!')
 
-    @cog_ext.cog_subcommand(base="Staff", name="addbadword", description="Add word to the bad word list",
+    @cog_ext.cog_subcommand(base="Staff", name="addbadword", description="(STAFF) Add word to the bad word list",
         options=[create_option(name="word", description="Enter the word to add to the bad word list", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(help="Add word to the bad word list", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -66,7 +66,7 @@ class BasicCommands(commands.Cog):
             file.write(f'{word}\n')
         await ctx.send(f'Word "{word}" has been added to the bad words list.')
 
-    @cog_ext.cog_subcommand(base="Staff", name="badwordlist", description="Show current bad word list", guild_ids=[GUILDID], options=[])
+    @cog_ext.cog_subcommand(base="Staff", name="badwordlist", description="(STAFF) Show current bad word list", guild_ids=[GUILDID], options=[])
     async def badwordlist(self, ctx: Union[commands.Context, SlashContext]):
         if isinstance(ctx, SlashContext):
             AllowedRoles = [ROLEIDS["Admin"], ROLEIDS["Moderator"]]
@@ -80,7 +80,7 @@ class BasicCommands(commands.Cog):
         paginator = Paginator(ctx, embeds)
         await paginator.start()
 
-    @cog_ext.cog_subcommand(base="Staff", name="purge", description="Delete a number of messages",
+    @cog_ext.cog_subcommand(base="Staff", name="purge", description="(STAFF) Delete a number of messages",
     options=[create_option(name="amount", description="Number of messages to delete", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="purge", aliases=["clearmessages"], help="1 to 100", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -137,7 +137,7 @@ class BasicCommands(commands.Cog):
         paginator = Paginator(ctx, embeds)
         await paginator.start()
 
-    @cog_ext.cog_subcommand(base="Staff", name="addfact", description="Adds a new PKM Fact",
+    @cog_ext.cog_subcommand(base="Staff", name="addfact", description="(STAFF) Adds a new PKM Fact",
         options=[create_option(name="fact", description="The fact to add", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(name="addfact", help="Adds a new PKM Fact", hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")
@@ -156,7 +156,7 @@ class BasicCommands(commands.Cog):
             file.write(fact + '\n')
         await ctx.send("Fact added successfully!")
 
-    @cog_ext.cog_subcommand(base="Staff", name="deletefact", description="Deletes a PKM Fact",
+    @cog_ext.cog_subcommand(base="Staff", name="deletefact", description="(STAFF) Deletes a PKM Fact",
     options=[create_option(name="fact", description="The fact to delete", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(name="deletefact", help="Deletes a PKM Fact", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -179,7 +179,7 @@ class BasicCommands(commands.Cog):
             file.writelines(facts)
         await ctx.send("Fact deleted successfully!")
 
-    @cog_ext.cog_subcommand(base="Staff", name="botdown", description="Sends a bot down message to a specific channel",
+    @cog_ext.cog_subcommand(base="Staff", name="botdown", description="(STAFF) Sends a bot down message to a specific channel",
         options=[
             create_option(name="channel", description="The channel", option_type=7, required=True),
             create_option(name="message", description="The message", option_type=3, required=True)
@@ -201,7 +201,7 @@ class BasicCommands(commands.Cog):
         command = ctx.command.name
         logging.info(f"{current_time} - {author.name} used the *{command}* command.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="announcement", description="Send an announcement to a specific channel",
+    @cog_ext.cog_subcommand(base="Staff", name="announcement", description="(STAFF) Send an announcement to a specific channel",
     options=[
         create_option(name="channel", description="The channel", option_type=7, required=True),
         create_option(name="title", description="The title of the announcement", option_type=3, required=True),
@@ -242,7 +242,7 @@ class BasicCommands(commands.Cog):
         paginator = Paginator(ctx, embeds)
         await paginator.start()
 
-    @cog_ext.cog_subcommand(base="Staff", name="addemoji", description="Add a custom emoji",
+    @cog_ext.cog_subcommand(base="Staff", name="addemoji", description="(STAFF) Add a custom emoji",
     options=[
         create_option(name="name", description="Name of the emoji", option_type=3, required=True),
         create_option(name="emoji", description="The emoji", option_type=3, required=True)
@@ -263,7 +263,7 @@ class BasicCommands(commands.Cog):
         else:
             await ctx.send('You do not have permission to use this command.')
 
-    @cog_ext.cog_subcommand(base="Staff", name="removeemoji", description="Remove a custom emoji",
+    @cog_ext.cog_subcommand(base="Staff", name="removeemoji", description="(STAFF) Remove a custom emoji",
         options=[create_option(name="name", description="Name of the emoji", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(name="removeemoji", help="<name>", hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -288,7 +288,7 @@ class BasicCommands(commands.Cog):
     async def ping(self, ctx: Union[commands.Context, SlashContext]):
         await ctx.send('Pong!')
 
-    @cog_ext.cog_subcommand(base="Staff", name="togglechannel", description="Toggle channel permissions",
+    @cog_ext.cog_subcommand(base="Staff", name="togglechannel", description="(STAFF) Toggle channel permissions",
     options=[
         create_option(name="channel", description="The channel", option_type=7, required=True),
         create_option(name="role", description="The role", option_type=8, required=True),
@@ -319,7 +319,7 @@ class BasicCommands(commands.Cog):
         else:
             await ctx.send('You do not have permission to use this command.')
 
-    @cog_ext.cog_subcommand(base="Staff", name="createpoll", description="Creates a poll with multiple options",
+    @cog_ext.cog_subcommand(base="Staff", name="createpoll", description="(STAFF) Creates a poll with multiple options",
         options=[
             create_option(name="channel", description="The channel", option_type=7, required=True),
             create_option(name="poll_title", description="The poll title", option_type=3, required=True),

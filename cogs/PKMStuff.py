@@ -86,7 +86,7 @@ class PKMStuff(commands.Cog):
             logging.error(e)
             await ctx.message.reply("An error occurred while fetching Pokémon sets.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="addset", description="Game: <sv, swsh, pla, bdsp> <PokemonName> <ShowdownSetDetails>",
+    @cog_ext.cog_subcommand(base="Staff", name="addset", description="(STAFF) Game: <sv, swsh, pla, bdsp> <PokemonName> <ShowdownSetDetails>",
         options=[
             create_option(name="game", description="Game: <sv, swsh, pla, bdsp>", option_type=3, required=True),
             create_option(name="pokemon_name", description="Pokemon Name", option_type=3, required=True),

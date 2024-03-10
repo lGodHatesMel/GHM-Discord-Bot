@@ -18,7 +18,7 @@ class UserData(commands.Cog):
         self.conn = CreateUserDatabase('Database/DBInfo.db')
         self.config = {'CHANNEL_IDS': CHANNEL_IDS}
 
-    @cog_ext.cog_subcommand(base="Staff", name="updateuser", description="Update a user's username",
+    @cog_ext.cog_subcommand(base="Staff", name="updateuser", description="(STAFF) Update a user's username",
         options=[create_option(name="new_username", description="New username", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(name="updateuser", help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -62,7 +62,7 @@ class UserData(commands.Cog):
     #     else:
     #         await ctx.send("User not found in the database.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="addusertodb", description="Add a user to the database",
+    @cog_ext.cog_subcommand(base="Staff", name="addusertodb", description="(STAFF) Add a user to the database",
         options=[create_option(name="user", description="User to add", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(name="addusertodb", help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -116,7 +116,7 @@ class UserData(commands.Cog):
             await ctx.send(f"User with ID {uid} already exists in the database.")
         print(f"Adding ({member.name} : {uid}) to the Database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
 
-    @cog_ext.cog_subcommand(base="Staff", name="changenickname", description="Change a user's nickname",
+    @cog_ext.cog_subcommand(base="Staff", name="changenickname", description="(STAFF) Change a user's nickname",
         options=[
             create_option(name="member", description="Member to change nickname for", option_type=6, required=True),
             create_option(name="new_name", description="New nickname", option_type=3, required=True)
@@ -136,7 +136,7 @@ class UserData(commands.Cog):
         except discord.Forbidden:
             await ctx.send("Failed to change the nickname due to permission settings.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="accountage", description="Get a user's account age",
+    @cog_ext.cog_subcommand(base="Staff", name="accountage", description="(STAFF) Get a user's account age",
         options=[create_option(name="member", description="@username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(name="accountage", help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -169,7 +169,7 @@ class UserData(commands.Cog):
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_subcommand(base="Staff", name="info", description="Get a user's info",
+    @cog_ext.cog_subcommand(base="Staff", name="info", description="(STAFF) Get a user's info",
         options=[create_option(name="user", description="Username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")

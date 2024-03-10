@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
 from discord_slash.utils.manage_commands import create_option
 import utils.utils as utils
+from utils.botdb import CreateStarboardDatabase
 from config import CHANNEL_IDS, LOGO_URL, IGNORE_CHANNELS, GUILDID, ROLEIDS
 import sqlite3
 import asyncio
@@ -22,17 +23,8 @@ class Starboard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = sqlite3.connect('Database/starboard.db')
-        self.c = self.conn.cursor()
-        self.c.execute("""
-            CREATE TABLE IF NOT EXISTS starboard_table (
-                message_id INTEGER PRIMARY KEY,
-                author_id INTEGER,
-                star_count INTEGER,
-                starboard_id INTEGER,
-                channel_id INTEGER,
-                creation_date TEXT
-            )
-        """)
+        self.cursor = self.conn.cursor()
+        CreateStarboardDatabase(self.cursor)
         self.conn.commit()
 
     def cog_unload(self):
@@ -96,7 +88,7 @@ class Starboard(commands.Cog):
                     await starboard_message.edit(embed=embed)
                 self.conn.commit()
 
-    @cog_ext.cog_subcommand(base="Staff", name="addstar", description="Add a star to a starboard message",
+    @cog_ext.cog_subcommand(base="Staff", name="addstar", description="(STAFF) Add a star to a starboard message",
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="addstar", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Admin")
@@ -123,7 +115,7 @@ class Starboard(commands.Cog):
             embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
             await starboard_message.edit(embed=embed)
 
-    @cog_ext.cog_subcommand(base="Staff", name="removestar", description="Remove a star from a starboard message",
+    @cog_ext.cog_subcommand(base="Staff", name="removestar", description="(STAFF) Remove a star from a starboard message",
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="removestar", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -150,7 +142,7 @@ class Starboard(commands.Cog):
             embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
             await starboard_message.edit(embed=embed)
 
-    @cog_ext.cog_subcommand(base="Staff", name="deletestarboard", description="Delete a starboard message",
+    @cog_ext.cog_subcommand(base="Staff", name="deletestarboard", description="(STAFF) Delete a starboard message",
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="deletestarboard", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
@@ -174,7 +166,7 @@ class Starboard(commands.Cog):
         else:
             await ctx.send(f"No starboard found with ID {starboard_id}.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="deleteallstarboards", description="Delete all starboards", guild_ids=[GUILDID], options=[])
+    @cog_ext.cog_subcommand(base="Staff", name="deleteallstarboards", description="(STAFF) Delete all starboards", guild_ids=[GUILDID], options=[])
     async def deleteallstarboards(self, ctx: Union[commands.Context, SlashContext]):
         if isinstance(ctx, SlashContext):
             if not await self.bot.is_owner(ctx.author):
@@ -196,7 +188,7 @@ class Starboard(commands.Cog):
         self.conn.commit()
         await ctx.send("All starboards have been deleted.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="refreshstarboards", description="Refresh all starboards", guild_ids=[GUILDID], options=[])
+    @cog_ext.cog_subcommand(base="Staff", name="refreshstarboards", description="(STAFF) Refresh all starboards", guild_ids=[GUILDID], options=[])
     async def refreshstarboards(self, ctx: Union[commands.Context, SlashContext]):
         if isinstance(ctx, SlashContext):
             if not await self.bot.is_owner(ctx.author):
