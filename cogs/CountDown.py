@@ -14,7 +14,7 @@ class Countdown(commands.Cog):
         self.bot = bot
         self.conn = sqlite3.connect('Database/countdowns.db')
         self.cursor = self.conn.cursor()
-        CreateCountdownDatabase(self.cursor)
+        CreateCountdownDatabase(self.conn)
         self.conn.commit()
 
     @commands.Cog.listener()
