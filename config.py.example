@@ -10,7 +10,7 @@ BACKGROUND_URL = "your-background-url"
 STREAM_NAME = "your-stream-name"
 STREAM_URL = "your-stream-url"
 
-CHANNEL_IDS = {
+CHANNELIDS = {
     "WelcomeChannel": 0,
     "RulesChannel": 0,
     "FAQChannel": 0,

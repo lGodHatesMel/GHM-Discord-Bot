@@ -20,3 +20,9 @@ store.steampowered.com/
 xbox.com/
 github.com/
 projectpokemon.org/
+pokepast.es/
+smogon.com/
+discord.com/channels/
+knsnekoshi.com
+https://knsnekoshi.com/
+github.com/

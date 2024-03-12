@@ -1,5 +1,6 @@
 discord.py==1.7.3
 discord-py-slash-command==2.4.0
+discord-py-interactions-5.11.0
 pytz
 pillow
 requests

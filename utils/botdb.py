@@ -184,3 +184,22 @@ def CreateTriviaDatabase(cursor):
     except sqlite3.Error as e:
         print(e)
     return cursor
+
+def TicketDatabase(cursor):
+    try:
+        cursor.execute('''
+            CREATE TABLE tickets (
+                userid text, 
+                ticket_type text, 
+                creation_time text, 
+                questions text, 
+                answers text, 
+                closed_by text, 
+                deleted_by text,
+                message_id text,
+                channel_id text
+            )
+        ''')
+    except sqlite3.Error as e:
+        print(e)
+    return cursor
