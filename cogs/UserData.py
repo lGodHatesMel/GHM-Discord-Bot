@@ -18,6 +18,9 @@ class UserData(commands.Cog):
         self.conn = CreateUserDatabase('Database/DBInfo.db')
         self.config = {'CHANNELIDS': CHANNELIDS}
 
+    def __del__(self):
+        self.conn.close()
+
     @cog_ext.cog_subcommand(base="Staff", name="updateuser", description="(STAFF) Update a user's username",
         options=[create_option(name="new_username", description="New username", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(name="updateuser", help='<username> or <UID>', hidden=True)

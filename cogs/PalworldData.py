@@ -24,7 +24,7 @@ class PalworldData(commands.Cog):
     file_path = os.path.join(self.data_folder, filename)
     with open(file_path) as f:
       data = json.load(f)
-    print(f"Loaded JSON data from {file_path}")
+    # print(f"Loaded JSON data from {file_path}")
     return data
 
   @cog_ext.cog_subcommand(base="Palworld", name="palitem", description="Get information about a specific item.",

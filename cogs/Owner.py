@@ -16,6 +16,9 @@ class Owner(commands.Cog):
         self.bot = bot
         self.conn = CreateUserDatabase('Database/DBInfo.db')
 
+    def __del__(self):
+        self.conn.close()
+
     @commands.command(help="Shows bot's latency", hidden=True)
     @commands.is_owner()
     async def botping(self, ctx):

@@ -28,6 +28,7 @@ def CreateRulesDatabase(cursor):
         ''')
     except sqlite3.Error as e:
         print(e)
+    return cursor
 
 def CreateCountdownDatabase(conn):
     try:
@@ -107,8 +108,11 @@ def CreateTodoDatabase(cursor):
     except sqlite3.Error as e:
         print(e)
 
-def CreateStickyNotesDatabase(cursor):
+def CreateStickyNotesDatabase(database_path):
     try:
+        conn = sqlite3.connect(database_path)
+        cursor = conn.cursor()
+
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS sticky_notes (
                 channel_id INTEGER,
@@ -117,8 +121,13 @@ def CreateStickyNotesDatabase(cursor):
                 message INTEGER
             )
         ''')
+
+        conn.commit()
+        return conn
+
     except sqlite3.Error as e:
         print(e)
+        return None
 
 def TwitterDatabase(cursor):
     try:
@@ -129,7 +138,6 @@ def TwitterDatabase(cursor):
         ''')
     except sqlite3.Error as e:
         print(e)
-
 
 def GiveawaysDatabase(cursor):
     try:
@@ -158,6 +166,7 @@ def CreateGiveawaysEntries(cursor):
         ''')
     except sqlite3.Error as e:
         print(e)
+    return cursor
 
 def CreateEconomyDatabase(cursor):
     try:
@@ -188,7 +197,7 @@ def CreateTriviaDatabase(cursor):
 def TicketDatabase(cursor):
     try:
         cursor.execute('''
-            CREATE TABLE tickets (
+            CREATE TABLE IF NOT EXISTS tickets (
                 userid text, 
                 ticket_type text, 
                 creation_time text, 

@@ -1,36 +1,21 @@
 import discord
 from discord.ext import commands
 from utils.botdb import CreateStickyNotesDatabase
-import os
 import sqlite3
-from pathlib import Path
 import asyncio
 import logging
 import traceback
 
 class StickyMessages(commands.Cog):
-    hidden = True
-
     def __init__(self, bot):
         self.bot = bot
         self.StickyMsg = {}
-        self.database_folder = 'Database'
-        self.database_file = os.path.join(self.database_folder, 'sticky_notes.db')
-        self.conn = sqlite3.connect(self.database_file)
+        self.conn = CreateStickyNotesDatabase('Database/sticky_notes.db')
         self.cursor = self.conn.cursor()
-        CreateStickyNotesDatabase(self.cursor)
-        self.conn.commit()
 
     async def load_sticky_notes(self):
-        file = Path(self.database_file)
-
-        if not file.exists():
-            return
-
-        conn = sqlite3.connect(self.database_file)
-        c = conn.cursor()
-        c.execute("SELECT * FROM sticky_notes")
-        sticky_data = c.fetchall()
+        self.cursor.execute("SELECT * FROM sticky_notes")
+        sticky_data = self.cursor.fetchall()
         for channel_id, author_id, content, message in sticky_data:
             if message is None:
                 continue
@@ -43,13 +28,18 @@ class StickyMessages(commands.Cog):
                     color=discord.Color.random()
                 )
 
-                StickyMsg = await channel.send(embed=embed)
-                self.StickyMsg[int(channel_id)] = {
-                    "message": StickyMsg,
-                    "author_id": int(author_id),
-                    "content": content
-                }
-        conn.close()
+                try:
+                    StickyMsg = await channel.send(embed=embed)
+                    self.StickyMsg[int(channel_id)] = {
+                        "message": StickyMsg,
+                        "author_id": int(author_id),
+                        "content": content
+                    }
+                except discord.Forbidden:
+                    print(f"Bot does not have permission to send messages in channel {channel_id}")
+
+    def __del__(self):
+        self.conn.close()
 
     async def SaveStickyNotes(self):
         self.cursor.execute("DELETE FROM sticky_notes")
@@ -106,8 +96,8 @@ class StickyMessages(commands.Cog):
                 OldStickyMsg = None
                 try:
                     OldStickyMsg = await channel.fetch_message(OriginalStickyMsgID)
-                except discord.NotFound:
-                    pass
+                except (discord.NotFound, discord.DiscordServerError):
+                    OldStickyMsg = None
 
                 await asyncio.sleep(2.5)
 

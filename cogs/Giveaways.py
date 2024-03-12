@@ -21,8 +21,8 @@ class Giveaway(commands.Cog):
         self.emoji = '🎉'
         conn = sqlite3.connect('Database/giveaways.db')
         c = conn.cursor()
-        GiveawaysDatabase(c)
-        CreateGiveawaysEntries(c)
+        c = GiveawaysDatabase(c)
+        c = CreateGiveawaysEntries(c)
         conn.commit()
         conn.close()
         self.channel_id = CHANNELIDS.get('GiveawayChannel')

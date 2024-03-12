@@ -18,6 +18,9 @@ class Moderation(commands.Cog):
         self.conn = CreateUserDatabase('Database/DBInfo.db')
         self.config = {'CHANNELIDS': CHANNELIDS}
 
+    def __del__(self):
+        self.conn.close()
+
     ## NOTES
     @commands.command(help='<@username or UID> <Note>', hidden=True)
     @commands.has_any_role("Helper", "Moderator", "Admin")

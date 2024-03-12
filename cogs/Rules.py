@@ -11,7 +11,7 @@ class Rules(commands.Cog):
         self.bot = bot
         self.conn = sqlite3.connect('Database/rules.db')
         self.c = self.conn.cursor()
-        CreateRulesDatabase(self.c)
+        self.c = CreateRulesDatabase(self.c)
         self.conn.commit()
 
     async def update_rules(self):
