@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from utils.botdb import CreateRulesDatabase
 import sqlite3
-from config import CHANNEL_IDS
+from config import CHANNELIDS
 import asyncio
 
 
@@ -15,7 +15,7 @@ class Rules(commands.Cog):
         self.conn.commit()
 
     async def update_rules(self):
-        RulesChannelID = CHANNEL_IDS['RulesChannel']
+        RulesChannelID = CHANNELIDS['RulesChannel']
         self.c.execute("SELECT * FROM rules")
         rules_data = self.c.fetchall()
 

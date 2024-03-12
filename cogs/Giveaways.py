@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.utils as utils
 from utils.Paginator import Paginator
 from utils.botdb import GiveawaysDatabase, CreateGiveawaysEntries
-from config import CHANNEL_IDS, LOGO_URL
+from config import CHANNELIDS, LOGO_URL
 import sqlite3
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -25,7 +25,7 @@ class Giveaway(commands.Cog):
         CreateGiveawaysEntries(c)
         conn.commit()
         conn.close()
-        self.channel_id = CHANNEL_IDS.get('GiveawayChannel')
+        self.channel_id = CHANNELIDS.get('GiveawayChannel')
 
     @commands.command(help="<title> <description> <days from now> <end time in 24-hour HH:MM format>", hidden=True)
     async def startgiveaway(self, ctx, title: str, description: str, days_from_now: int, end_time: str):

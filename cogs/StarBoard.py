@@ -5,7 +5,7 @@ from discord_slash import cog_ext, SlashContext
 from discord_slash.utils.manage_commands import create_option
 import utils.utils as utils
 from utils.botdb import CreateStarboardDatabase
-from config import CHANNEL_IDS, LOGO_URL, IGNORE_CHANNELS, GUILDID, ROLEIDS
+from config import CHANNELIDS, LOGO_URL, IGNORE_CHANNELS, GUILDID, ROLEIDS
 import sqlite3
 import asyncio
 from typing import Union
@@ -50,7 +50,7 @@ class Starboard(commands.Cog):
             self.c.execute("SELECT * FROM starboard_table WHERE message_id=?", (message.id,))
             result = self.c.fetchone()
             if result[2] >= 3: # Min star count per message
-                StarboardChannelID = CHANNEL_IDS.get('StarBoardChannel')
+                StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
                 starboard_channel = self.bot.get_channel(StarboardChannelID)
                 if result[3] is None:
                     embed = Embed(
@@ -103,7 +103,7 @@ class Starboard(commands.Cog):
         if result is not None:
             self.c.execute("UPDATE starboard_table SET star_count = star_count + 1 WHERE starboard_id=?", (starboard_id,))
             self.conn.commit()
-            StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
+            StarboardChannelID = CHANNELIDS["StarBoardChannel"]
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
@@ -130,7 +130,7 @@ class Starboard(commands.Cog):
         if result is not None:
             self.c.execute("UPDATE starboard_table SET star_count = star_count - 1 WHERE starboard_id=?", (starboard_id,))
             self.conn.commit()
-            StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
+            StarboardChannelID = CHANNELIDS["StarBoardChannel"]
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
@@ -155,7 +155,7 @@ class Starboard(commands.Cog):
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
-            StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
+            StarboardChannelID = CHANNELIDS["StarBoardChannel"]
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             await starboard_message.delete()
@@ -172,7 +172,7 @@ class Starboard(commands.Cog):
             if not await self.bot.is_owner(ctx.author):
                 await ctx.send("Only the bot owner can use this command.")
                 return
-        StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
+        StarboardChannelID = CHANNELIDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
         self.c.execute("SELECT starboard_id FROM starboard_table")
@@ -194,7 +194,7 @@ class Starboard(commands.Cog):
             if not await self.bot.is_owner(ctx.author):
                 await ctx.send("Only the bot owner can use this command.")
                 return
-        StarboardChannelID = CHANNEL_IDS["StarBoardChannel"]
+        StarboardChannelID = CHANNELIDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
         self.c.execute("SELECT * FROM starboard_table")

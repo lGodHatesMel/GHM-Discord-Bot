@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext import tasks
-from config import TWITCH, ROLEIDS, CHANNEL_IDS
+from config import TWITCH, ROLEIDS, CHANNELIDS
 import aiohttp
 
 class LiveNotification(commands.Cog):
@@ -26,12 +26,12 @@ class LiveNotification(commands.Cog):
                     data = await response.json()
                     if data['data'] and not self.is_live:
                         self.is_live = True
-                        user = await self.bot.fetch_user(ROLEIDS["OWNERID"])
+                        user = await self.bot.fetch_user(ROLEIDS["OwnerID"])
                         game_id = data['data'][0]['game_id']
                         title = data['data'][0]['title']
                         game_name = await self.get_game_name(game_id, headers)
                         await self.LiveEmbedNotification(
-                            self.bot.get_channel(CHANNEL_IDS['StreamChannel']),
+                            self.bot.get_channel(CHANNELIDS['StreamChannel']),
                             f'Hey everyone! {user.mention} is now live on Twitch!',
                             f'https://www.twitch.tv/{TWITCH["twitch_username"]}',
                             self.twitchIcon,

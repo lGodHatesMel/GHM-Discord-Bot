@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.utils as utils
 from utils.botdb import CreateUserDatabase
 from utils.Paginator import Paginator
-from config import CHANNEL_IDS
+from config import CHANNELIDS
 import json
 import asyncio
 import sqlite3
@@ -16,7 +16,7 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = CreateUserDatabase('Database/DBInfo.db')
-        self.config = {'CHANNEL_IDS': CHANNEL_IDS}
+        self.config = {'CHANNELIDS': CHANNELIDS}
 
     ## NOTES
     @commands.command(help='<@username or UID> <Note>', hidden=True)

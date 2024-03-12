@@ -1,80 +1,29 @@
 #from bot import bot
-from config import TOKEN, IGNORE_SCRIPTS, STREAM_NAME, STREAM_URL, PREFIX, ROLEIDS, GUILDID
+from config import TOKEN, IGNORE_SCRIPTS, STREAM_NAME, STREAM_URL, PREFIX, ROLEIDS, GUILDID, CHANNELIDS
 import discord
+from discord import Embed
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_option
+from discord_slash.utils.manage_components import create_button, create_actionrow, create_select, create_select_option
 from discord_slash.error import CheckFailure as SlashCheckFailure
 import utils.utils as utils
 from utils.Paginator import Paginator
 import os
 import traceback
-import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-# class EmbedHelpCommand(commands.HelpCommand):
-#     def __init__(self):
-#         super().__init__()
-#     def get_command_signature(self, command):
-#         if command.help:
-#             return '`!{} {}`'.format(command.qualified_name, command.help)
-#         else:
-#             return '`!{}`'.format(command.qualified_name)
-
-#     async def send_bot_help(self, mapping):
-#         ExcludeCommands = ['staffcommands', 'commands', 'help', 'ping', 'botping']
-#         embeds = []
-#         current_embed = discord.Embed(color=discord.Color.random())
-#         current_count = 0
-#         for cog, commands in mapping.items():
-#             if getattr(cog, "hidden", False):
-#                 continue
-#             commands = [c for c in commands if not c.hidden and c.name not in ExcludeCommands]
-#             if commands:
-#                 cog_name = getattr(cog, "qualified_name", "Other Commands")
-#                 field_value = ""
-#                 for command in commands:
-#                     signature = self.get_command_signature(command)
-#                     field_value += signature + "\n"
-#                     current_count += 1
-#                     if current_count == 9:
-#                         current_embed.add_field(name=f"{cog_name}", value=field_value, inline=True)
-#                         current_embed.title = f"**Server Commands - Page {len(embeds) + 1}**"
-#                         embeds.append(current_embed)
-#                         current_embed = discord.Embed(color=discord.Color.random())
-#                         current_count = 0
-#                         field_value = ""
-#                 if field_value:
-#                     current_embed.add_field(name=f"{cog_name}", value=field_value, inline=True)
-#                 current_embed.set_footer(text="Use the reactions to navigate between pages.")
-#         if len(current_embed.fields) > 0:
-#             current_embed.set_footer(text="Use the reactions to navigate between pages.")
-#             current_embed.title = f"**Server Commands - Page {len(embeds) + 1}**"
-#             embeds.append(current_embed)
-#         paginator = Paginator(self.context, embeds)
-#         await paginator.start()
 
 ## Bot Setup
 bot = commands.Bot(
     command_prefix=PREFIX,
     case_insensitive=True,
     intents = discord.Intents.all(),
-    owner_ids=[ROLEIDS["OWNERID"]],
+    owner_ids=[ROLEIDS["OwnerID"]],
     # help_command=EmbedHelpCommand(),
     description="Custom bot for our Discord server."
 )
+bot.TicketsFormUsers = {}
 slash = SlashCommand(bot, sync_commands=True)
-
-
-# @bot.command(name='commands')
-# async def _commands(ctx, *args):
-#     try:
-#         await ctx.send_help(*args)
-#     except Exception as e:
-#         logging.error(f"An error occurred while sending help: {e}")
 
 
 ## Run scripts from folders
@@ -84,14 +33,14 @@ for folder in folders:
         if filename.endswith('.py'):
             script_name = filename[:-3]
             if script_name in IGNORE_SCRIPTS:
-                logging.info(f'Ignored extension: {folder}.{script_name}')
+                print(f'Ignored extension: {folder}.{script_name}')
                 continue
             try:
                 extension = f'{folder}.{script_name}'
                 bot.load_extension(extension)
-                logging.info(f'Loaded extension: {extension}')
+                print(f'Loaded extension: {extension}')
             except Exception as e:
-                logging.error(f'Failed to load extension {extension}: {str(e)}')
+                print(f'Failed to load extension {extension}: {str(e)}')
 
 
 ## Events
@@ -124,7 +73,6 @@ async def on_ready():
 @bot.event
 async def on_disconnect():
     print("Bot has disconnected.")
-    await slash.remove_all_commands(guild_id=GUILDID)
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -146,8 +94,26 @@ async def on_command_error(ctx, error):
     else:
         tb_lines = traceback.format_exception(type(error), error, error.__traceback__)
         tb_text = ''.join(tb_lines)
-        logging.error(f'Error: {error}\n{tb_text}')
+        print(f'Error: {error}\n{tb_text}')
         await ctx.send("An unexpected error occurred. Please try again later.")
+
+# @bot.event
+# async def on_ready():
+#     guild = bot.get_guild(GUILDID)
+#     channel = guild.get_channel(CHANNELIDS['FormsChannel'])
+#     embed = Embed(title="Create a Ticket", description="Please select the type of ticket you want to create.")
+#     select = create_select(
+#         options=[
+#             create_select_option("General Support", value="General Support", emoji="👍"),
+#             create_select_option("Bug Support", value="Bug Support", emoji="🐛"),
+#             create_select_option("Staff Application", value="Staff Application", emoji="📝"),
+#         ],
+#         placeholder="Select your ticket type",
+#         custom_id="ticket_select"
+#     )
+#     action_row = create_actionrow(select)
+#     await channel.send(embed=embed, components=[action_row])
+
 
 
 ## Run the bot
@@ -155,12 +121,12 @@ if __name__ == "__main__":
     try:
         bot.run(TOKEN)
     except discord.LoginFailure:
-        logging.error("Error: Invalid bot token. Check your token configuration.")
+        print("Error: Invalid bot token. Check your token configuration.")
     except discord.HTTPException as e:
-        logging.error(f"Error: Discord HTTP error - {e}")
+        print(f"Error: Discord HTTP error - {e}")
     except discord.PrivilegedIntentsRequired:
-        logging.error("Error: The bot is missing one or more of the privileged intents.")
+        print("Error: The bot is missing one or more of the privileged intents.")
     except discord.ConnectionClosed as e:
-        logging.error(f"Error: The gateway connection is closed. Reason: {e}")
+        print(f"Error: The gateway connection is closed. Reason: {e}")
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
+        print(f"An unexpected error occurred: {e}")

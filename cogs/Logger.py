@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.utils as utils
 from utils.botdb import CreateUserDatabase
 from utils.utils import custom_emojis
-from config import CHANNEL_IDS
+from config import GUILDID, CHANNELIDS
 import os
 import json
 import sqlite3
@@ -17,7 +17,8 @@ class Logger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = CreateUserDatabase('Database/DBInfo.db')
-        self.config = {'CHANNEL_IDS': CHANNEL_IDS}
+        self.config = {'CHANNELIDS': CHANNELIDS}
+        self.TicketsFormUsers = {}
         self.AllowedRoles = ['Owner', 'Admin', 'Moderator', 'Helper', "Bypass", "🤫"]
         self.BadEmojis = [] # ex: "🚫", "❌"
         with open('Data/BadWordList.txt', 'r') as file:
@@ -27,7 +28,7 @@ class Logger(commands.Cog):
     ## ON_MEMBERS
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        WelcomeChannelID = CHANNEL_IDS.get('WelcomeChannel', None)
+        WelcomeChannelID = CHANNELIDS.get('WelcomeChannel', None)
         channel = self.bot.get_channel(int(WelcomeChannelID))
 
         if channel:
@@ -104,7 +105,7 @@ class Logger(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         # print(f"DEBUG: on_member_remove event triggered for {member.name} ({member.id})")
-        WelcomeChannelID = CHANNEL_IDS.get('WelcomeChannel', None)
+        WelcomeChannelID = CHANNELIDS.get('WelcomeChannel', None)
         channel = self.bot.get_channel(int(WelcomeChannelID))
         if channel:
             server = member.guild
@@ -190,7 +191,7 @@ class Logger(commands.Cog):
                 print(f"{Fore.RED}Removed roles: {', '.join(removed_roles)}{Style.RESET_ALL}")
 
         if before.premium_since is None and after.premium_since is not None:
-            ServerAnnocementChannelID = CHANNEL_IDS.get('ServerAnnocement', None)
+            ServerAnnocementChannelID = CHANNELIDS.get('ServerAnnocement', None)
             channel = self.bot.get_channel(ServerAnnocementChannelID)
             
             # Use custom emojis if available, otherwise use a default string
@@ -204,6 +205,20 @@ class Logger(commands.Cog):
     ## ON_MESSAGES
     @commands.Cog.listener()
     async def on_message(self, message):
+        if isinstance(message.channel, discord.DMChannel):
+            if message.author == self.bot.user or message.author.id in self.bot.TicketsFormUsers:
+                return
+            timestamp = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
+            await utils.LogAction(
+                guild=self.bot.get_guild(GUILDID),
+                channel_name='DMLogs',
+                action=f'BOT DM',
+                target=message.author,
+                reason=f"Message Received from {message.author.name} (UID: {message.author.id}) at {timestamp}\n\n**Message Content:**\n{message.content}.",
+                config=self.config
+            )
+            print(f"{Fore.BLUE}Received DM from {message.author.name} at {timestamp}: {message.content}{Style.RESET_ALL}")
+
         if message.author == self.bot.user or not isinstance(message.author, discord.Member):
             return
 
@@ -319,7 +334,7 @@ class Logger(commands.Cog):
                         config=self.config
                     )
 
-        MessageLoggerChannelID = CHANNEL_IDS.get('MessageLogs', None)
+        MessageLoggerChannelID = CHANNELIDS.get('MessageLogs', None)
         if not MessageLoggerChannelID:
             print("Message logger channel ID is not set in config.py.")
             return
@@ -342,7 +357,7 @@ class Logger(commands.Cog):
         if message.author.bot:
             return
 
-        MessageLoggerChannelID = CHANNEL_IDS.get('MessageLogs', None)
+        MessageLoggerChannelID = CHANNELIDS.get('MessageLogs', None)
         if not MessageLoggerChannelID:
             print("Message logger channel ID is not set in config.py.")
             return
@@ -390,7 +405,7 @@ class Logger(commands.Cog):
     ## ON_GUILD
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
-        ServerLogsChannelID = CHANNEL_IDS.get('ServerLogs', None)
+        ServerLogsChannelID = CHANNELIDS.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))
@@ -410,7 +425,7 @@ class Logger(commands.Cog):
                     changes.append(f"{target_type} override for {target_mention}")
 
                     # Iterate over all permissions
-                    for name, value in vars(overwrite).items():
+                    for name, value in iter(overwrite):
                         if value is not None:
                             emoji = ":white_check_mark:" if value else ":x:"
                             changes.append(f"{name.replace('_', ' ').title()}: {emoji}")
@@ -429,7 +444,7 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
-        ServerLogsChannelID = CHANNEL_IDS.get('ServerLogs', None)
+        ServerLogsChannelID = CHANNELIDS.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = after.guild.get_channel(int(ServerLogsChannelID))
@@ -468,7 +483,7 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
-        ServerLogsChannelID = CHANNEL_IDS.get('ServerLogs', None)
+        ServerLogsChannelID = CHANNELIDS.get('ServerLogs', None)
 
         if ServerLogsChannelID:
             ServerLogsChannel = channel.guild.get_channel(int(ServerLogsChannelID))

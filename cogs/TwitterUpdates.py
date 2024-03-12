@@ -3,7 +3,7 @@ from discord.ext import commands
 import tweepy
 import asyncio
 import sqlite3
-from config import TWITTER, CHANNEL_IDS
+from config import TWITTER, CHANNELIDS
 from utils.botdb import TwitterDatabase
 
 class TwitterCog(commands.Cog):
@@ -14,7 +14,7 @@ class TwitterCog(commands.Cog):
         consumer_secret = TWITTER['consumer_secret']
         access_token = TWITTER['access_token']
         access_token_secret = TWITTER['access_token_secret']
-        self.channel_id = int(CHANNEL_IDS['TwitterUpdates'])
+        self.channel_id = int(CHANNELIDS['TwitterUpdates'])
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
