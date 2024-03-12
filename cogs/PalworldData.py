@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_option
 from config import GUILDID
-from typing import Union
 import json
 import aiohttp
 import io
@@ -29,7 +28,7 @@ class PalworldData(commands.Cog):
 
   @cog_ext.cog_subcommand(base="Palworld", name="palitem", description="Get information about a specific item.",
     options=[create_option(name="item_name", description="Item Name", option_type=3, required=True)], guild_ids=[GUILDID])
-  async def palitem(self, ctx: Union[commands.Context, SlashContext], item_name: str):
+  async def palitem(self, ctx: SlashContext, item_name: str):
     for item in self.palitems_info_data:
       if item_name.lower() == item['name'].lower():
         embed = discord.Embed(title=item['name'], color=discord.Color.random())
@@ -42,7 +41,7 @@ class PalworldData(commands.Cog):
     await ctx.send(f"Item '{item_name}' not found.")
 
   @cog_ext.cog_subcommand(base="Palworld", name="pallistitemtypes", description="Displays all unique item types.", guild_ids=[GUILDID])
-  async def pallistitemtypes(self, ctx: Union[commands.Context, SlashContext]):
+  async def pallistitemtypes(self, ctx: SlashContext):
     types = set(item['type'] for item in self.palitems_info_data)
     types_str = "\n".join(sorted(types))
     embeds = []
@@ -56,7 +55,7 @@ class PalworldData(commands.Cog):
 
   @cog_ext.cog_subcommand(base="Palworld", name="palitemtype", description="Get items of a specific type.",
     options=[create_option(name="type_name", description="Type Name", option_type=3, required=True)], guild_ids=[GUILDID])
-  async def palitemtype(self, ctx: Union[commands.Context, SlashContext], type_name: str):
+  async def palitemtype(self, ctx: SlashContext, type_name: str):
     MatchItems = [item['name'] for item in self.palitems_info_data if type_name.lower() == item['type'].lower()]
     if MatchItems:
       Item_str = "\n".join(MatchItems)
@@ -73,7 +72,7 @@ class PalworldData(commands.Cog):
       await ctx.send(f"No items of type '{type_name}' found.")
 
   @cog_ext.cog_subcommand(base="Palworld", name="palgear", description="Displays all gear data.", guild_ids=[GUILDID])
-  async def palgear(self, ctx: Union[commands.Context, SlashContext]):
+  async def palgear(self, ctx: SlashContext):
     embeds = []
     embed = discord.Embed(title="Palworld Gear", color=discord.Color.random())
     char_count = len(embed.title) + len(embed.footer.text)
@@ -128,7 +127,7 @@ class PalworldData(commands.Cog):
 
   @cog_ext.cog_subcommand(base="Palworld", name="palinfo", description="Get information about a specific Pal.",
     options=[create_option(name="pal_name", description="Pal Name", option_type=3, required=True)], guild_ids=[GUILDID])
-  async def palinfo(self, ctx: Union[commands.Context, SlashContext], pal_name: str):
+  async def palinfo(self, ctx: SlashContext, pal_name: str):
     PalName = pal_name
     PalData = None
     for pal in self.pal_info_data:
@@ -219,7 +218,7 @@ class PalworldData(commands.Cog):
 
   # @cog_ext.cog_slash(name="palcommands", description="Displays all Palworld commands.", guild_ids=[GUILDID], options=[])
   # @commands.command(help="- Displays all Palworld commands")
-  # async def palcommands(self, ctx: Union[commands.Context, SlashContext]):
+  # async def palcommands(self, ctx: SlashContext):
   #   embed = discord.Embed(title="Palworld Commands", color=discord.Color.random())
   #   for command in self.get_commands():
   #     embed.add_field(name=command.name, value=command.help, inline=False)

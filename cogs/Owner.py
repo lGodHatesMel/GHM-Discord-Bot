@@ -7,7 +7,6 @@ import json
 import asyncio
 import sqlite3
 from sqlite3 import Error
-from typing import Union
 from colorama import Fore, Style
 import logging
 

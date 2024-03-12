@@ -155,6 +155,7 @@ def GiveawaysDatabase(cursor):
             cursor.execute("ALTER TABLE giveaways ADD COLUMN winner_id INTEGER")
     except sqlite3.Error as e:
         print(e)
+    return cursor
 
 def CreateGiveawaysEntries(cursor):
     try:

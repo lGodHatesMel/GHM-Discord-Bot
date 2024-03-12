@@ -8,7 +8,6 @@ from utils.botdb import CreateStarboardDatabase
 from config import CHANNELIDS, LOGO_URL, IGNORE_CHANNELS, GUILDID, ROLEIDS
 import sqlite3
 import asyncio
-from typing import Union
 
 
 @staticmethod
@@ -92,12 +91,12 @@ class Starboard(commands.Cog):
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="addstar", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Admin")
-    async def addstar(self, ctx: Union[commands.Context, SlashContext], starboard_id: int):
+    async def addstar(self, ctx: SlashContext, starboard_id: int):
         AllowedRoles = [ROLEIDS["Admin"]]
-        if isinstance(ctx, SlashContext):
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send("You are not authorized to use this command.")
-                return
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send("You are not authorized to use this command.")
+            return
+
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
@@ -119,12 +118,12 @@ class Starboard(commands.Cog):
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="removestar", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def removestar(self, ctx: Union[commands.Context, SlashContext], starboard_id: int):
+    async def removestar(self, ctx: SlashContext, starboard_id: int):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-        if isinstance(ctx, SlashContext):
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send("You are not authorized to use this command.")
-                return
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send("You are not authorized to use this command.")
+            return
+
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
@@ -146,12 +145,12 @@ class Starboard(commands.Cog):
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
     @commands.command(name="deletestarboard", help='<starboard_id>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def deletestarboard(self, ctx: Union[commands.Context, SlashContext], starboard_id: int):
+    async def deletestarboard(self, ctx: SlashContext, starboard_id: int):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-        if isinstance(ctx, SlashContext):
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send("You are not authorized to use this command.")
-                return
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send("You are not authorized to use this command.")
+            return
+
         self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
@@ -167,11 +166,11 @@ class Starboard(commands.Cog):
             await ctx.send(f"No starboard found with ID {starboard_id}.")
 
     @cog_ext.cog_subcommand(base="Staff", name="deleteallstarboards", description="(STAFF) Delete all starboards", guild_ids=[GUILDID], options=[])
-    async def deleteallstarboards(self, ctx: Union[commands.Context, SlashContext]):
-        if isinstance(ctx, SlashContext):
-            if not await self.bot.is_owner(ctx.author):
-                await ctx.send("Only the bot owner can use this command.")
-                return
+    async def deleteallstarboards(self, ctx: SlashContext):
+        if not await self.bot.is_owner(ctx.author):
+            await ctx.send("Only the bot owner can use this command.")
+            return
+
         StarboardChannelID = CHANNELIDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
@@ -189,11 +188,11 @@ class Starboard(commands.Cog):
         await ctx.send("All starboards have been deleted.")
 
     @cog_ext.cog_subcommand(base="Staff", name="refreshstarboards", description="(STAFF) Refresh all starboards", guild_ids=[GUILDID], options=[])
-    async def refreshstarboards(self, ctx: Union[commands.Context, SlashContext]):
-        if isinstance(ctx, SlashContext):
-            if not await self.bot.is_owner(ctx.author):
-                await ctx.send("Only the bot owner can use this command.")
-                return
+    async def refreshstarboards(self, ctx: SlashContext):
+        if not await self.bot.is_owner(ctx.author):
+            await ctx.send("Only the bot owner can use this command.")
+            return
+
         StarboardChannelID = CHANNELIDS["StarBoardChannel"]
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 

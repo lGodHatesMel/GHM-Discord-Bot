@@ -9,7 +9,6 @@ from config import CHANNELIDS, GUILDID, ROLEIDS
 import json
 import sqlite3
 from sqlite3 import Error
-from typing import Union
 from colorama import Fore, Style
 
 class UserData(commands.Cog):
@@ -25,12 +24,11 @@ class UserData(commands.Cog):
         options=[create_option(name="new_username", description="New username", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(name="updateuser", help='<username> or <UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def updateuser(self, ctx: Union[commands.Context, SlashContext], new_username: str):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def updateuser(self, ctx: SlashContext, new_username: str):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         uid = str(ctx.author.id)
         cursor = self.conn.cursor()
@@ -69,12 +67,11 @@ class UserData(commands.Cog):
         options=[create_option(name="user", description="User to add", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(name="addusertodb", help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def addusertodb(self, ctx: Union[commands.Context, SlashContext], user: discord.User):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def addusertodb(self, ctx: SlashContext, user: discord.User):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         uid = user.id
         cursor = self.conn.cursor()
@@ -126,12 +123,11 @@ class UserData(commands.Cog):
         ],guild_ids=[GUILDID])
     @commands.command(name="changenickname", help='<@username or UID> <NewName>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def changenickname(self, ctx: Union[commands.Context, SlashContext], member: discord.Member, *, new_name: str):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def changenickname(self, ctx: SlashContext, member: discord.Member, *, new_name: str):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         try:
             await member.edit(nick=new_name)
@@ -143,12 +139,11 @@ class UserData(commands.Cog):
         options=[create_option(name="member", description="@username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(name="accountage", help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def accountage(self, ctx: Union[commands.Context, SlashContext], member: discord.Member = None):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def accountage(self, ctx: SlashContext, member: discord.Member = None):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         if member is None:
             member = ctx.author
@@ -176,12 +171,11 @@ class UserData(commands.Cog):
         options=[create_option(name="user", description="Username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
     @commands.command(help='<@username or UID>', hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def info(self, ctx: Union[commands.Context, SlashContext], user: discord.User):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Helper"], ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def info(self, ctx: SlashContext, user: discord.User):
+        AllowedRoles = [ROLEIDS["Helper"], ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         uid = user.id
         cursor = self.conn.cursor()

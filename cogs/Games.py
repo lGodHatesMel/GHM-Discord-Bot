@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_option
 from config import GUILDID
-from typing import Union
 from PIL import Image, ImageDraw, ImageFont
 import io
 import random
@@ -43,7 +42,7 @@ class Games(commands.Cog):
             create_option(name="sides", description="Number of sides on the dice", option_type=4, required=True),
             create_option(name="rolls", description="Number of rolls", option_type=4, required=True)
         ], guild_ids=[GUILDID])
-    async def roll(self, ctx: Union[commands.Context, SlashContext], sides: int, num_rolls: int):
+    async def roll(self, ctx: SlashContext, sides: int, num_rolls: int):
         if sides < 2 or num_rolls < 1:
             await ctx.send("Invalid input. Please use !roll <sides> <num_rolls>.")
             return
@@ -67,7 +66,7 @@ class Games(commands.Cog):
         await ctx.send(embed=embed, file=discord.File(image_path, filename=os.path.basename(image_path)))
 
     @cog_ext.cog_subcommand(base="Game", name="flipcoin", description="Flip a coin", guild_ids=[GUILDID])
-    async def flipcoin(self, ctx: Union[commands.Context, SlashContext]):
+    async def flipcoin(self, ctx: SlashContext):
         result = 'Heads' if random.choice([True, False]) else 'Tails'
         heads_image_path = os.path.join('images', 'heads.png')
         tails_image_path = os.path.join('images', 'tails.png')
@@ -88,7 +87,7 @@ class Games(commands.Cog):
 
     ## Hangman
     @cog_ext.cog_subcommand(base="Game", name="hangman", description="Play a game of hangman", guild_ids=[GUILDID])
-    async def hangman(self, ctx: Union[commands.Context, SlashContext]):
+    async def hangman(self, ctx: SlashContext):
         # Check if already playing
         if ctx.author.id in self.games:
             await ctx.send("You are already playing Hangman! Finish your current game first.")

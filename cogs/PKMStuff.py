@@ -7,7 +7,6 @@ import random
 import requests
 import utils.utils as utils
 from config import GUILDID, ROLEIDS
-from typing import Union
 import logging
 
 ValidGames = ['sv', 'swsh', 'pla', 'bdsp']
@@ -29,8 +28,7 @@ class PKMStuff(commands.Cog):
         return os.path.join(SetsFolder, f"{PokemonName}.txt")
 
     @cog_ext.cog_slash(name="pokefacts", description="Get a random Pokémon fact.", guild_ids=[GUILDID], options=[])
-    @commands.command(name="pokefacts", help='Get a random Pokémon fact.')
-    async def pokefacts(self, ctx: Union[commands.Context, SlashContext]):
+    async def pokefacts(self, ctx: SlashContext):
         try:
             RandomFact = utils.RandomPKMFacts()
             response = requests.get(ImageLink)
@@ -58,8 +56,7 @@ class PKMStuff(commands.Cog):
             create_option(name="pokemon_name", description="Pokemon Name", option_type=3, required=True)
         ], guild_ids=[GUILDID]
     )
-    @commands.command(name="showdown", aliases=['showdownset'], help='<Game: sv, swsh, pla, bdsp> <Pokemon Name>')
-    async def showdown(self, ctx: Union[commands.Context, SlashContext], game: str, PokemonName: str):
+    async def showdown(self, ctx: SlashContext, game: str, PokemonName: str):
         try:
             file_path = self.GetFilePath(game, PokemonName)
             if not os.path.exists(file_path):
@@ -93,14 +90,11 @@ class PKMStuff(commands.Cog):
             create_option(name="set_details", description="Showdown Set Details", option_type=3, required=True)
         ], guild_ids=[GUILDID]
     )
-    @commands.command(name="addset", help='Game: <sv, swsh, pla, bdsp> <PokemonName> <ShowdownSetDetails>', hidden=True)
-    @commands.has_any_role("Helper", "Moderator", "Admin")
-    async def addset(self, ctx: Union[commands.Context, SlashContext], game: str, PokemonName: str, *SetDetails: str):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Helper"], ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def addset(self, ctx: SlashContext, game: str, PokemonName: str, *SetDetails: str):
+        AllowedRoles = [ROLEIDS["Helper"], ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         try:
             file_path = self.GetFilePath(game, PokemonName)

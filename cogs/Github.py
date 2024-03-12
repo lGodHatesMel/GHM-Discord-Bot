@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_option
 from config import GUILDID
-from typing import Union
 import requests
 
 class GitHub(commands.Cog):
@@ -16,7 +15,7 @@ class GitHub(commands.Cog):
             create_option(name="repo", description="Name of the repository", option_type=3, required=True)
         ], guild_ids=[GUILDID])
     @commands.command()
-    async def github(self, ctx: Union[commands.Context, SlashContext], owner: str, repo: str):
+    async def github(self, ctx: SlashContext, owner: str, repo: str):
         response = requests.get(f'https://api.github.com/repos/{owner}/{repo}')
         data = response.json()
 

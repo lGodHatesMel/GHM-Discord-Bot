@@ -6,7 +6,6 @@ from discord_slash.utils.manage_commands import create_option
 from discord_slash.model import SlashCommandOptionType
 import sqlite3
 from discord.ext import commands
-from typing import Union
 import os
 import sqlite3
 from utils.Paginator import Paginator
@@ -298,12 +297,11 @@ class CustomCommands(commands.Cog):
         options=[create_option(name="link", description="The link to add", option_type=3, required=True)], guild_ids=[GUILDID])
     @commands.command(hidden=True)
     @commands.has_any_role("Moderator", "Admin")
-    async def addlink(self, ctx: Union[commands.Context, SlashContext], link: str):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def addlink(self, ctx: SlashContext, link: str):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         with open('Data/AllowedLinks.txt', 'a') as file:
             file.write(link + '\n')
@@ -311,12 +309,11 @@ class CustomCommands(commands.Cog):
 
     @cog_ext.cog_slash(name="showlinks", description="(STAFF) Shows all allowed links", guild_ids=[GUILDID], options=[])
     @commands.command(hidden=True)
-    async def showlinks(self, ctx: Union[commands.Context, SlashContext]):
-        if isinstance(ctx, SlashContext):
-            AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-            if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-                await ctx.send('You do not have permission to use this command.')
-                return
+    async def showlinks(self, ctx: SlashContext):
+        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
+        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
+            await ctx.send('You do not have permission to use this command.')
+            return
 
         if os.path.exists('Data/AllowedLinks.txt'):
             with open('Data/AllowedLinks.txt', 'r') as file:
