@@ -6,8 +6,6 @@ import random
 
 
 class ToggleRoles(commands.Cog):
-    hidden = True
-
     def __init__(self, bot):
         self.bot = bot
         self.RoleChannelID = CHANNELIDS.get('RoleChannel')

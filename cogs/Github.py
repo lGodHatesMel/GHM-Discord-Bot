@@ -14,7 +14,6 @@ class GitHub(commands.Cog):
             create_option(name="owner", description="Owner of the repository", option_type=3, required=True),
             create_option(name="repo", description="Name of the repository", option_type=3, required=True)
         ], guild_ids=[GUILDID])
-    @commands.command()
     async def github(self, ctx: SlashContext, owner: str, repo: str):
         response = requests.get(f'https://api.github.com/repos/{owner}/{repo}')
         data = response.json()

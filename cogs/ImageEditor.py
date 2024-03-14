@@ -5,8 +5,6 @@ import io
 from io import BytesIO
 
 class ImageEditor(commands.Cog):
-    hidden = True
-
     def __init__(self, bot):
         self.bot = bot
 

@@ -124,7 +124,7 @@ class Owner(commands.Cog):
                 }
                 cursor.execute("INSERT INTO UserInfo VALUES (?, ?)", (uid, json.dumps(user_info)))
                 print(f"Added ({member.name} : {uid}) to the database @ {utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')}")
-                added_count += 1  # Increment the counter when a user is added
+                added_count += 1
 
         self.conn.commit()
         await ctx.send(f"Database updated with all server members! {added_count} new users were added.")

@@ -295,8 +295,6 @@ class CustomCommands(commands.Cog):
 
     @cog_ext.cog_slash(name="addlink", description="(STAFF) Adds a new allowed link",
         options=[create_option(name="link", description="The link to add", option_type=3, required=True)], guild_ids=[GUILDID])
-    @commands.command(hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def addlink(self, ctx: SlashContext, link: str):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -308,7 +306,6 @@ class CustomCommands(commands.Cog):
         await ctx.send(f'Added {link} to the list of allowed links.')
 
     @cog_ext.cog_slash(name="showlinks", description="(STAFF) Shows all allowed links", guild_ids=[GUILDID], options=[])
-    @commands.command(hidden=True)
     async def showlinks(self, ctx: SlashContext):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):

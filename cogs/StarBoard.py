@@ -89,8 +89,6 @@ class Starboard(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="addstar", description="(STAFF) Add a star to a starboard message",
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
-    @commands.command(name="addstar", help='<starboard_id>', hidden=True)
-    @commands.has_any_role("Admin")
     async def addstar(self, ctx: SlashContext, starboard_id: int):
         AllowedRoles = [ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -116,8 +114,6 @@ class Starboard(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="removestar", description="(STAFF) Remove a star from a starboard message",
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
-    @commands.command(name="removestar", help='<starboard_id>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def removestar(self, ctx: SlashContext, starboard_id: int):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -143,8 +139,6 @@ class Starboard(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="deletestarboard", description="(STAFF) Delete a starboard message",
         options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
-    @commands.command(name="deletestarboard", help='<starboard_id>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def deletestarboard(self, ctx: SlashContext, starboard_id: int):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):

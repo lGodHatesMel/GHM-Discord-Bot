@@ -4,8 +4,6 @@ import discord
 from discord import Embed
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
-from discord_slash.utils.manage_commands import create_option
-from discord_slash.utils.manage_components import create_button, create_actionrow, create_select, create_select_option
 from discord_slash.error import CheckFailure as SlashCheckFailure
 import utils.utils as utils
 from utils.Paginator import Paginator
@@ -19,8 +17,9 @@ bot = commands.Bot(
     case_insensitive=True,
     intents = discord.Intents.all(),
     owner_ids=[ROLEIDS["OwnerID"]],
+    help_command=None,
     # help_command=EmbedHelpCommand(),
-    description="Custom bot for our Discord server."
+    description="GodHatesMe Discord Server Bot."
 )
 bot.TicketsFormUsers = {}
 slash = SlashCommand(bot, sync_commands=True)
@@ -96,24 +95,6 @@ async def on_command_error(ctx, error):
         tb_text = ''.join(tb_lines)
         print(f'Error: {error}\n{tb_text}')
         await ctx.send("An unexpected error occurred. Please try again later.")
-
-# @bot.event
-# async def on_ready():
-#     guild = bot.get_guild(GUILDID)
-#     channel = guild.get_channel(CHANNELIDS['FormsChannel'])
-#     embed = Embed(title="Create a Ticket", description="Please select the type of ticket you want to create.")
-#     select = create_select(
-#         options=[
-#             create_select_option("General Support", value="General Support", emoji="👍"),
-#             create_select_option("Bug Support", value="Bug Support", emoji="🐛"),
-#             create_select_option("Staff Application", value="Staff Application", emoji="📝"),
-#         ],
-#         placeholder="Select your ticket type",
-#         custom_id="ticket_select"
-#     )
-#     action_row = create_actionrow(select)
-#     await channel.send(embed=embed, components=[action_row])
-
 
 
 ## Run the bot

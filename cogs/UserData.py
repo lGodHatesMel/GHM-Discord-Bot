@@ -22,8 +22,6 @@ class UserData(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="updateuser", description="(STAFF) Update a user's username",
         options=[create_option(name="new_username", description="New username", option_type=3, required=True)], guild_ids=[GUILDID])
-    @commands.command(name="updateuser", help='<username> or <UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def updateuser(self, ctx: SlashContext, new_username: str):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -65,8 +63,6 @@ class UserData(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="addusertodb", description="(STAFF) Add a user to the database",
         options=[create_option(name="user", description="User to add", option_type=6, required=True)], guild_ids=[GUILDID])
-    @commands.command(name="addusertodb", help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def addusertodb(self, ctx: SlashContext, user: discord.User):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -121,8 +117,6 @@ class UserData(commands.Cog):
             create_option(name="member", description="Member to change nickname for", option_type=6, required=True),
             create_option(name="new_name", description="New nickname", option_type=3, required=True)
         ],guild_ids=[GUILDID])
-    @commands.command(name="changenickname", help='<@username or UID> <NewName>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def changenickname(self, ctx: SlashContext, member: discord.Member, *, new_name: str):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -137,8 +131,6 @@ class UserData(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="accountage", description="(STAFF) Get a user's account age",
         options=[create_option(name="member", description="@username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
-    @commands.command(name="accountage", help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def accountage(self, ctx: SlashContext, member: discord.Member = None):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
@@ -169,8 +161,6 @@ class UserData(commands.Cog):
 
     @cog_ext.cog_subcommand(base="Staff", name="info", description="(STAFF) Get a user's info",
         options=[create_option(name="user", description="Username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
-    @commands.command(help='<@username or UID>', hidden=True)
-    @commands.has_any_role("Moderator", "Admin")
     async def info(self, ctx: SlashContext, user: discord.User):
         AllowedRoles = [ROLEIDS["Helper"], ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
