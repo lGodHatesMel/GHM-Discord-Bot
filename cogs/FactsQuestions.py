@@ -38,7 +38,7 @@ class FactsQuestions(commands.Cog):
                 await msg.delete()
                 await asyncio.sleep(1)
 
-        self.c.execute("SELECT * FROM faq")
+        self.cursor.execute("SELECT * FROM faq")
         faq_db = self.c.fetchall()
         messages = []
         for faq_name, question, answer in faq_db:
@@ -47,7 +47,7 @@ class FactsQuestions(commands.Cog):
             embed.add_field(name="Question:", value=question, inline=False)
             embed.add_field(name="Answer:", value=f"{answer}", inline=False)
             aliases = []
-            self.c.execute("SELECT alias FROM faq_aliases WHERE faq_name = ?", (faq_name,))
+            self.cursor.execute("SELECT alias FROM faq_aliases WHERE faq_name = ?", (faq_name,))
             aliases_db = self.c.fetchall()
             for alias in aliases_db:
                 aliases.append(alias[0])
@@ -70,7 +70,7 @@ class FactsQuestions(commands.Cog):
 
     def SaveAliases(self):
         self.SetupDatabase()
-        self.c.execute("SELECT * FROM faq_aliases")
+        self.cursor.execute("SELECT * FROM faq_aliases")
         aliases_db = self.c.fetchall()
         self.faq_aliases = {alias[0]: alias[1] for alias in aliases_db}
 

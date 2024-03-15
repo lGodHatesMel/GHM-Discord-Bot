@@ -10,14 +10,14 @@ class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conn = sqlite3.connect('Database/rules.db')
-        self.c = self.conn.cursor()
-        self.c = CreateRulesDatabase(self.c)
+        self.cursor = self.conn.cursor()
+        self.c = CreateRulesDatabase(self.cursor)
         self.conn.commit()
 
     async def update_rules(self):
         RulesChannelID = CHANNELIDS['RulesChannel']
-        self.c.execute("SELECT * FROM rules")
-        rules_data = self.c.fetchall()
+        self.cursor.execute("SELECT * FROM rules")
+        rules_data = self.cursor.fetchall()
 
         messages = []
         for rule in rules_data:
@@ -38,8 +38,8 @@ class Rules(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_any_role("Admin")
     async def addrule(self, ctx):
-        self.c.execute("SELECT MAX(id) FROM rules")
-        next_rule_id = self.c.fetchone()[0]
+        self.cursor.execute("SELECT MAX(id) FROM rules")
+        next_rule_id = self.cursor.fetchone()[0]
         if next_rule_id is None:
             next_rule_id = 1
         else:
@@ -59,7 +59,7 @@ class Rules(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, stopping.\n May be better to have everything ready then copy and paste it to be faster")
 
-        self.c.execute("INSERT INTO rules VALUES (?, ?, ?)", (next_rule_id, f"**{question.content}**", answer.content))
+        self.cursor.execute("INSERT INTO rules VALUES (?, ?, ?)", (next_rule_id, f"**{question.content}**", answer.content))
         self.conn.commit()
 
         await ctx.send("✅ Entry added.")
@@ -70,12 +70,12 @@ class Rules(commands.Cog):
     async def deleterule(self, ctx, RuleNameID: str):
         try:
             rules_id = int(RuleNameID)
-            self.c.execute("DELETE FROM rules WHERE id=?", (rules_id,))
+            self.cursor.execute("DELETE FROM rules WHERE id=?", (rules_id,))
         except ValueError:
             rule_name = f"**{RuleNameID}**"
-            self.c.execute("DELETE FROM rules WHERE rule=?", (rule_name,))
+            self.cursor.execute("DELETE FROM rules WHERE rule=?", (rule_name,))
         self.conn.commit()
-        if self.c.rowcount == 0:
+        if self.cursor.rowcount == 0:
             return await ctx.send("⚠ No such entry exists.")
         await ctx.send("✅ Entry deleted.")
         self.bot.loop.create_task(self.update_rules())
@@ -85,11 +85,11 @@ class Rules(commands.Cog):
     async def editrule(self, ctx, RuleNameID: str, edit_type: str = "description"):
         try:
             rules_id = int(RuleNameID)
-            self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+            self.cursor.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
         except ValueError:
             rule_name = f"**{RuleNameID}**"
-            self.c.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
-        entry = self.c.fetchone()
+            self.cursor.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
+        entry = self.cursor.fetchone()
         if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         if not(edit_type.lower() in ["rulename", "description"]):
@@ -101,9 +101,9 @@ class Rules(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send("🚫 Timed out while waiting for a response, stopping.")
         if edit_type.lower() == "rulename":
-            self.c.execute("UPDATE rules SET rule=? WHERE id=?", (f"**{new_content.content}**", entry[0]))
+            self.cursor.execute("UPDATE rules SET rule=? WHERE id=?", (f"**{new_content.content}**", entry[0]))
         elif edit_type.lower() == "description":
-            self.c.execute("UPDATE rules SET description=? WHERE id=?", (new_content.content, entry[0]))
+            self.cursor.execute("UPDATE rules SET description=? WHERE id=?", (new_content.content, entry[0]))
         self.conn.commit()
         await ctx.send("✅ Entry modified.")
         self.bot.loop.create_task(self.update_rules())
@@ -113,11 +113,11 @@ class Rules(commands.Cog):
     async def ruleraw(self, ctx, RuleNameID: str, return_type: str = "both"):
         try:
             rules_id = int(RuleNameID)
-            self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+            self.cursor.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
         except ValueError:
             rule_name = f"**{RuleNameID}**"
-            self.c.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
-        entry = self.c.fetchone()
+            self.cursor.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
+        entry = self.cursor.fetchone()
         if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         if not(return_type[0] == "r" or return_type[0] == "d" or return_type[0] == "b"):
@@ -134,11 +134,11 @@ class Rules(commands.Cog):
     async def rule(self, ctx, RuleNameID: str):
         try:
             rules_id = int(RuleNameID)
-            self.c.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
+            self.cursor.execute("SELECT * FROM rules WHERE id=?", (rules_id,))
         except ValueError:
             rule_name = f"**{RuleNameID}**"
-            self.c.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
-        entry = self.c.fetchone()
+            self.cursor.execute("SELECT * FROM rules WHERE rule=?", (rule_name,))
+        entry = self.cursor.fetchone()
         if entry is None:
             return await ctx.send("⚠ No such entry exists.")
         embed = discord.Embed(color=discord.Color.red())

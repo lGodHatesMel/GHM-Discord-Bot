@@ -253,45 +253,45 @@ class CustomCommands(commands.Cog):
         except Exception as e:
             await ctx.send(f'An error occurred: {str(e)}')
 
-    # @commands.command(help="Shows the staff commands", hidden=True)
-    # @commands.has_any_role("Helper", "Moderator", "Admin")
-    # async def staffcommands(self, ctx):
-    #     bot_commands = self.bot.commands
-    #     hidden_commands = [command for command in bot_commands if command.hidden and not any(check.__qualname__ == 'is_owner.<locals>.predicate' for check in command.checks)]
+    @commands.command(help="Shows the staff commands", hidden=True)
+    @commands.has_any_role("Helper", "Moderator", "Admin")
+    async def staffcommands(self, ctx):
+        bot_commands = self.bot.commands
+        hidden_commands = [command for command in bot_commands if command.hidden and not any(check.__qualname__ == 'is_owner.<locals>.predicate' for check in command.checks)]
 
-    #     embeds = self.create_embeds(hidden_commands)
-    #     paginator = Paginator(ctx, embeds)
-    #     await paginator.start()
+        embeds = self.create_embeds(hidden_commands)
+        paginator = Paginator(ctx, embeds)
+        await paginator.start()
 
-    # def create_embeds(self, commands):
-    #     embeds = []
-    #     total_pages = (len(commands) + 24) // 25
-    #     embed = discord.Embed(title="__**Staff Commands**__", description="*These are the available staff commands.*", color=discord.Color.green())
-    #     no_help_commands = []
+    def create_embeds(self, commands):
+        embeds = []
+        total_pages = (len(commands) + 24) // 25
+        embed = discord.Embed(title="__**Staff Commands**__", description="*These are the available staff commands.*", color=discord.Color.green())
+        no_help_commands = []
 
-    #     for command in commands:
-    #         if command.help is not None:
-    #             embed.add_field(name=f"`{command.name}`", value=f"`{command.help}`", inline=True)
-    #         else:
-    #             no_help_commands.append(command)
+        for command in commands:
+            if command.help is not None:
+                embed.add_field(name=f"`{command.name}`", value=f"`{command.help}`", inline=True)
+            else:
+                no_help_commands.append(command)
 
-    #         if len(embed.fields) == 25:
-    #             embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
-    #             embed.set_footer(text="Use the reactions to navigate between pages.")
-    #             embeds.append(embed)
-    #             embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
+            if len(embed.fields) == 25:
+                embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+                embed.set_footer(text="Use the reactions to navigate between pages.")
+                embeds.append(embed)
+                embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
 
-    #     for command in no_help_commands:
-    #         if len(embed.fields) == 25:
-    #             embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
-    #             embeds.append(embed)
-    #             embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
-    #         embed.add_field(name=f"`{command.name}`", value="", inline=True)
+        for command in no_help_commands:
+            if len(embed.fields) == 25:
+                embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+                embeds.append(embed)
+                embed = discord.Embed(title="**Staff Commands**", color=discord.Color.random())
+            embed.add_field(name=f"`{command.name}`", value="", inline=True)
 
-    #     embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
-    #     embed.set_footer(text="Use the reactions to navigate between pages.")
-    #     embeds.append(embed)
-    #     return embeds
+        embed.title = f"**Staff Commands - Page {len(embeds) + 1} of {total_pages}**"
+        embed.set_footer(text="Use the reactions to navigate between pages.")
+        embeds.append(embed)
+        return embeds
 
     @cog_ext.cog_slash(name="addlink", description="(STAFF) Adds a new allowed link",
         options=[create_option(name="link", description="The link to add", option_type=3, required=True)], guild_ids=[GUILDID])

@@ -10,6 +10,7 @@ import json
 import sqlite3
 from sqlite3 import Error
 from colorama import Fore, Style
+from datetime import datetime
 
 class UserData(commands.Cog):
     def __init__(self, bot):
@@ -61,9 +62,11 @@ class UserData(commands.Cog):
     #     else:
     #         await ctx.send("User not found in the database.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="addusertodb", description="(STAFF) Add a user to the database",
-        options=[create_option(name="user", description="User to add", option_type=6, required=True)], guild_ids=[GUILDID])
-    async def addusertodb(self, ctx: SlashContext, user: discord.User):
+    # @cog_ext.cog_subcommand(base="Staff", name="addusertodb", description="(STAFF) Add a user to the database",
+    #     options=[create_option(name="user", description="User to add", option_type=6, required=True)], guild_ids=[GUILDID])
+    @commands.command(help='<user_id>', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def addusertodb(self, ctx, user: discord.User):
         AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
         if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
             await ctx.send('You do not have permission to use this command.')
@@ -75,8 +78,8 @@ class UserData(commands.Cog):
         user = cursor.fetchone()
         if not user:
             try:
-                member = await utils.GetMember(ctx, uid)
-            except ValueError:
+                member = await ctx.guild.fetch_member(uid)
+            except discord.NotFound:
                 await ctx.send("User not found in the server.")
                 return
 
@@ -129,27 +132,24 @@ class UserData(commands.Cog):
         except discord.Forbidden:
             await ctx.send("Failed to change the nickname due to permission settings.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="accountage", description="(STAFF) Get a user's account age",
-        options=[create_option(name="member", description="@username or UID", option_type=6, required=True)], guild_ids=[GUILDID])
-    async def accountage(self, ctx: SlashContext, member: discord.Member = None):
-        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-            await ctx.send('You do not have permission to use this command.')
-            return
-
+    @commands.command(help='<user_id>', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def accountage(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
         else:
             try:
-                member = await utils.GetMember(ctx, member.id)
+                member = await ctx.guild.fetch_member(member.id)
             except ValueError:
                 return await ctx.send("⚠ Unable to get user info as they are not in the server.")
 
-        AccountCreatedDate = member.created_at
-        AccountAge = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-        if AccountAge < utils.TimeDelta(days=30):
+        AccountCreatedDate = member.created_at.date()
+        CurrentDate = datetime.utcnow().date()
+        AccountAge = (CurrentDate - AccountCreatedDate).days
+
+        if AccountAge < 30:
             color = discord.Color.red()  # Red for less than 1 month old
-        elif AccountAge < utils.TimeDelta(days=365):
+        elif AccountAge < 365:
             color = discord.Color.blue()  # Blue for 1 month to 1 year old
         else:
             color = discord.Color.green()  # Green for 1 year or older

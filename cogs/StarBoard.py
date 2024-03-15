@@ -1,8 +1,6 @@
 import discord
 from discord import RawReactionActionEvent, Embed
 from discord.ext import commands
-from discord_slash import cog_ext, SlashContext
-from discord_slash.utils.manage_commands import create_option
 import utils.utils as utils
 from utils.botdb import CreateStarboardDatabase
 from config import CHANNELIDS, LOGO_URL, IGNORE_CHANNELS, GUILDID, ROLEIDS
@@ -37,17 +35,17 @@ class Starboard(commands.Cog):
         if str(reaction_event.emoji) in ['⭐', '🌟', '✨', '💫', '🌠']:
             channel = self.bot.get_channel(reaction_event.channel_id)
             message = await channel.fetch_message(reaction_event.message_id)
-            self.c.execute("SELECT * FROM starboard_table WHERE message_id=?", (message.id,))
-            result = self.c.fetchone()
+            self.cursor.execute("SELECT * FROM starboard_table WHERE message_id=?", (message.id,))
+            result = self.cursor.fetchone()
             if result is None:
                 creation_date = utils.GetLocalTime().strftime('%m-%d-%y %I:%M %p')
-                self.c.execute("INSERT INTO starboard_table VALUES (?,?,?,?,?,?)", (message.id, message.author.id, 1, None, channel.id, creation_date))
+                self.cursor.execute("INSERT INTO starboard_table VALUES (?,?,?,?,?,?)", (message.id, message.author.id, 1, None, channel.id, creation_date))
             else:
-                self.c.execute("UPDATE starboard_table SET star_count = star_count + 1 WHERE message_id=?", (message.id,))
+                self.cursor.execute("UPDATE starboard_table SET star_count = star_count + 1 WHERE message_id=?", (message.id,))
             self.conn.commit()
 
-            self.c.execute("SELECT * FROM starboard_table WHERE message_id=?", (message.id,))
-            result = self.c.fetchone()
+            self.cursor.execute("SELECT * FROM starboard_table WHERE message_id=?", (message.id,))
+            result = self.cursor.fetchone()
             if result[2] >= 3: # Min star count per message
                 StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
                 starboard_channel = self.bot.get_channel(StarboardChannelID)
@@ -70,7 +68,7 @@ class Starboard(commands.Cog):
                     starboard_message = await starboard_channel.send(embed=embed)
                     embed.set_footer(text=f"Starboard ID: {starboard_message.id} | {result[5]}")
                     await starboard_message.edit(embed=embed)
-                    self.c.execute("UPDATE starboard_table SET starboard_id = ? WHERE message_id=?", (starboard_message.id, message.id))
+                    self.cursor.execute("UPDATE starboard_table SET starboard_id = ? WHERE message_id=?", (starboard_message.id, message.id))
                 else:
                     starboard_message = await starboard_channel.fetch_message(result[3])
                     stars = star_level(result[2])
@@ -87,23 +85,38 @@ class Starboard(commands.Cog):
                     await starboard_message.edit(embed=embed)
                 self.conn.commit()
 
-    @cog_ext.cog_subcommand(base="Staff", name="addstar", description="(STAFF) Add a star to a starboard message",
-        options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
-    async def addstar(self, ctx: SlashContext, starboard_id: int):
-        AllowedRoles = [ROLEIDS["Admin"]]
-        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-            await ctx.send("You are not authorized to use this command.")
-            return
-
-        self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
-        result = self.c.fetchone()
+    @commands.command(help='<starboard_id>', hidden=True)
+    @commands.has_any_role("Admin")
+    async def addstar(self, ctx, starboard_id: int):
+        self.cursor.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
+        result = self.cursor.fetchone()
         if result is not None:
-            self.c.execute("UPDATE starboard_table SET star_count = star_count + 1 WHERE starboard_id=?", (starboard_id,))
+            self.cursor.execute("UPDATE starboard_table SET star_count = star_count + 1 WHERE starboard_id=?", (starboard_id,))
             self.conn.commit()
-            StarboardChannelID = CHANNELIDS["StarBoardChannel"]
+            StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
-            self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
+            self.cursor.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
+            result = self.cursor.fetchone()
+            channel = self.bot.get_channel(result[4])
+            embed = starboard_message.embeds[0]
+            stars = star_level(result[2])
+            embed.title = f"{result[2]} {stars} in <#{channel.id}>\n"
+            embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
+            await starboard_message.edit(embed=embed)
+
+    @commands.command(help='<starboard_id>', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def removestar(self, ctx, starboard_id: int):
+        self.cursor.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
+        result = self.c.fetchone()
+        if result is not None:
+            self.cursor.execute("UPDATE starboard_table SET star_count = star_count - 1 WHERE starboard_id=?", (starboard_id,))
+            self.conn.commit()
+            StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
+            starboard_channel = self.bot.get_channel(StarboardChannelID)
+            starboard_message = await starboard_channel.fetch_message(starboard_id)
+            self.cursor.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
             result = self.c.fetchone()
             channel = self.bot.get_channel(result[4])
             embed = starboard_message.embeds[0]
@@ -112,63 +125,30 @@ class Starboard(commands.Cog):
             embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
             await starboard_message.edit(embed=embed)
 
-    @cog_ext.cog_subcommand(base="Staff", name="removestar", description="(STAFF) Remove a star from a starboard message",
-        options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
-    async def removestar(self, ctx: SlashContext, starboard_id: int):
-        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-            await ctx.send("You are not authorized to use this command.")
-            return
-
-        self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
+    @commands.command(help='<starboard_id>', hidden=True)
+    @commands.has_any_role("Moderator", "Admin")
+    async def deletestarboard(self, ctx, starboard_id: int):
+        self.cursor.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
         result = self.c.fetchone()
         if result is not None:
-            self.c.execute("UPDATE starboard_table SET star_count = star_count - 1 WHERE starboard_id=?", (starboard_id,))
-            self.conn.commit()
-            StarboardChannelID = CHANNELIDS["StarBoardChannel"]
-            starboard_channel = self.bot.get_channel(StarboardChannelID)
-            starboard_message = await starboard_channel.fetch_message(starboard_id)
-            self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
-            result = self.c.fetchone()
-            channel = self.bot.get_channel(result[4])
-            embed = starboard_message.embeds[0]
-            stars = star_level(result[2])
-            embed.title = f"{result[2]} {stars} in <#{channel.id}>\n",
-            embed.set_footer(text=f"Starboard ID: {starboard_id} | {result[5]}")
-            await starboard_message.edit(embed=embed)
-
-    @cog_ext.cog_subcommand(base="Staff", name="deletestarboard", description="(STAFF) Delete a starboard message",
-        options=[create_option(name="starboard_id", description="ID of the starboard message", option_type=4, required=True)], guild_ids=[GUILDID])
-    async def deletestarboard(self, ctx: SlashContext, starboard_id: int):
-        AllowedRoles = [ROLEIDS["Moderator"], ROLEIDS["Admin"]]
-        if not any(role_id in [role.id for role in ctx.author.roles] for role_id in AllowedRoles):
-            await ctx.send("You are not authorized to use this command.")
-            return
-
-        self.c.execute("SELECT * FROM starboard_table WHERE starboard_id=?", (starboard_id,))
-        result = self.c.fetchone()
-        if result is not None:
-            StarboardChannelID = CHANNELIDS["StarBoardChannel"]
+            StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
             starboard_channel = self.bot.get_channel(StarboardChannelID)
             starboard_message = await starboard_channel.fetch_message(starboard_id)
             await starboard_message.delete()
 
-            self.c.execute("DELETE FROM starboard_table WHERE starboard_id=?", (starboard_id,))
+            self.cursor.execute("DELETE FROM starboard_table WHERE starboard_id=?", (starboard_id,))
             self.conn.commit()
             await ctx.send(f"Starboard with ID {starboard_id} has been deleted.")
         else:
             await ctx.send(f"No starboard found with ID {starboard_id}.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="deleteallstarboards", description="(STAFF) Delete all starboards", guild_ids=[GUILDID], options=[])
-    async def deleteallstarboards(self, ctx: SlashContext):
-        if not await self.bot.is_owner(ctx.author):
-            await ctx.send("Only the bot owner can use this command.")
-            return
-
-        StarboardChannelID = CHANNELIDS["StarBoardChannel"]
+    @commands.command(help="Delete all starboards", hidden=True)
+    @commands.is_owner()
+    async def deleteallstarboards(self, ctx):
+        StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
-        self.c.execute("SELECT starboard_id FROM starboard_table")
+        self.cursor.execute("SELECT starboard_id FROM starboard_table")
         starboard_ids = self.c.fetchall()
         for starboard_id in starboard_ids:
             try:
@@ -177,20 +157,17 @@ class Starboard(commands.Cog):
             except:
                 pass
 
-        self.c.execute("DELETE FROM starboard_table")
+        self.cursor.execute("DELETE FROM starboard_table")
         self.conn.commit()
         await ctx.send("All starboards have been deleted.")
 
-    @cog_ext.cog_subcommand(base="Staff", name="refreshstarboards", description="(STAFF) Refresh all starboards", guild_ids=[GUILDID], options=[])
-    async def refreshstarboards(self, ctx: SlashContext):
-        if not await self.bot.is_owner(ctx.author):
-            await ctx.send("Only the bot owner can use this command.")
-            return
-
-        StarboardChannelID = CHANNELIDS["StarBoardChannel"]
+    @commands.command(help="Refresh all starboards", hidden=True)
+    @commands.is_owner()
+    async def refreshstarboards(self, ctx):
+        StarboardChannelID = CHANNELIDS.get('StarBoardChannel')
         starboard_channel = self.bot.get_channel(StarboardChannelID)
 
-        self.c.execute("SELECT * FROM starboard_table")
+        self.cursor.execute("SELECT * FROM starboard_table")
         starboard_records = self.c.fetchall()
 
         for record in starboard_records:
@@ -212,7 +189,7 @@ class Starboard(commands.Cog):
                 embed.set_thumbnail(url=LOGO_URL)
                 embed.set_footer(text=f"Starboard ID: {record[3]} | {record[5]}")
                 starboard_message = await starboard_channel.send(embed=embed)
-                self.c.execute("UPDATE starboard_table SET starboard_id = ? WHERE message_id=?", (starboard_message.id, message.id))
+                self.cursor.execute("UPDATE starboard_table SET starboard_id = ? WHERE message_id=?", (starboard_message.id, message.id))
                 await asyncio.sleep(1)
             except discord.errors.NotFound:
                 print(f"Message {record[0]} not found.")

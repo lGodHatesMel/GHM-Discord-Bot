@@ -30,7 +30,6 @@ def GetLocalTime():
 def TimeDelta(days=0, hours=0, minutes=0, seconds=0):
     return timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
 
-
 async def FetchMember(guild, target):
     if isinstance(target, str):
         try:
